@@ -36,14 +36,16 @@ const backgroundHome = () => {
             <WideBtn
               color="#F7F7F7"
               letras="gray"
-              style={styles.DoubleBtn}
+              height='45px'
+              style={{ marginRight: 5 }}
             >Conocé más
           </WideBtn>
 
             <WideBtn
               color="#F7F7F7"
               letras="gray"
-              style={styles.DoubleBtn}
+              height='45px'
+              style={{ marginLeft: 5 }}
             >Novedades
             </WideBtn>
           </DoubleWraper>
@@ -52,15 +54,18 @@ const backgroundHome = () => {
             <WideBtn
               color="#4A94EA"
               letras="#F7F7F7"
+              height='50px'
             >Invita amigos y gana!
-          </WideBtn>
+            </WideBtn>
 
             <WideBtn
               color="#F77171"
               letras="#F7F7F7"
+              height='50px'
             >Conoce mas sobre nosotros
-          </WideBtn>
+            </WideBtn>
           </View>
+
         </ScrollView>
       </Wrapper>
     </ImageBackground >
@@ -69,27 +74,9 @@ const backgroundHome = () => {
 
 const styles = StyleSheet.create({
   fondo: {
-
     position: 'absolute',
     width: '100%',
     height: '100%'
-  },
-
-  DoubleBtn: {
-    margin: '0px 15px'
-  },
-
-  view1: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10
-  },
-
-  view2: {
-
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10,
   }
 })
 
@@ -97,12 +84,10 @@ const DoubleWraper = styled.View`
   flex-direction: row;
   justify-content: space-between;
   margin-top: 3%;
-  
 `
 const Wrapper = styled.View`
-  align-items:center;
-  justify-content: center;
-  flex-direction: column;
+flex-direction: row;
+  justify-content: space-between;
   margin: 0px 15px;
 `
 const StyledView = styled.View`
@@ -131,10 +116,10 @@ const Button = styled.Text`
 `
 const WideBtn = styled.Text`
   flex-grow : 1;
-  margin : 3% 5px;
+  margin : 3% 0;
   padding-top : 4%;
   font-size: 15px;
-  height: 50px;
+  height: ${props => props.height}
   text-align : center;
   border-radius: 5px;
   color: ${props => props.letras}
