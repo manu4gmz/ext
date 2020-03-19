@@ -23,10 +23,6 @@ const LoginPage = () => {
     )
 }
 
-const styles = StyleSheet.create({
-
-})
-
 export default connect(null, null)(LoginPage)
 
 
