@@ -8,8 +8,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 //Importando views and components
 import HomePage from './src/react/components/backgroundHome'
-import LoginPage from './src/react/views/LoginPage'
-import AddSpace from './src/react/views/AddSpace'
+import LoginPage from './src/react/containers/LoginPage'
+import AddSpace from './src/react/containers/AddSpace'
 
 const Stack = createStackNavigator();
 
@@ -18,7 +18,7 @@ export default class App extends Component {
     return (
       <Provider store={store} >
         <NavigationContainer>
-          <Stack.Navigator inicialRouteName="AddSpace">
+          <Stack.Navigator inicialRouteName="Home">
             <Stack.Screen name="Home" component={HomePage} />
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="AddSpace" component={AddSpace} />
