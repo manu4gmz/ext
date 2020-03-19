@@ -1,17 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { StyleSheet, Text, View, Image, } from 'react-native'
-import backgrounHome from '../components/backgroundHome'
+import BackgroundLogin from '../components/backgroundLogin'
 
 
 const LoginPage = () => {
+    const [Username, setUsername] = useState("")
+    const [Password, setPassword] = useState("")
+
+    const onChangeUser = (e) => { setUsername(e) }
+    const onChangePassword = (e) => { setPassword(e) }
+    const Onsubmit = function () { console.log("hola") }
     return (
-        <Image
-            style={styles.fondo}
-            source={{ uri: fondo }}
-            blurRadius={4}
-            resizeMode='cover'
-        />
+        <BackgroundLogin
+            Username={Username}
+            Password={Password}
+            onChangePassword={onChangePassword}
+            onChangeUser={onChangeUser}
+            Onsubmit={Onsubmit}>
+
+        </BackgroundLogin>
     )
 }
 

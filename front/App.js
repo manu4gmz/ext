@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import store from './src/redux/store'
 
 import HomePage from './src/react/components/backgroundHome'
-import LoginPage from './src/react/components/backgroundLogin'
+import LoginPage from './src/react/views/LoginPage'
 
 export default class App extends Component {
   render() {
