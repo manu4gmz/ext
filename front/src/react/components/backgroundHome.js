@@ -3,7 +3,7 @@ import { StyleSheet, Text, ImageBackground, View, ScrollView } from 'react-nativ
 import styled from "styled-components/native"
 import { connect } from 'react-redux'
 
-const backgroundHome = () => {
+const backgroundHome = ({ navigation }) => {
   return (
     <ImageBackground
       source={require('../../public/images/imagen_fondo1.jpg')}
@@ -62,7 +62,8 @@ const backgroundHome = () => {
               color="#F77171"
               letras="#F7F7F7"
               height='50px'
-            >Conoce mas sobre nosotros
+              onPress={() => navigation.navigate('Login')}
+            >Go to login
             </WideBtn>
           </View>
 
@@ -125,6 +126,7 @@ const WideBtn = styled.Text`
   color: ${props => props.letras}
   background-color: ${props => props.color}
 `
+
 export default connect(null, null)(backgroundHome)
 
 
