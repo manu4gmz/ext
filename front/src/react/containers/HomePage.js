@@ -3,9 +3,11 @@ import { connect } from 'react-redux'
 import BackgroundHome from '../components/backgroundHome'
 
 
-const HomePage = () => {
+const HomePage = ({ navigation }) => {
   return (
-    <BackgroundHome />
+    <BackgroundHome
+      navigation={navigation}
+    />
   )
 }
 

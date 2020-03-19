@@ -18,7 +18,6 @@ const LoginPage = () => {
             onChangePassword={onChangePassword}
             onChangeUser={onChangeUser}
             Onsubmit={Onsubmit}>
-
         </BackgroundLogin>
     )
 }

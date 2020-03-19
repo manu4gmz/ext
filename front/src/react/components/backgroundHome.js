@@ -67,7 +67,6 @@ const backgroundHome = ({ navigation }) => {
             >Go to login
             </WideBtn>
           </View>
-
         </ScrollView>
       </Wrapper>
     </ImageBackground >
