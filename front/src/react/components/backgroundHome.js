@@ -29,6 +29,7 @@ const backgroundHome = ({ navigation }) => {
               color="#F77171"
               width="100%"
               letras="#F7F7F7"
+              onPress={() => navigation.navigate('AddSpace')}
             >Buscar</Button>
           </StyledView>
 
