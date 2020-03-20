@@ -13,6 +13,8 @@ import AddSpace from './src/react/containers/AddSpace'
 
 const Stack = createStackNavigator();
 
+import firebase from "./src/redux/firebase";
+
 export default class App extends Component {
   render() {
     return (

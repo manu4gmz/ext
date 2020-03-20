@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground } from 'react-native'
 import styled from "styled-components/native"
 
-export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit }) => {
+export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, error }) => {
     return (
         <ImageBackground
             style={styles.fondo}
@@ -15,20 +15,23 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit }
                 <View style={styles.inputContainer} >
                     <Image source={require("../../public/images/sobre-bl.png")} style={styles.imagenInputs} />
                     <TextInput
-                        style={styles.inputText}
+                        style={error.target == "email" ? styles.inputError : styles.inputText}
                         value={Username}
                         onChangeText={onChangeUser}
                     ></TextInput >
                 </View>
+                {error.target == "email" ? <Error>{error.msg}</Error> : null}
                 <View style={styles.inputContainer} >
                     <Image source={require("../../public/images/candado-bl.png")} style={styles.imagenInputs} />
                     <TextInput
-                        style={styles.inputText}
+                        style={error.target == "pass" ? styles.inputError : styles.inputText}
                         secureTextEntry={true}
                         value={Password}
                         onChangeText={onChangePassword}
                     ></TextInput >
                 </View>
+                {error.target == "pass" ? <Error>{error.msg}</Error> : null}
+                {error.target == "all" ? <Error>{error.msg}</Error> : null}
                 <RememberPassword>¿Olvido su contraseña? </RememberPassword>
                 <BotonIngresar title=" Inquilino" onPress={Onsubmit}>Ingresar</BotonIngresar>
             </View>
@@ -59,6 +62,20 @@ const styles = StyleSheet.create({
         color: "#F7F7F7"
     },
 
+
+    inputError: {
+        height: 40,
+        width: 250,
+        borderColor: "tomato",
+        borderWidth: 1,
+        borderRadius: 30,
+        paddingLeft: 40,
+        margin: 10,
+        display: "flex",
+        color: "#F7F7F7",
+    },
+
+
     imagenInputs: {
         height: 20,
         width: 20,
@@ -78,6 +95,11 @@ const styles = StyleSheet.create({
         paddingBottom: 50
     }
 })
+
+const Error = styled.Text`
+    font-size: 15px;
+    color: tomato;
+`
 
 const TextoPrincipal = styled.Text`
     color:#E9E9E9;
