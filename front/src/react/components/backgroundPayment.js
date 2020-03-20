@@ -50,12 +50,10 @@ const backgorunPayment = ({ navigation }) => {
             </View>
           </View>
 
-          <View style={styles.mp}>
-                <Text style={{fontWeight:"bold",marginVertical: 40, marginLeft: 40}}>Medios de pago: </Text>
-                <Image style={{width: "36%",
-            height: "53%",
-            marginTop: 35, marginRight: 42}} source={require("../../public/images/mercado-pago.png")} />
-          </View>
+          <PaymentMethodWrapper>
+                <PaymentMethodText>Medios de pago: </PaymentMethodText>
+                <MpLogo source={require("../../public/images/mercado-pago.png")} />
+          </PaymentMethodWrapper>
           <View style={styles.bot4}>
           <Text style={{color:"white",
         textAlign: "center", lineHeight:30}}>Términos y Condiciones</Text>
@@ -99,35 +97,34 @@ const styles = StyleSheet.create({
 
    box3: {
     alignItems: "center",
-       backgroundColor: "#4A94EA",
-       width: "70%",
-       height:290,
-       marginHorizontal: 45,
-       marginVertical: 8,
-       borderRadius: 9,
-       alignSelf: "center",
-       shadowColor: "#000",
+    backgroundColor: "#4A94EA",
+    width: "70%",
+    height:290,
+    marginHorizontal: 45,
+    marginVertical: 8,
+    borderRadius: 9,
+    alignSelf: "center",
+    shadowColor: "#000",
     shadowOffset: {
-    width: 0,
-    height: 3,
+      width: 0,
+      height: 3,
     },
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
-    
     elevation: 6,
    },
    
-   destacado: {
-     fontSize: 18,
-     lineHeight:30,
+  destacado: {
+    fontSize: 18,
+    lineHeight:30,
     margin: 15,
     borderRadius: 18,
-   textAlign: "center",
+    textAlign: "center",
     alignSelf: "center",
-       width: "85%",
-       height: 35,
-       color: "white",
-       backgroundColor: "#707070"
+    width: "85%",
+    height: 35,
+    color: "white",
+    backgroundColor: "#707070"
    },
 
    premium: {
@@ -177,7 +174,7 @@ const styles = StyleSheet.create({
 
    but3:{
     
-    marginTop: 45,  
+    marginTop: 77,  
     alignItems: "center",
     alignSelf: "center",
     width: "85%",
@@ -235,13 +232,28 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
    },
    
-   mp: {
-       flexDirection:"row",
-       justifyContent: "space-around"
-   }
  
    
 })
 
+const PaymentMethodWrapper = styled.View`
+  margin-top: 35;
+  margin: 35px 20px;
+  flex-direction: row;
+  justify-content: center;
+`
+
+const PaymentMethodText = styled.Text`
+  font-weight: 700;
+  margin-right: 10px;
+`
+
+const MpLogo = styled.Image`
+  width: 128px;
+  height: 51px;
+  flex-direction: row;
+  justify-content: space-around;
+
+`
 
 export default connect(null, null)(backgorunPayment)
