@@ -15,7 +15,6 @@ const LoginPage = ({ logUser, navigation, getUserGoogle }) => {
 
     const onChangeUser = (e) => { setUsername(e); clearError("email") }
     const onChangePassword = (e) => { setPassword(e); clearError("pass") }
-
     const Onsubmit = function () {
         logUser(Username, Password)
             .then(err => {
@@ -40,6 +39,7 @@ const LoginPage = ({ logUser, navigation, getUserGoogle }) => {
             onChangeUser={onChangeUser}
             Onsubmit={Onsubmit}
             error={error}
+            navigation={navigation}
             OnsubmitGoogle={OnsubmitGoogle}
         >
         </BackgroundLogin>

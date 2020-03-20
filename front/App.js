@@ -9,7 +9,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 //Importando views and components
 import HomePage from './src/react/components/backgroundHome'
+
 import LoginPage from './src/react/containers/LoginPage'
+import RegisterPage from './src/react/containers/RegisterPage'
 import AddSpace from './src/react/containers/AddSpace'
 import PaymentPage from './src/react/containers/PaymentPage';
 import SingleViewPage from './src/react/containers/SingleViewPage';
@@ -28,26 +30,27 @@ export default class App extends Component {
         <NavigationContainer>
           <Stack.Navigator inicialRouteName="Login">
 
-            <Stack.Screen 
-              name="Login" 
+            <Stack.Screen
+              name="Login"
               component={LoginPage}
               options={{
                 header: () => null,
-                headerStyle: {        
-                  backgroundColor: "transparent"      
+                headerStyle: {
+                  backgroundColor: "transparent"
                 }
-              }} />  
-            <Stack.Screen 
-              name="Home" 
+              }} />
+            <Stack.Screen
+              name="Home"
               component={HomePage}
               options={{
-                header: ()=> <Navbar/>,
-                headerStyle: {        
-                  backgroundColor: "transparent"      
+                header: () => <Navbar />,
+                headerStyle: {
+                  backgroundColor: "transparent"
                 }
               }}
 
-              />
+            />
+            <Stack.Screen name="Register" component={RegisterPage} />
             <Stack.Screen name="Payment" component={PaymentPage} />
             <Stack.Screen name="AddSpace" component={AddSpace} />
             <Stack.Screen name="SingleView" component={SingleViewPage} />
