@@ -3,14 +3,22 @@ import { connect } from 'react-redux'
 import BackgroundHome from '../components/backgroundHome'
 
 
-const HomePage = ({ navigation }) => {
+const HomePage = ({ navigation, user }) => {
   return (
     <BackgroundHome
       navigation={navigation}
+      user={user}
     />
   )
 }
 
-export default connect(null, null)(HomePage)
+const mapStateToProps = (state, ownProps) => {
+  return {
+    user: state.user.logged
+  }
+}
+
+
+export default connect(mapStateToProps, null)(HomePage)
 
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground } from 'react-native'
 import styled from "styled-components/native"
 
-export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, error }) => {
+export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, error, OnsubmitGoogle }) => {
     return (
         <ImageBackground
             style={styles.fondo}
@@ -34,6 +34,7 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                 {error.target == "all" ? <Error>{error.msg}</Error> : null}
                 <RememberPassword>¿Olvido su contraseña? </RememberPassword>
                 <BotonIngresar title=" Inquilino" onPress={Onsubmit}>Ingresar</BotonIngresar>
+                <BotonGoogle title=" Inquilino" onPress={OnsubmitGoogle}>Ingresar con google</BotonGoogle>
             </View>
 
         </ImageBackground >
@@ -75,12 +76,11 @@ const styles = StyleSheet.create({
         color: "#F7F7F7",
     },
 
-
-    imagenInputs: {
-        height: 20,
-        width: 20,
+    imagenInputs2: {
+        height: 30,
+        width: 30,
         position: "absolute",
-        left: 20,
+
     },
 
     inputContainer: {
@@ -120,6 +120,18 @@ color: #262626;
 height: 40px;
 width: 250px;
 border-color:#262626;
+border-width: 1px;
+border-radius: 30px;
+padding-top:10px;
+margin:10px auto;
+text-align:center
+`
+const BotonGoogle = styled.Text`
+background-color : white;
+color: #262626;
+height: 40px;
+width: 250px;
+border-color:#E9E9E9;
 border-width: 1px;
 border-radius: 30px;
 padding-top:10px;
