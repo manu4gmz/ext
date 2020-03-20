@@ -40,15 +40,12 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                 }
                 <BotonGoogle title=" Inquilino" onPress={OnsubmitGoogle}>Ingresar con google</BotonGoogle>
                 <RememberPassword>¿Olvido su contraseña? </RememberPassword>
-<<<<<<< HEAD
-            <BotonIngresar title=" Inquilino" onPress={Onsubmit}>Ingresar</BotonIngresar>
-            <BotonRegistrarse
-                title="Registrarse"
-                onPress={() => navigation.navigate('Register')}
-            >Registrarse
+                <BotonIngresar title=" Registrarse" onPress={Onsubmit}>Ingresar</BotonIngresar>
+                <BotonRegistrarse
+                    title="Registrarse"
+                    onPress={() => navigation.navigate('Register')}
+                >Registrarse
                 </BotonRegistrarse>
-=======
->>>>>>> 422d836fdea7596a5ba8cc82c4e3a553b9482bf0
 
             </View>
 
