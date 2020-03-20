@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Text, View, Image } from "react-native";
 import styled from "styled-components/native";
 import { connect } from "react-redux";
+import { getUser } from "../../redux/actions/user";
 
 const Navbar = (props) => {
+
+  useEffect(()=>{
+    props.getUser();
+  },[])
+
   return (
     <Wrapper>
       <Icon source={require('../../public/images/isologotipo-only.png')}/>
@@ -46,4 +52,8 @@ const mapStateToProps = (state) => ({
   user: state.user.logged
 })
 
-export default connect(mapStateToProps)(Navbar);
+const mapDispatchToProps = (dispatch) => ({
+  getUser: ()=>dispatch(getUser())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

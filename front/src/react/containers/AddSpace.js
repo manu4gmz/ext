@@ -17,7 +17,7 @@ const AddSpace = ({ navigation }) => {
   const [rules, setRules] = ''
 
   const handlerInput = setInput => (e) => { setInput(e) }
-  const Onsubmit = function () { console.log("hola") }
+  const Onsubmit = function () { navigation.navigate("Payment") }
 
   return (
     <AddSpaceForm

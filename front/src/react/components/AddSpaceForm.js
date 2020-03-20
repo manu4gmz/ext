@@ -2,9 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { StyleSheet, Text, Image, ScrollView } from 'react-native'
-import styled from "styled-components/native"
+import styled from "styled-components/native";
+import Button from "../ui/Button";
 
-const backgroundHome = ({ navigation }) => {
+const backgroundHome = ({ navigation, Onsubmit }) => {
   return (
     <ScrollView>
       <Wrapper>
@@ -85,9 +86,8 @@ const backgroundHome = ({ navigation }) => {
           <View>
             <StyledTitles>Agregar Fotos</StyledTitles>
             <Button
-              color="#4A94EA"
-              width="100%"
-              letras="#F7F7F7"
+              bg="#4A94EA"
+              color="#F7F7F7"
             > <Image
                 style={{ width: '10%', height: '100%' }}
                 source={require('../../public/icons/lcd.png')}
@@ -104,10 +104,10 @@ const backgroundHome = ({ navigation }) => {
 
           <View>
             <Button
-              color="#F77171"
-              width="100%"
-              letras="#F7F7F7"
-              style={{ paddingTop: '4%' }}
+              bg="#F77171"
+              color="#F7F7F7"
+              mt="4%"
+              onPress={Onsubmit}
             > Ofrecer
           </Button>
           </View>
@@ -170,16 +170,7 @@ const DoubleWraper = styled.View`
 const View = styled.View`
 margin : 2% 0;
 `
-const Button = styled.Text`
-  margin-top : 2%
-  padding: 1%;
-  width:${props => props.width}
-  height: 40px;
-  text-align : center;
-  border-radius: 5px;
-  color: ${props => props.letras}
-  background-color: ${props => props.color}
-`
+
 
 export default connect(null, null)(backgroundHome)
 

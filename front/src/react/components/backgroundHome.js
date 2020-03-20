@@ -23,19 +23,12 @@ const backgroundHome = ({ navigation, user }) => {
             <StyledTitle>Ofrecé tu Espacio</StyledTitle>
             <StyledText>Ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
 
-            {user
-              ? <Button
+            
+              <Button
                 onPress={() => navigation.navigate('AddSpace')}
-                bg="#F77171"
-              >Ofrecer
+                bg="#F77171">Ofrecer
                 </Button>
-
-              : <Button
-                onPress={() => navigation.navigate('Login')}
-                bg="#F77171"
-              >Ofrecer
-                </Button>
-            }
+            
 
           </StyledView>
 
