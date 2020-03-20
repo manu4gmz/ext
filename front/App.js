@@ -10,6 +10,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomePage from './src/react/components/backgroundHome'
 import LoginPage from './src/react/containers/LoginPage'
 import AddSpace from './src/react/containers/AddSpace'
+import PaymentPage from './src/react/views/PaymentPage';
+
 
 const Stack = createStackNavigator();
 
@@ -24,6 +26,7 @@ export default class App extends Component {
             <Stack.Screen name="Home" component={HomePage} />
             <Stack.Screen name="Login" component={LoginPage} />
             <Stack.Screen name="AddSpace" component={AddSpace} />
+            <Stack.Screen name="Payment" component={PaymentPage} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider >
