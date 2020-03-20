@@ -14,19 +14,18 @@ const Navbar = (props) => {
 }
 
 const Wrapper = styled.View`
-  height: 60px;
+  height: 70px;
   background-color: #4a94ea;
   flex-direction: row;
   align-items: center;
   justify-content: left;
-  padding: 5px 0;
-  box-sizing: content-box;
+  padding: 5px 20px;
 `
 
 const Icon = styled.Image`
   height: 34px;
   width: 34px;
-  margin: 0 10px 0 20px;
+  margin-right: 10px;
   display: flex;
 `
 
@@ -40,7 +39,6 @@ const Title = styled.Text`
 const SidebarBtn = styled.Image`
   height: 30px;
   width: 30px;
-  margin-right: 20px;
   margin-top: 3px;
 `
 
