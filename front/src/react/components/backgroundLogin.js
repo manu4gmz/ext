@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
 import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground } from 'react-native'
-import fondo from '../../public/images/imagen_fondo_mobile_az.jpg'
 import styled from "styled-components/native"
 
 
-/* require('../../public/images/imagen_fondo1.jpg') */
 
-const backgroundLogin = ({ Username, Password, onChangePassword, onChangeUser, Onsubmit }) => {
+export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit }) => {
     return (
 
         <ImageBackground
             style={styles.fondo}
-            source={{ uri: fondo }}
+            source={require('../../public/images/imagen_fondo_mobile_az.jpg')}
             resizeMode='cover'
         >
 
@@ -40,7 +37,10 @@ const backgroundLogin = ({ Username, Password, onChangePassword, onChangeUser, O
                 </View>
 
                 <RememberPassword>¿Olvido su contraseña? </RememberPassword>
-                <BotonIngresar title=" Inquilino" onPress={Onsubmit}>Ingresar</BotonIngresar>
+                {Username.length === 0 && Password.length === 0 ? (
+                    <BotonIngresar onPress={Onsubmit}>Ingresar</BotonIngresar>
+                ) : (<BotonIngresar style={{ backgroundColor: "#000144", color: "#E9E9E9" }} onPress={Onsubmit}>Ingresar</BotonIngresar>
+                    )}
             </View>
 
 
@@ -102,7 +102,6 @@ const TextoPrincipal = styled.Text`
     paddingBottom:200px;
     paddingTop:30px
     fontSize:25px
-    fontFamily: "Georgia, serif"
 
 
 `
@@ -114,7 +113,6 @@ const RememberPassword = styled.Text`
     margin: 0 auto;
     fontSize:15px;
 
- fontFamily: "Georgia, serif"
 
 `
 
@@ -131,19 +129,7 @@ margin:10px auto;
 textAlign:center
 `
 
-export default connect(null, null)(backgroundLogin)
 
 
 
 
-
-/*
-
-<View style={styles.inputText}>
-                    <Image source={require("../../public/images/sobre-bl.png")}
-                        style={{ height: 20, width: 20, padding: 10 }} />
-                    <TextInput style={{ padding: 10, color: "white" }}
-                    ></TextInput >
-
-                </View>
-*/
