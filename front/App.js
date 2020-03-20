@@ -11,11 +11,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomePage from './src/react/components/backgroundHome'
 
 import LoginPage from './src/react/containers/LoginPage'
+import RegisterPage from './src/react/containers/RegisterPage'
 import AddSpace from './src/react/containers/AddSpace'
 import PaymentPage from './src/react/containers/PaymentPage';
-
-import PaymentPage from './src/react/views/PaymentPage';
-
 import Navbar from "./src/react/components/Navbar";
 
 const Stack = createStackNavigator();
