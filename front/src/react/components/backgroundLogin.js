@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground } from 'react-native'
 import styled from "styled-components/native"
 
-export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, error }) => {
+export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, error, OnsubmitGoogle }) => {
     return (
         <ImageBackground
             style={styles.fondo}
@@ -34,11 +34,12 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                 </View>
                 {error.target == "pass" ? <Error>{error.msg}</Error> : null}
                 {error.target == "all" ? <Error>{error.msg}</Error> : null}
-                <RememberPassword>¿Olvido su contraseña? </RememberPassword>
-                 { !Username || !Password || error.msg ? 
+                {!Username || !Password || error.msg ?
                     <BotonIngresar onPress={Onsubmit} bg="">Ingresar</BotonIngresar>
                     : <BotonIngresar bg="#000144" color="#E9E9E9" onPress={Onsubmit}>Ingresar</BotonIngresar>
                 }
+                <BotonGoogle title=" Inquilino" onPress={OnsubmitGoogle}>Ingresar con google</BotonGoogle>
+                <RememberPassword>¿Olvido su contraseña? </RememberPassword>
 
             </View>
 
@@ -81,12 +82,11 @@ const styles = StyleSheet.create({
         color: "#F7F7F7",
     },
 
-
-    imagenInputs: {
-        height: 20,
-        width: 20,
+    imagenInputs2: {
+        height: 30,
+        width: 30,
         position: "absolute",
-        left: 20,
+
     },
 
     inputContainer: {
@@ -129,6 +129,18 @@ border-color:#262626;
 border-width: 1px;
 border-radius: 30px;
 background-color: ${props => props.bg || "transparent"};
+padding-top:10px;
+margin:10px auto;
+text-align:center
+`
+const BotonGoogle = styled.Text`
+background-color : white;
+color: #262626;
+height: 40px;
+width: 250px;
+border-color:#E9E9E9;
+border-width: 1px;
+border-radius: 30px;
 padding-top:10px;
 margin:10px auto;
 text-align:center
