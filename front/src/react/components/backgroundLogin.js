@@ -35,7 +35,11 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                 {error.target == "pass" ? <Error>{error.msg}</Error> : null}
                 {error.target == "all" ? <Error>{error.msg}</Error> : null}
                 <RememberPassword>¿Olvido su contraseña? </RememberPassword>
-                <BotonIngresar title=" Inquilino" onPress={Onsubmit}>Ingresar</BotonIngresar>
+                 { !Username || !Password || error.msg ? 
+                    <BotonIngresar onPress={Onsubmit} bg="">Ingresar</BotonIngresar>
+                    : <BotonIngresar bg="#000144" color="#E9E9E9" onPress={Onsubmit}>Ingresar</BotonIngresar>
+                }
+
             </View>
 
         </ImageBackground >
@@ -118,12 +122,13 @@ const RememberPassword = styled.Text`
 `
 
 const BotonIngresar = styled.Text`
-color: #262626;
+color: ${props => props.color || "#262626"};
 height: 40px;
 width: 250px;
 border-color:#262626;
 border-width: 1px;
 border-radius: 30px;
+background-color: ${props => props.bg || "transparent"};
 padding-top:10px;
 margin:10px auto;
 text-align:center
