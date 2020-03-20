@@ -6,9 +6,9 @@ import firebase from "../firebase";
 //const db = firebase.firestore();
 const auth = firebase.auth();
 
-const setLoggedUser = (user) => ({
+const setLoggedUser = (logged) => ({
     type: LOGGED,
-    user
+    logged
 });
 
 export const getUser = () => dispatch => {
