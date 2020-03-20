@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import { connect } from 'react-redux';
 import Button from "../ui/Button";
 
-const backgroundHome = ({ navigation }) => {
+const backgroundHome = ({ navigation, user }) => {
   return (
     <ImageBackground
       source={require('../../public/images/imagen_fondo1.jpg')}
@@ -22,7 +22,21 @@ const backgroundHome = ({ navigation }) => {
           <StyledView>
             <StyledTitle>Ofrecé tu Espacio</StyledTitle>
             <StyledText>Ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
-            <Button onPress={() => navigation.navigate('AddSpace')} bg="#F77171">Ofrecer</Button>
+
+            {user
+              ? <Button
+                onPress={() => navigation.navigate('AddSpace')}
+                bg="#F77171"
+              >Ofrecer
+                </Button>
+
+              : <Button
+                onPress={() => navigation.navigate('Login')}
+                bg="#F77171"
+              >Ofrecer
+                </Button>
+            }
+
           </StyledView>
 
           <DoubleWraper>
@@ -36,7 +50,7 @@ const backgroundHome = ({ navigation }) => {
             <Button
               bg="#F7F7F7"
               color="gray"
-              ml ="5px"
+              ml="5px"
             >Novedades
             </Button>
           </DoubleWraper>
@@ -80,6 +94,8 @@ const Wrapper = styled.View`
 flex-direction: row;
   justify-content: space-between;
   margin: 0px 15px;
+  max-width: 500px;
+  align-self: center;
 `
 const StyledView = styled.View`
   margin: 10px 0;
@@ -95,28 +111,6 @@ const StyledText = styled.Text`
 margin-bottom : 10px;
 font-size: 15px ;
 color : gray;
-`
-/*
-const Button = styled.Text`
-  padding-top : 4%;
-  width:${props => props.width}
-  height: 45px;
-  text-align : center;
-  border-radius: 5px;
-  color: ${props => props.letras}
-  background-color: ${props => props.color}
-`
-*/
-const WideBtn = styled.Text`
-  flex-grow : 1;
-  margin : 3% 0;
-  padding-top : 4%;
-  font-size: 15px;
-  height: ${props => props.height}
-  text-align : center;
-  border-radius: 5px;
-  color: ${props => props.letras}
-  background-color: ${props => props.color}
 `
 
 export default connect(null, null)(backgroundHome)
