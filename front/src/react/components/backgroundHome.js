@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, ImageBackground, View, ScrollView } from 'react-native'
-import styled from "styled-components/native"
-import { connect } from 'react-redux'
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, ImageBackground, View, ScrollView } from 'react-native';
+import styled from "styled-components/native";
+import { connect } from 'react-redux';
+import Button from "../ui/Button";
 
 const backgroundHome = ({ navigation }) => {
   return (
@@ -15,58 +16,47 @@ const backgroundHome = ({ navigation }) => {
           <StyledView>
             <StyledTitle>Encontrá tu Espacio</StyledTitle>
             <StyledText>Descubrí espacios para todas tus reuniones laborales, fiestas, presentaciones, eventos y mas.</StyledText>
-            <Button
-              color="#4A94EA"
-              width="100%"
-              letras="#F7F7F7"
-            >Buscar</Button>
+            <Button>Buscar</Button>
           </StyledView>
 
           <StyledView>
             <StyledTitle>Ofrecé tu Espacio</StyledTitle>
             <StyledText>Ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
-            <Button
-              color="#F77171"
-              width="100%"
-              letras="#F7F7F7"
-            >Buscar</Button>
+            <Button onPress={() => navigation.navigate('AddSpace')} bg="#F77171">Ofrecer</Button>
           </StyledView>
 
           <DoubleWraper>
-            <WideBtn
-              color="#F7F7F7"
-              letras="gray"
-              height='45px'
-              style={{ marginRight: 5 }}
+            <Button
+              bg="#F7F7F7"
+              color="gray"
+              mr="5px"
             >Conocé más
-          </WideBtn>
+          </Button>
 
-            <WideBtn
-              color="#F7F7F7"
-              letras="gray"
-              height='45px'
-              style={{ marginLeft: 5 }}
+            <Button
+              bg="#F7F7F7"
+              color="gray"
+              ml ="5px"
             >Novedades
-            </WideBtn>
+            </Button>
           </DoubleWraper>
 
           <View>
-            <WideBtn
-              color="#4A94EA"
-              letras="#F7F7F7"
-              height='50px'
+            <Button
+              bg="#4A94EA"
+              color="#F7F7F7"
+              mb="3%"
             >Invita amigos y gana!
-            </WideBtn>
+            </Button>
 
-            <WideBtn
-              color="#F77171"
-              letras="#F7F7F7"
-              height='50px'
+            <Button
+              bg="#F77171"
+              color="#F7F7F7"
+              mb="3%"
               onPress={() => navigation.navigate('Login')}
             >Go to login
-            </WideBtn>
+            </Button>
           </View>
-
         </ScrollView>
       </Wrapper>
     </ImageBackground >
@@ -84,7 +74,7 @@ const styles = StyleSheet.create({
 const DoubleWraper = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 3%;
+  margin: 3% 0px;
 `
 const Wrapper = styled.View`
 flex-direction: row;
@@ -106,6 +96,7 @@ margin-bottom : 10px;
 font-size: 15px ;
 color : gray;
 `
+/*
 const Button = styled.Text`
   padding-top : 4%;
   width:${props => props.width}
@@ -115,6 +106,7 @@ const Button = styled.Text`
   color: ${props => props.letras}
   background-color: ${props => props.color}
 `
+*/
 const WideBtn = styled.Text`
   flex-grow : 1;
   margin : 3% 0;
