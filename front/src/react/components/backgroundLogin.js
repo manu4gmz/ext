@@ -7,7 +7,7 @@ import styled from "styled-components/native"
 
 /* require('../../public/images/imagen_fondo1.jpg') */
 
-const backgroundLogin = ({ Username, Password, onChangePassword, onChangeUser, Onsubmit }) => {
+const backgroundLogin = ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, navigation }) => {
     return (
 
         <ImageBackground
@@ -41,6 +41,12 @@ const backgroundLogin = ({ Username, Password, onChangePassword, onChangeUser, O
 
                 <RememberPassword>¿Olvido su contraseña? </RememberPassword>
                 <BotonIngresar title=" Inquilino" onPress={Onsubmit}>Ingresar</BotonIngresar>
+                <BotonRegistrarse
+                    title="Registrarse"
+                    onPress={() => navigation.navigate('Register')}
+                >Registrarse
+                </BotonRegistrarse>
+
             </View>
 
 
@@ -130,6 +136,20 @@ paddingTop:10px;
 margin:10px auto;
 textAlign:center
 `
+
+const BotonRegistrarse = styled.Text`
+color: #262626;
+height: 40px;
+width: 250px;
+borderColor:#262626
+;
+borderWidth: 1px;
+borderRadius: 30px;
+paddingTop:10px;
+margin:10px auto;
+textAlign:center
+`
+
 
 export default connect(null, null)(backgroundLogin)
 

@@ -4,20 +4,23 @@ import { StyleSheet, Text, View, Image, } from 'react-native'
 import BackgroundLogin from '../components/backgroundLogin'
 
 
-const LoginPage = () => {
+const LoginPage = ({ navigation }) => {
     const [Username, setUsername] = useState("")
     const [Password, setPassword] = useState("")
 
     const onChangeUser = (e) => { setUsername(e) }
     const onChangePassword = (e) => { setPassword(e) }
     const Onsubmit = function () { console.log("hola") }
+
     return (
         <BackgroundLogin
             Username={Username}
             Password={Password}
             onChangePassword={onChangePassword}
             onChangeUser={onChangeUser}
-            Onsubmit={Onsubmit}>
+            Onsubmit={Onsubmit}
+            navigation={navigation}
+        >
 
         </BackgroundLogin>
     )
