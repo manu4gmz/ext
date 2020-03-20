@@ -9,7 +9,7 @@ const setLoggedUser = (logged) => ({
 });
 
 export const getUser = () => dispatch => {
-	firebase.auth().onAuthStateChanged(function (user) {
+	auth.onAuthStateChanged((user) => {
 		if (user) {
 			dispatch(setLoggedUser({ email: user.email }))
 			console.log("user:", user)

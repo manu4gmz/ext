@@ -13,7 +13,7 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                 <Image source={require('../../public/images/isologotipo-az.png')} style={styles.logoTipoExt} />
                 <TextoPrincipal>¿Donde nos juntamos?</TextoPrincipal>
                 <View style={styles.inputContainer} >
-                    <Image source={require("../../public/images/sobre-bl.png")} style={styles.imagenInputs} />
+                    <Icon source={require("../../public/images/sobre-bl.png")} style={styles.imagenInputs2} />
                     <TextInput
                         style={error.target == "email" ? styles.inputError : styles.inputText}
                         value={Username}
@@ -23,7 +23,7 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                 </View>
                 {error.target == "email" ? <Error>{error.msg}</Error> : null}
                 <View style={styles.inputContainer} >
-                    <Image source={require("../../public/images/candado-bl.png")} style={styles.imagenInputs} />
+                    <Icon source={require("../../public/images/candado-bl.png")} style={styles.imagenInputs2} />
                     <TextInput
                         style={error.target == "pass" ? styles.inputError : styles.inputText}
                         secureTextEntry={true}
@@ -52,6 +52,13 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
     )
 }
 
+const Icon = styled.Image`
+    height: 20px;
+    width: 20px;
+    margin-left: 25px;
+    position: absolute;
+`
+
 const styles = StyleSheet.create({
     fondo: {
         backgroundColor: '#ccc',
@@ -68,7 +75,7 @@ const styles = StyleSheet.create({
         borderColor: "#D9D5C8",
         borderWidth: 1,
         borderRadius: 30,
-        paddingLeft: 40,
+        paddingLeft: 45,
         margin: 10,
         display: "flex",
         color: "#F7F7F7"
@@ -88,10 +95,7 @@ const styles = StyleSheet.create({
     },
 
     imagenInputs2: {
-        height: 30,
-        width: 30,
-        position: "absolute",
-
+        
     },
 
     inputContainer: {

@@ -7,7 +7,7 @@ import { getUser } from "../../redux/actions/user";
 const Navbar = (props) => {
 
   useEffect(()=>{
-    props.getUser();
+    props.getUser(props.navigation);
   },[])
 
   return (
