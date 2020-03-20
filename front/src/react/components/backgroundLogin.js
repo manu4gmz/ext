@@ -18,6 +18,7 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                         style={error.target == "email" ? styles.inputError : styles.inputText}
                         value={Username}
                         onChangeText={onChangeUser}
+                        placeholder="nombre@mail.com"
                     ></TextInput >
                 </View>
                 {error.target == "email" ? <Error>{error.msg}</Error> : null}
@@ -28,6 +29,7 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                         secureTextEntry={true}
                         value={Password}
                         onChangeText={onChangePassword}
+                        placeholder="password"
                     ></TextInput >
                 </View>
                 {error.target == "pass" ? <Error>{error.msg}</Error> : null}

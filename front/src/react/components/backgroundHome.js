@@ -80,6 +80,8 @@ const Wrapper = styled.View`
 flex-direction: row;
   justify-content: space-between;
   margin: 0px 15px;
+  max-width: 500px;
+  align-self: center;
 `
 const StyledView = styled.View`
   margin: 10px 0;
