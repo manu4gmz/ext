@@ -12,6 +12,7 @@ import HomePage from './src/react/components/backgroundHome'
 import LoginPage from './src/react/containers/LoginPage'
 import AddSpace from './src/react/containers/AddSpace'
 import PaymentPage from './src/react/containers/PaymentPage';
+import SingleViewPage from './src/react/containers/SingleViewPage';
 
 
 import Navbar from "./src/react/components/Navbar";
@@ -27,7 +28,15 @@ export default class App extends Component {
         <NavigationContainer>
           <Stack.Navigator inicialRouteName="Login">
 
-            <Stack.Screen name="Login" component={LoginPage} />  
+            <Stack.Screen 
+              name="Login" 
+              component={LoginPage}
+              options={{
+                header: () => null,
+                headerStyle: {        
+                  backgroundColor: "transparent"      
+                }
+              }} />  
             <Stack.Screen 
               name="Home" 
               component={HomePage}
@@ -41,6 +50,7 @@ export default class App extends Component {
               />
             <Stack.Screen name="Payment" component={PaymentPage} />
             <Stack.Screen name="AddSpace" component={AddSpace} />
+            <Stack.Screen name="SingleView" component={SingleViewPage} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider >
