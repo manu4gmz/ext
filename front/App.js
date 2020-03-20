@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 //Importando views and components
 import HomePage from './src/react/components/backgroundHome'
 import LoginPage from './src/react/views/LoginPage'
+import PaymentPage from './src/react/views/PaymentPage';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ export default class App extends Component {
           <Stack.Navigator inicialRouteName="Login">
             <Stack.Screen name="Home" component={HomePage} />
             <Stack.Screen name="Login" component={LoginPage} />
+            <Stack.Screen name="Payment" component={PaymentPage} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider >
