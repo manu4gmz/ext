@@ -8,15 +8,16 @@ const setLoggedUser = (logged) => ({
 	logged
 });
 
-export const getUser = () => dispatch => {
+export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	auth.onAuthStateChanged((user) => {
 		if (user) {
-			dispatch(setLoggedUser({ email: user.email }))
-			console.log("user:", user)
+			const userObj = { email: user.email };
+			dispatch(setLoggedUser(userObj))
+			console.log("Esta logueado ! :D")
+			if (ifLogged && typeof ifLogged == "function") ifLogged(userObj);
 		} else {
 			dispatch(setLoggedUser({}))
-
-			console.log("no esta logueade");
+			if (ifNotlogged && typeof ifNotlogged == "function") ifNotlogged();
 		}
 	});
 }

@@ -8,7 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 
 //Importando views and components
-import HomePage from './src/react/components/backgroundHome'
+import HomePage from './src/react/containers/HomePAge'
 
 import LoginPage from './src/react/containers/LoginPage'
 import RegisterPage from './src/react/containers/RegisterPage'
@@ -23,37 +23,33 @@ const Stack = createStackNavigator();
 
 import firebase from "./src/redux/firebase";
 
+const noNavbar = {
+  header: () => null,
+  headerStyle: {
+    backgroundColor: "transparent"
+  }
+}
+
+const withNavbar = (title) => ({
+  header: (props) => <Navbar {...props} title={title}/>,
+  headerStyle: {
+    backgroundColor: "transparent"
+  }
+})
+
+
 export default class App extends Component {
   render() {
     return (
       <Provider store={store} >
         <NavigationContainer>
           <Stack.Navigator inicialRouteName="Login">
-
-            <Stack.Screen
-              name="Login"
-              component={LoginPage}
-              options={{
-                header: () => null,
-                headerStyle: {
-                  backgroundColor: "transparent"
-                }
-              }} />
-            <Stack.Screen
-              name="Home"
-              component={HomePage}
-              options={{
-                header: () => <Navbar />,
-                headerStyle: {
-                  backgroundColor: "transparent"
-                }
-              }}
-
-            />
-            <Stack.Screen name="Register" component={RegisterPage} />
-            <Stack.Screen name="Payment" component={PaymentPage} />
-            <Stack.Screen name="AddSpace" component={AddSpace} />
-            <Stack.Screen name="SingleView" component={SingleViewPage} />
+            <Stack.Screen name="Login" component={LoginPage} options={noNavbar} />
+            <Stack.Screen name="Home" component={HomePage} options={withNavbar()}/>
+            <Stack.Screen name="Register" component={RegisterPage} options={withNavbar("Crea tu cuenta")}/>
+            <Stack.Screen name="Payment" component={PaymentPage} options={withNavbar("Elegí un plan")}/>
+            <Stack.Screen name="AddSpace" component={AddSpace} options={withNavbar("Ofrecé tu espacio")}/>
+            <Stack.Screen name="SingleView" component={SingleViewPage} options={withNavbar("Espacios")}/>
           </Stack.Navigator>
         </NavigationContainer>
       </Provider >

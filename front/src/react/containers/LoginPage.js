@@ -4,10 +4,20 @@ import { StyleSheet, Text, View, Image, } from 'react-native'
 import BackgroundLogin from '../components/backgroundLogin'
 import { logUser, getUserGoogle, getUser } from "../../redux/actions/user";
 
-const LoginPage = ({ logUser, navigation, getUserGoogle }) => {
+const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
     const [Username, setUsername] = useState("")
     const [Password, setPassword] = useState("")
     const [error, setError] = useState({})
+
+    useEffect(()=>{
+        /*
+        <<<<<<<<<<  la siguiente linea hay que sacarla, es para debuggear offline sin tener que loguearse >>>>>>>>>>>>>>>
+        */
+        navigation.navigate("Home")
+
+        getUser(()=> navigation.navigate("Home"));
+    },[])
+
 
     function clearError(name) {
         if (error.target == name || error.target == "all") setError({})
@@ -53,7 +63,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     logUser: (...params) => dispatch(logUser(...params)),
-    getUserGoogle: () => dispatch(getUserGoogle())
+    getUserGoogle: () => dispatch(getUserGoogle()),
+    getUser: (...cbs) => dispatch(getUser(...cbs))
 })
 
 
