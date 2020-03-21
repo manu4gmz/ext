@@ -1,44 +1,42 @@
 import React, { useEffect } from "react";
-import { Button, Text, View, Image } from "react-native";
+import { Button, Text, View, Image, TouchableOpacity  } from "react-native";
 import styled from "styled-components/native";
 import { connect } from "react-redux";
-import { getUser } from "../../redux/actions/user";
+import Icon from "../ui/Icon";
 
 const Navbar = (props) => {
-
-  useEffect(()=>{
-    props.getUser(props.navigation);
-  },[])
-
   return (
-    <Wrapper>
-      <Icon source={require('../../public/images/isologotipo-only.png')}/>
-      <Title>Hola {(props.user || {}).email}!</Title>
-      <SidebarBtn source={require('../../public/images/sidebar.png')}/>
-    </Wrapper>
+    <Background>
+
+      <Wrapper>
+        <Icon source={require('../../public/images/isologotipo-only.png')}/>
+        <Title>{props.title || `Hola ${((props.user || {}).email)||""}!`}</Title>
+        {
+          props.title ? <Icon source={require('../../public/icons/back.png')} onPress={()=>props.navigation.pop()}/> : null
+        }
+        <SidebarBtn source={require('../../public/icons/sidebar.png')}/>
+      </Wrapper>
+    </Background>
   )
 }
-
+const Background = styled.View`
+  background-color: #4082d1;
+`
 const Wrapper = styled.View`
   height: 70px;
   background-color: #4a94ea;
   flex-direction: row;
   align-items: center;
-  justify-content: left;
   padding: 5px 20px;
-`
-
-const Icon = styled.Image`
-  height: 34px;
-  width: 34px;
-  margin-right: 10px;
-  display: flex;
+  margin-top: 20px;
 `
 
 const Title = styled.Text`
   color: white;
   font-size: 15px;
   margin-top: 3px;
+  margin-left: 8px;
+  font-weight: 100;
   flex:1;
 `
 
@@ -53,7 +51,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getUser: ()=>dispatch(getUser())
+  
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
+export default connect(mapStateToProps, null)(Navbar);

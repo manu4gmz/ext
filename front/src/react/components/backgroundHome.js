@@ -3,6 +3,7 @@ import { StyleSheet, Text, ImageBackground, View, ScrollView } from 'react-nativ
 import styled from "styled-components/native";
 import { connect } from 'react-redux';
 import Button from "../ui/Button";
+import HomeTabBar from "../components/HomeTabBar";
 
 const backgroundHome = ({ navigation, user }) => {
   return (
@@ -15,8 +16,10 @@ const backgroundHome = ({ navigation, user }) => {
         <ScrollView>
           <StyledView>
             <StyledTitle>Encontrá tu Espacio</StyledTitle>
-            <StyledText>Descubrí espacios para todas tus reuniones laborales, fiestas, presentaciones, eventos y mas.</StyledText>
-            <Button>Buscar</Button>
+            <StyledText>Descubrí espacios para todas tus reuniones laborales, fiestas, presentaciones, eventos y más.</StyledText>
+            <Button
+              onPress={()=>navigation.push("SingleView")}
+            >Buscar</Button>
           </StyledView>
 
           <StyledView>
@@ -25,7 +28,7 @@ const backgroundHome = ({ navigation, user }) => {
 
             
               <Button
-                onPress={() => navigation.navigate('AddSpace')}
+                onPress={() => navigation.push('AddSpace')}
                 bg="#F77171">Ofrecer
                 </Button>
             
@@ -55,17 +58,10 @@ const backgroundHome = ({ navigation, user }) => {
               mb="3%"
             >Invita amigos y gana!
             </Button>
-
-            <Button
-              bg="#F77171"
-              color="#F7F7F7"
-              mb="3%"
-              onPress={() => navigation.navigate('Login')}
-            >Go to login
-            </Button>
           </View>
         </ScrollView>
       </Wrapper>
+      <HomeTabBar navigation={navigation} />
     </ImageBackground >
   )
 }
@@ -94,11 +90,12 @@ const StyledView = styled.View`
   margin: 10px 0;
   background-color: #F7F7F7;
   padding : 20px 25px 15px;
-  border-radius: 10px
+  border-radius: 5px
 `
 const StyledTitle = styled.Text`
 margin-bottom : 2%;
-font-size: 25px ;
+font-size: 22px;
+font-weight: 600;
 `
 const StyledText = styled.Text`
 margin-bottom : 10px;
