@@ -5,7 +5,7 @@ import { View } from "react-native";
 
 const HomePage = ({ navigation, user }) => {
   return (
-  	<BackgroundHome user={user}/>
+  	<BackgroundHome user={user} navigation={navigation}/>
   )
 }
 
