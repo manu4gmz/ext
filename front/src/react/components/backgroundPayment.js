@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, Image, View, ScrollView, Button } from 'react-native'
 import styled from "styled-components/native"
 import { connect } from 'react-redux'
+import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 
 const backgorunPayment = ({ navigation }) => {
   return (
    
       <View style={styles.fondo}>
         <ScrollView>
+          <View style={{padding: "20px"}}>
+            <AddSpaceFormProgress state={2} title="Elegí un plan"/>
+          </View>
           <View style={styles.box1}>
             <Text style={styles.destacado}>Destacado</Text>
             <View style={styles.precio}>

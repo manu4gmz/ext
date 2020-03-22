@@ -10,11 +10,6 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
     const [error, setError] = useState({})
 
     useEffect(()=>{
-        /*
-        <<<<<<<<<<  la siguiente linea hay que sacarla, es para debuggear offline sin tener que loguearse >>>>>>>>>>>>>>>
-        */
-        navigation.navigate("Home")
-
         getUser(()=> navigation.navigate("Home"));
     },[])
 
