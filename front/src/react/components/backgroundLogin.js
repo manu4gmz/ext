@@ -119,7 +119,7 @@ const Error = styled.Text`
 const TextoPrincipal = styled.Text`
     color:#E9E9E9;
     margin: 0 auto;
-    paddingBottom:200px;
+    paddingBottom:120px;
     paddingTop:30px
     fontSize:25px
 `

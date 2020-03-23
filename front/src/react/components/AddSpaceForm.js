@@ -89,7 +89,7 @@ const backgroundHome = ({ navigation, Onsubmit }) => {
               bg="#4A94EA"
               color="#F7F7F7"
             > <Image
-                style={{ width: '10%', height: '100%' }}
+                style={{ width: '30px', height: '30px' }}
                 source={require('../../public/icons/lcd.png')}
               />
             </Button>

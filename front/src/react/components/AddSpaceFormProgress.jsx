@@ -5,7 +5,7 @@ import styled from "styled-components/native";
 
 export default ({title, state}) => {
 
-	const states = ["Tus datos", "-","Espacios", "-","  Planes"]
+	const states = ["Tus datos", "-","Espacios", "-","Planes"]
 
 	return (
 		<View>
@@ -15,7 +15,7 @@ export default ({title, state}) => {
 					states.map((text, i) => {
 							if (text == "-") return <Line key={i}/>
 
-							return <View key={i}>
+							return <BadgeWrapper key={i}>
 								{
 									state > (i/2) ?
 									<Tick key={i} source={require('../../public/icons/tick.png')}/>
@@ -23,7 +23,7 @@ export default ({title, state}) => {
 								}
 
 								<BadgeTitle>{text}</BadgeTitle>
-							</View>
+							</BadgeWrapper>
 						}
 					)
 				}
@@ -49,15 +49,21 @@ const Container = styled.View`
 	margin-top: 8px;
 `
 
+const BadgeWrapper = styled.View`
+	width: 51px;
+	justify-content: center;
+`
+
 const Badge = styled.Text`
 	width: 21px;
 	height: 21px;
-	border-radius: 50;
+	border-radius: 50px;
 	background-color: ${props => props.showed == "true" ? "#4A94EA" : "white"};
 	border: ${props => props.showed == "true" ? "none" : "solid 1px #b2b2b2"};
 	color: ${props => props.showed == "true" ? "white" : "#b2b2b2"};
 	font-size: 12px;
 	line-height: 21px;
+	align-self: center;
 	text-align: center;
 `
 const BadgeTitle = styled.Text`
@@ -65,9 +71,8 @@ const BadgeTitle = styled.Text`
 	color: #b2b2b2;
 	position: absolute;
 	top: 25px;
+	width: 100%;
 	text-align: center;
-	margin-left: -15px;
-	white-space: pre;
 `
 
 const Line = styled.View`
@@ -75,12 +80,15 @@ const Line = styled.View`
   flex: 1;
   background-color: #b2b2b2;
   margin-top: 10px;
+  margin-left: -15px;
+  margin-right: -15px;
 `
 
 const Tick = styled.Image`
 	width: 21px;
 	height: 21px;
-	border-radius: 50%;
+	border-radius: 50px;
+	align-self: center;
 	background-color: #4A94EA;
 `
 const Divider = styled.View`
