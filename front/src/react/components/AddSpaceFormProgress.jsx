@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import styled from "styled-components/native";
 
+
 export default ({ title, state }) => {
 
 	const states = ["Tus datos", "-", "Espacios", "-", "  Planes"]
@@ -51,7 +52,7 @@ const Container = styled.View`
 const Badge = styled.Text`
 	width: 21px;
 	height: 21px;
-	border-radius: 50%;
+	border-radius: 50;
 	background-color: ${props => props.showed == "true" ? "#4A94EA" : "white"};
 	border: ${props => props.showed == "true" ? "none" : "solid 1px #b2b2b2"};
 	color: ${props => props.showed == "true" ? "white" : "#b2b2b2"};
