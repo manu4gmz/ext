@@ -3,18 +3,19 @@ import { connect } from 'react-redux'
 import Button from "../ui/Button";
 import { Text, Image, View } from 'react-native'
 import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
-
+import Picker from "../components/Picker"
 //Importando views and components
 
 const fields = [
-    ["Ciudad*", "Buenos Aires, Cordoba, San Luis.."],
+    ["Ciudad*", "Buenos Aires, Cordoba, San Luis..", (val) => val == "Bs As" ? null : "Che wacho solo aceptamos porteños"],
     ["Calle*", "Flores, Saavedra.."],
     [
       ["Número"],
       ["Piso"],
       ["Depto"],
     ],
-    ["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
+    //["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
+    [({index})=><Picker yPos={(index*71)+125}/>],
     [
       ["Tamaño #(mtr2)#*", "mtr2"],
       ["Capacidad*", "Cant. personas"]
@@ -26,7 +27,7 @@ const fields = [
       ["Tasa limpieza ($)*", "$180"],
     ],
     ["Reglas de Convivencia", "Aclaraciones, límites, reglas del lugar..."],
-    [({title, index})=> <View key={index}>
+    [({title})=> <View>
             {title("Agregar fotos")}
             <Button
               bg="#4A94EA"

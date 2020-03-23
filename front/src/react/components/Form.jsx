@@ -10,57 +10,57 @@ import Button from "../ui/Button";
 // be triggered. The function will be called after it stops being called for
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
-function debounce(func, wait, immediate) {
-  var timeout;
-  return function() {
-    var context = this, args = arguments;
-    var later = function() {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
-  };
-};
+const debounce = (func, delay) => { 
+    let debounceTimer 
+    return function() { 
+        const context = this
+        const args = arguments 
+        clearTimeout(debounceTimer) 
+        debounceTimer = setTimeout(() => func.apply(context, args), delay) 
+    } 
+}
+
+const validate = debounce((value, name, validation, setForm) => {
+  let error = null;
+  if ( typeof validation == "function" ) error = validation(value);
+  if (name[name.length-1] == "*") error = !value ? "Completa este campo" : error;
+  setForm((form)=>({ ...form, [name]: { value: form[name].value, error }  }))
+}, 1000);
 
 function useInput(name, placeholder, validation, form, setForm, index, inline=1) {
-    const [ error, setError ] = useState(null);
 
-    const validate = debounce((value) => {
-      //const value = form[name];
-      let error;
-      if (name[name.length-1] == "*") error = !value ? "Completa este campo" : null;
-      else if ( typeof validation == "function" ) error = validation(value);
-      console.log(error)
-      setError(error);
-      setForm((form)=>({ ...form, error }))
-    }, 1000);
+    if (!form[name]) form[name] = {};
 
-    if (typeof name == "function") return name({
-       title: (name)=><StyledTitles>{name.split("#")[0]}<SmallText>{name.split("#")[1] || null}</SmallText>{name.split("#")[2] || null}</StyledTitles>,
-       value: form[name] || "",
-       setForm,
-       index,
-    });
+    
+
+    if (typeof name == "function") return (
+      <View key={index}>
+        {
+          name({
+             title: (name)=><StyledTitles>{name.split("#")[0]}<SmallText>{name.split("#")[1] || null}</SmallText>{name.split("#")[2] || null}</StyledTitles>,
+             value: form[name].value || "",
+             onChange: setForm,
+             index
+          })
+        }
+      </View>)
 
     const onChangeText = (val) => {
-      validate(val);
-      setForm((form) => ({...form, [name]:val}))
+      setForm((form) => ({...form, [name]:{value:val,error:form[name].error}}))
+      validate(val, name, validation, setForm);
     }
 
     return (
       <View key={index} style={{width: (100/inline - (inline == 1 ? 0 : 2))+"%"}}>
         <StyledTitles>{name.split("#")[0]}<SmallText>{name.split("#")[1] || null}</SmallText>{name.split("#")[2] || null}</StyledTitles>
         <StyledInput
-            error={error ? "true" : "false"}
-            value={form[name] || ""}
+            error={form[name].error ? "true" : "false"}
+            value={form[name].value || ""}
             onChangeText={onChangeText}
             placeholder={placeholder}
         ></StyledInput>
         {
-          error && <Error>{error}</Error>
+          form[name].error && <Error>{form[name].error}</Error>
         }
       </View>
     )
@@ -93,6 +93,8 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
     )
   }
 
+  console.log(form)
+
   return (
     <ScrollView>
       <Wrapper>
@@ -111,23 +113,19 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
             mapFields(fields)
           }
 
-
-          <View>
+        </StyledView>
+         <ButtonWrapper>
             {
-              required.every(i => Object.keys(form).includes(i)) && !form.error ?
+              required.every(i => Object.keys(form).filter(key => form[key].value).includes(i)) && Object.keys(form).every(key => !form[key].error) ?
                 <Button
                   bg="#4A94EA"
                   color="#F7F7F7"
-                  mt="4%"
                   onPress={()=>onSubmit(form)}
                 >{sendText || "Enviar"}</Button>
                 :
-                <DisabledButton
-                  mt="4%"
-                >{sendText || "Enviar"}</DisabledButton>
+                <DisabledButton>{sendText || "Enviar"}</DisabledButton>
             }
-          </View>
-        </StyledView>
+          </ButtonWrapper>
       </Wrapper >
     </ScrollView>
   )
@@ -147,6 +145,10 @@ const styles = StyleSheet.create({
   }
 });
 
+const ButtonWrapper = styled.View`
+  margin: 1px 0 20px;
+`
+
 const Divider = styled.View`
   height: 1px;
   width: 100%;
@@ -154,13 +156,18 @@ const Divider = styled.View`
 `
 
 const Wrapper = styled.View`
-  flex : 1;
-  margin: 0px 10px;
+  
+  margin: 0px auto;
+  width: 100%;
+  padding: 0 10px;
+  max-width: 500px;
 `
 const StyledView = styled.View`
   margin: 10px 0;
   background-color: #F7F7F7;
   padding : 20px 20px 15px;
+  box-shadow: 0px 2px 7px #c7c7c7;
+
   border-radius: 10px
 `
 const StyledTitles = styled.Text`
@@ -185,7 +192,7 @@ color : ${props => props.error == "true" ? "red" : "#262626"};
 padding-left : 3%;
 height: 35px;
 border-radius : 5px;
-margin : 2% 0;
+margin : 5px 0;
 background-color: white;
 border: solid 1px ${props => props.error == "true" ? "red" : "#bfbfbf"};
 `
@@ -194,7 +201,7 @@ const DoubleWraper = styled.View`
   justify-content: space-between;
 `
 const View = styled.View`
-  margin : 2% 0;
+  margin : 6px 0;
 
 `
 
