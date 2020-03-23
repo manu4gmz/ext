@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground } from 'react-native'
 import styled from "styled-components/native"
 
-export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, error, OnsubmitGoogle }) => {
+export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, error, OnsubmitGoogle, navigation }) => {
     return (
         <ImageBackground
             style={styles.fondo}
@@ -40,6 +40,11 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                 }
                 <BotonGoogle title=" Inquilino" onPress={OnsubmitGoogle}>Ingresar con google</BotonGoogle>
                 <RememberPassword>¿Olvido su contraseña? </RememberPassword>
+                <BotonRegistrarse
+                    title="Registrarse"
+                    onPress={() => navigation.navigate('Register')}
+                >Registrarse
+                </BotonRegistrarse>
 
             </View>
 
@@ -148,4 +153,17 @@ border-radius: 30px;
 padding-top:10px;
 margin:10px auto;
 text-align:center
+`
+
+const BotonRegistrarse = styled.Text`
+color: #262626;
+height: 40px;
+width: 250px;
+borderColor:#262626
+;
+borderWidth: 1px;
+borderRadius: 30px;
+paddingTop:10px;
+margin:10px auto;
+textAlign:center
 `

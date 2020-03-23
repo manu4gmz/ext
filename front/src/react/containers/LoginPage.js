@@ -4,10 +4,18 @@ import { StyleSheet, Text, View, Image, } from 'react-native'
 import BackgroundLogin from '../components/backgroundLogin'
 import { logUser, getUserGoogle, getUser } from "../../redux/actions/user";
 
-const LoginPage = ({ logUser, navigation, getUserGoogle }) => {
+const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
     const [Username, setUsername] = useState("")
     const [Password, setPassword] = useState("")
     const [error, setError] = useState({})
+
+    useEffect(()=>{
+        getUser(()=>{
+            console.log("Redirected!")
+            navigation.navigate("Home");
+        })
+    },[])
+
 
     function clearError(name) {
         if (error.target == name || error.target == "all") setError({})
@@ -15,7 +23,6 @@ const LoginPage = ({ logUser, navigation, getUserGoogle }) => {
 
     const onChangeUser = (e) => { setUsername(e); clearError("email") }
     const onChangePassword = (e) => { setPassword(e); clearError("pass") }
-
     const Onsubmit = function () {
         logUser(Username, Password)
             .then(err => {
@@ -40,6 +47,7 @@ const LoginPage = ({ logUser, navigation, getUserGoogle }) => {
             onChangeUser={onChangeUser}
             Onsubmit={Onsubmit}
             error={error}
+            navigation={navigation}
             OnsubmitGoogle={OnsubmitGoogle}
         >
         </BackgroundLogin>
@@ -53,7 +61,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     logUser: (...params) => dispatch(logUser(...params)),
-    getUserGoogle: () => dispatch(getUserGoogle())
+    getUserGoogle: () => dispatch(getUserGoogle()),
+    getUser: (...cbs) => dispatch(getUser(...cbs))
 })
 
 

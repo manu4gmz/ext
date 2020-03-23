@@ -1,25 +1,30 @@
 import styled from "styled-components/native";
 import React, { useState, useEffect } from 'react'
-import { Text, View } from 'react-native'
+import { Text, View, TouchableOpacity  } from 'react-native'
 
 export default (props) => {
 
 	return (
-		<Button {...props}>{props.children}</Button>
+    <Touchable>
+  		  <Button {...props}>{props.children}</Button>
+    </Touchable>
 	)
 }
 
+const Touchable = styled.TouchableOpacity`
+  flex-grow: 1;
+`
+
 const Button = styled.Text`
-  width:${props => props.width || "100%"};
   margin: 0px;
   margin-bottom:${props => props.mb || "0px"};
   margin-top:${props => props.mt || "0px"};
   margin-left:${props => props.ml || "0px"};
   margin-right:${props => props.mr || "0px"};
-  flex-grow: 1;
   height: 35px;
   line-height: 35px;
-
+  flex-grow: 1;
+  flex: 1;
   text-align : center;
   border-radius: 5px;
   color: ${props => props.color || "#F7F7F7"};

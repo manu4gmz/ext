@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import BackgroundHome from '../components/backgroundHome'
-
+import { View } from "react-native";
 
 const HomePage = ({ navigation, user }) => {
   return (
-    <BackgroundHome
-      navigation={navigation}
-      user={user}
-    />
+  	<BackgroundHome user={user} navigation={navigation}/>
   )
 }
 
