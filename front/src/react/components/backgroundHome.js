@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, ImageBackground, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, ImageBackground, ScrollView } from 'react-native';
 import styled from "styled-components/native";
 import { connect } from 'react-redux';
 import Button from "../ui/Button";
@@ -28,7 +28,7 @@ const backgroundHome = ({ navigation, user }) => {
 
             
               <Button
-                onPress={() => navigation.push('AddSpace')}
+                onPress={() => navigation.push('OwnerForm')}
                 bg="#F77171">Ofrecer
                 </Button>
             
@@ -101,6 +101,10 @@ const StyledText = styled.Text`
 margin-bottom : 10px;
 font-size: 15px ;
 color : gray;
+`
+
+const View = styled.View`
+margin : 2% 0;
 `
 
 export default connect(null, null)(backgroundHome)
