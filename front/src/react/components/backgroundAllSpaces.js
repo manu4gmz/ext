@@ -23,7 +23,7 @@ export default ({ espacios }) => {
                                     <Image source={{ uri: espacio.imgUrl }}
                                         style={{ width: 400, height: 400 }} />
                                 </View>
-                                <View >
+                                <View>
                                     <TextoPrecio >{espacio.precio}</TextoPrecio>
                                     <TextoNegro >Amplio para usos multiples.-San Isidro</TextoNegro>
                                     <TextoGrande >120 mtr2 -Baño privado-Aire Acondicionado.-Musica</TextoGrande>
@@ -34,11 +34,10 @@ export default ({ espacios }) => {
                                             <Image source={require("../../public/icons/toiletes-ne.png")} style={styles.imagenInputs} />
                                             <Image source={require("../../public/icons/wifi-ne.png")} style={styles.imagenInputs} />
                                             <Image source={require("../../public/images/sobre-bl.png")} style={styles.imagenInputs} /> */}
-                                        {espacio.caracteristicas.map((caracteristica, index) => {
-                                            console.log(caracteristica, "MAP")
-                                            return (<Text key={index}>{caracteristica.nombre}</Text>)
+                                        {espacio.caracteristicas.map((caracteristica, index) => (
 
-                                        }
+                                            <Image key={index} source={caracteristica.icono} style={styles.imagenInputs} />
+                                        )
                                         )}
                                     </View>
                                     <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
