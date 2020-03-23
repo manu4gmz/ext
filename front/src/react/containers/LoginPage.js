@@ -11,6 +11,7 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
 
     useEffect(()=>{
         getUser(()=> navigation.navigate("Home"));
+
     },[])
 
 
