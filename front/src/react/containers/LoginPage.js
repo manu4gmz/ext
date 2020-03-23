@@ -10,10 +10,8 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
     const [error, setError] = useState({})
 
     useEffect(()=>{
-        getUser(()=>{
-            console.log("Redirected!")
-            navigation.navigate("Home");
-        })
+        getUser(()=> navigation.navigate("Home"));
+
     },[])
 
 

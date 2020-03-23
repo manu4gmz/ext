@@ -8,13 +8,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 
 //Importando views and components
-import HomePage from './src/react/containers/HomePAge'
+import HomePage from './src/react/containers/HomePage'
 
 import LoginPage from './src/react/containers/LoginPage'
-import RegisterPage from './src/react/containers/RegisterPage'
-import AddSpace from './src/react/containers/AddSpace'
+import RegisterPage from './src/react/containers/RegisterPage';
 import PaymentPage from './src/react/containers/PaymentPage';
 import SingleViewPage from './src/react/containers/SingleViewPage';
+import SpaceForm from './src/react/containers/SpaceForm';
+import OwnerForm from './src/react/containers/OwnerForm';
 
 
 import Navbar from "./src/react/components/Navbar";
@@ -48,7 +49,8 @@ export default class App extends Component {
             <Stack.Screen name="Home" component={HomePage} options={withNavbar()}/>
             <Stack.Screen name="Register" component={RegisterPage} options={withNavbar("Crea tu cuenta")}/>
             <Stack.Screen name="Payment" component={PaymentPage} options={withNavbar("Elegí un plan")}/>
-            <Stack.Screen name="AddSpace" component={AddSpace} options={withNavbar("Ofrecé tu espacio")}/>
+            <Stack.Screen name="SpaceForm" component={SpaceForm} options={withNavbar("Ofrecé tu espacio")}/>
+            <Stack.Screen name="OwnerForm" component={OwnerForm} options={withNavbar("Ofrecé tu espacio")}/>
             <Stack.Screen name="SingleView" component={SingleViewPage} options={withNavbar("Espacios")}/>
           </Stack.Navigator>
         </NavigationContainer>
