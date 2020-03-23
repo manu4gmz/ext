@@ -9,11 +9,12 @@ const Navbar = (props) => {
     <Background>
 
       <Wrapper>
-        <Icon source={require('../../public/images/isologotipo-only.png')}/>
-        <Title>{props.title || `Hola ${((props.user || {}).email)||""}!`}</Title>
         {
-          props.title ? <Icon source={require('../../public/icons/back.png')} onPress={()=>props.navigation.pop()}/> : null
+          props.title ? <Back source={require('../../public/icons/back.png')} onPress={()=>props.navigation.pop()}/> :
+           <Icon source={require('../../public/images/isologotipo-only.png')}/>
         }
+       
+        <Title>{props.title || `Hola ${((props.user || {}).email)||""}!`}</Title>
         <SidebarBtn source={require('../../public/icons/sidebar.png')}/>
       </Wrapper>
     </Background>
@@ -49,6 +50,12 @@ const SidebarBtn = styled.Image`
 const mapStateToProps = (state) => ({
   user: state.user.logged
 })
+
+const Back = styled(Icon)`
+  height: 20px;
+  width: 20px;
+  margin-top: 3px;
+`
 
 const mapDispatchToProps = (dispatch) => ({
   
