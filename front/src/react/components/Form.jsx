@@ -92,7 +92,7 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
   }
 
   return (
-    <KeyboardAvoidingView style={{ flexGrow: 1, height:"100%"}} enableOnAndroid={true}>
+    <KeyboardAvoidingView behavior="padding" style={{height: "100%"}} enableOnAndroid={true}>
       <ScrollView>
         <Wrapper>
           <StyledView style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
@@ -111,15 +111,22 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
             }
 
           </StyledView>
-           <Button
-            mt={"6px"} mb={"60px"}
-            bg="#4A94EA"
-            color="#F7F7F7"
-            onPress={()=>onSubmit(form)}
-          >{sendText || "Enviar"}</Button>
+
+          {
+            required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
+            <Button
+              mt={"6px"} mb={"60px"}
+              bg="#4A94EA"
+              color="#F7F7F7"
+              onPress={()=>onSubmit(form)}
+            >{sendText || "Enviar"}</Button>
+            :
+            <DisabledButton
+              mt={"6px"} mb={"60px"}
+            >{sendText || "Enviar"}</DisabledButton>
+          }
 
         </Wrapper>
-        <View style={{height: 60}}></View>
       </ScrollView>
 
     </KeyboardAvoidingView>
@@ -158,11 +165,11 @@ const Wrapper = styled.View`
   max-width: 500px;
 `
 const StyledView = styled.View`
-  margin: 10px 0;
+  margin: 15px 5px;
   background-color: #F7F7F7;
   padding : 20px 20px 15px;
 
-  border-radius: 10px
+  border-radius: 10px;
 `
 const StyledTitles = styled.Text`
 color : #000144;

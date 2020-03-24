@@ -32,11 +32,11 @@ export default function CameraView({route, navigation}) {
   	.then(pic => {
   		//console.log("\n\n\n----- PICTURE -----\n\n\n",pic,"\n\n\n");
   		const { onTake } = route.params;
+  		onTake(pic);
 
       //setRecent(pic);
       //setTimeout(()=>setRecent(null), 2000)
       navigation.pop();
-  		onTake(pic);
   	})
 
   }

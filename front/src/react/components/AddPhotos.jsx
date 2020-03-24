@@ -4,16 +4,19 @@ import styled from "styled-components/native";
 
 export default ({title,text, navigation, onChange})=> {
 
-	const [pictures, setPictures] = useState([{uri: "https://www.24horas.cl/incoming/patojpg-2525143/ALTERNATES/BASE_LANDSCAPE/Pato.jpg", width:300,  height:300}]);
+	const [pictures, setPictures] = useState([{uri:"https://placeholder.com/500",width:500, height: 500}]);
 
 	function onTake (pic) {
-		setPictures([...pictures, pic])
-		console.log({uri: pic.uri})
-		console.log(Object.keys(pictures).map(key => ({uri: pictures[key].uri})))
+		setPictures((pics)=>{
+			console.log(pic.uri,Object.keys(pics).map(a => pics[a].uri));
+			return pics.concat([pic]);
+		});
+		console.log({uri: pic.uri});
+		console.log(Object.keys(pictures).map(key => ({uri: pictures[key].uri})));
 	}
 
 	useEffect(()=>{
-		onChange((form)=>({...form, [text]:pictures}))
+		onChange((form)=>({...form, [text]:{value:pictures, error: null}}))
 	},[pictures])
 
 	return <View>
