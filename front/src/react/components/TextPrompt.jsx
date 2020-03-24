@@ -9,26 +9,12 @@ export default ([modal, setModal],[value, setValue]) => {
 
     return {
 
-      Modal: ({title, options, onChange})=> { 
+      Modal: ({title, placeholder})=> { 
 
-        const allFalse = Object.fromEntries(options.map(e => [e,false]));
-
-        let initial = {...allFalse};
-
-        if (value.length) {
-          if (typeof value == "string") initial[value] = true;
-          else if (typeof value == "object") value.forEach(key => initial[key] = true);
-        }
-        const [state, setState] = useState(initial);
-
-        const onPress = (val) => {
-          if (typeof value == "object") setState({...state, [val]: !state[val]});
-          else if (typeof value == "string") setState({...allFalse, [val]: true});
-        }
+        const [state, setState] = useState(value || "");
 
         const accept = () => {
-          if (typeof value == "object") setValue(Object.keys(state).filter(key => state[key]));
-          else if (typeof value == "string") setValue(Object.keys(state).filter(key => state[key])[0]);
+          setValue(state);
           setModal(m => !m);
         }
 
@@ -36,21 +22,14 @@ export default ([modal, setModal],[value, setValue]) => {
 
           <Wrapper visible={modal}>
             <Modal style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
-              <StyledTitles>{title || "Elige una opción"}</StyledTitles>
+              <StyledTitles>{title || "Escribe aquí"}</StyledTitles>
               <Divider/>
-              <ScrollView>
-                {
-                  options.map((option,i) => (
-                    <Option key={i} onPress={()=>onPress(option)}>
-                      <Check>{state[option] ? <Dot/> : null}</Check>
-                      <Label>
-                        <LabelText>{option}</LabelText>
-                        <Divider/>
-                      </Label>
-                    </Option>
-                  ))
-                }
-              </ScrollView>
+              <Textarea
+                numberOfLines={3}
+                multiline={true}
+                placeholder={placeholder}
+                value={state}
+                onChangeText={setState}/>
 
               <Footer>
                 <DenyButton onPress={()=>setModal(m => !m)}>Cancelar</DenyButton>
@@ -69,15 +48,12 @@ export default ([modal, setModal],[value, setValue]) => {
 
         return <View>
             <StyledTitles>{title}</StyledTitles>
-
             <StyledInput 
-            numberOfLines={1} 
-            style={{color: value.length ? "black" : "#777777"}} 
-            onPress={()=>setModal(m=> !m)}>
-            {value.length ? 
-              (typeof value == "string" ? value : value.join(", ")) 
-              : (placeholder || "Selecciona aquí")}
-          </StyledInput>
+              numberOfLines={1}  
+              style={{color: value.length ? "black" : "#777777"}} 
+              onPress={()=>setModal(m=> !m)}>
+              {value ?  value : (placeholder || "Selecciona aquí")}
+            </StyledInput>
         </View>
       }
 
@@ -107,8 +83,6 @@ const Modal = styled.View`
   margin-top: 20px;
   padding: 25px 20px 28px;
   border-radius: 2px;
-  height: 100%;
-  max-height: 65%;
 
 `
 
@@ -177,6 +151,19 @@ const StyledInput = styled.Text`
   margin : 5px 0;
   background-color: white;
   border: solid 1px #bfbfbf;
+`
+
+const Textarea = styled.TextInput`
+  color: #262626;
+  padding-left : 3%;
+  height: 35px;
+  font-size: 12px;
+  line-height: 18px;
+  border-radius: 5px;
+  margin : 5px 0;
+  background-color: white;
+  border: solid 1px #bfbfbf;
+  min-height: 100px;
 `
 
 const Footer = styled.View`

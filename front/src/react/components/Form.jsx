@@ -37,7 +37,7 @@ function useInput(name, placeholder, validation, form, setForm, index, inline=1)
       <View key={index}>
         {
           name({
-             title: (name)=><StyledTitles>{name.split("#")[0]}<SmallText>{name.split("#")[1] || null}</SmallText>{name.split("#")[2] || null}</StyledTitles>,
+             title: (name)=><StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>,
              value: form[name].value || "",
              onChange: setForm,
              index
@@ -52,15 +52,15 @@ function useInput(name, placeholder, validation, form, setForm, index, inline=1)
 
     return (
       <View key={index} style={{width: (100/inline - (inline == 1 ? 0 : 2))+"%"}}>
-        <StyledTitles>{name.split("#")[0]}<SmallText>{name.split("#")[1] || null}</SmallText>{name.split("#")[2] || null}</StyledTitles>
+        <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>
         <StyledInput
             error={form[name].error ? "true" : "false"}
             value={form[name].value || ""}
             onChangeText={onChangeText}
             placeholder={placeholder}
-        ></StyledInput>
+        />
         {
-          form[name].error && <Error>{form[name].error}</Error>
+          form[name].error ? <Error>{form[name].error}</Error> : null
         }
       </View>
     )
@@ -93,12 +93,10 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
     )
   }
 
-  console.log(form)
-
   return (
     <ScrollView>
       <Wrapper>
-        <StyledView>
+        <StyledView style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
           {
             typeof (header || "") == "string" ? 
             <View>
@@ -166,7 +164,6 @@ const StyledView = styled.View`
   margin: 10px 0;
   background-color: #F7F7F7;
   padding : 20px 20px 15px;
-  box-shadow: 0px 2px 7px #c7c7c7;
 
   border-radius: 10px
 `
