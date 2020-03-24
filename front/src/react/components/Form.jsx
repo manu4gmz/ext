@@ -1,10 +1,10 @@
 import React, { useState, useEffect} from 'react'
 import { connect } from 'react-redux'
 
-import { StyleSheet, Text, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView  } from 'react-native'
 import styled from "styled-components/native";
 import Button from "../ui/Button";
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 // Returns a function, that, as long as it continues to be invoked, will not
 // be triggered. The function will be called after it stops being called for
@@ -29,21 +29,19 @@ const validate = debounce((value, name, validation, setForm) => {
 
 function useInput(name, placeholder, validation, form, setForm, index, inline=1) {
 
-    if (!form[name]) form[name] = {};
-
-    
-
     if (typeof name == "function") return (
       <View key={index}>
         {
           name({
              title: (name)=><StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>,
-             value: form[name].value || "",
+             value: (form[name] || {}).value || "",
              onChange: setForm,
              index
           })
         }
       </View>)
+
+    if (!form[name]) form[name] = {};
 
     const onChangeText = (val) => {
       setForm((form) => ({...form, [name]:{value:val,error:form[name].error}}))
@@ -94,38 +92,37 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
   }
 
   return (
-    <ScrollView>
-      <Wrapper>
-        <StyledView style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
-          {
-            typeof (header || "") == "string" ? 
-            <View>
-              <StyledText>{(header || "")}</StyledText>
-              <Divider/>
-            </View>
-            : 
-            header({divider: (props)=><Divider {...props}/> })
-          }
-          
-          {
-            mapFields(fields)
-          }
-
-        </StyledView>
-         <ButtonWrapper>
+    <KeyboardAvoidingView style={{ flexGrow: 1, height:"100%"}} enableOnAndroid={true}>
+      <ScrollView>
+        <Wrapper>
+          <StyledView style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
             {
-              required.every(i => Object.keys(form).filter(key => form[key].value).includes(i)) && Object.keys(form).every(key => !form[key].error) ?
-                <Button
-                  bg="#4A94EA"
-                  color="#F7F7F7"
-                  onPress={()=>onSubmit(form)}
-                >{sendText || "Enviar"}</Button>
-                :
-                <DisabledButton>{sendText || "Enviar"}</DisabledButton>
+              typeof (header || "") == "string" ? 
+              <View>
+                <StyledText>{(header || "")}</StyledText>
+                <Divider/>
+              </View>
+              : 
+              header({divider: (props)=><Divider {...props}/> })
             }
-          </ButtonWrapper>
-      </Wrapper >
-    </ScrollView>
+            
+            {
+              mapFields(fields)
+            }
+
+          </StyledView>
+           <Button
+            mt={"6px"} mb={"60px"}
+            bg="#4A94EA"
+            color="#F7F7F7"
+            onPress={()=>onSubmit(form)}
+          >{sendText || "Enviar"}</Button>
+
+        </Wrapper>
+        <View style={{height: 60}}></View>
+      </ScrollView>
+
+    </KeyboardAvoidingView>
   )
 }
 
@@ -154,7 +151,7 @@ const Divider = styled.View`
 `
 
 const Wrapper = styled.View`
-  
+  flex: 1;
   margin: 0px auto;
   width: 100%;
   padding: 0 10px;
@@ -186,9 +183,11 @@ text-transform: lowercase;
 `
 const StyledInput = styled.TextInput`
 color : ${props => props.error == "true" ? "red" : "#262626"};
-padding-left : 3%;
+padding-left : 12px;
 height: 35px;
+line-height: 35px;
 border-radius : 5px;
+  flex:1;
 margin : 5px 0;
 background-color: white;
 border: solid 1px ${props => props.error == "true" ? "red" : "#bfbfbf"};
@@ -206,6 +205,8 @@ const DisabledButton = styled(Button)`
   background-color: transparent;
   color: #b2b2b2;
   line-height: 30px;
+  flex:1;
+  flex:1;
   border: solid 1px #b2b2b2;
 `
 

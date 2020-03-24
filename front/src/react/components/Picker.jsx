@@ -36,7 +36,7 @@ export default ([modal, setModal],[value, setValue]) => {
 
           <Wrapper visible={modal}>
             <Modal style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
-              <StyledTitles>{title || "Elige una opción"}</StyledTitles>
+              <PickerHeader>{title || "Elige una opción"}</PickerHeader>
               <Divider/>
               <ScrollView>
                 {
@@ -152,6 +152,15 @@ const Divider = styled.View`
 `
 
 const StyledTitles = styled.Text`
+  color : #000144;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+  margin-bottom: 5px;
+  margin-left: 12px;
+`
+
+const PickerHeader = styled.Text`
   color : #000144;
   text-transform: uppercase;
   font-weight: 700;
