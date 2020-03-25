@@ -22,7 +22,7 @@ export default ([modal, setModal],[value, setValue]) => {
 
           <Wrapper visible={modal}>
             <Modal style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
-              <StyledTitles>{title || "Escribe aquí"}</StyledTitles>
+              <PromptHeader>{title || "Escribe aquí"}</PromptHeader>
               <Divider/>
               <Textarea
                 numberOfLines={3}
@@ -83,7 +83,7 @@ const Modal = styled.View`
   margin-top: 20px;
   padding: 25px 20px 28px;
   border-radius: 2px;
-
+  height: 230px;
 `
 
 const Option = styled.TouchableOpacity`
@@ -124,15 +124,22 @@ const Divider = styled.View`
   background-color: #cccccc;
   margin-bottom: 4px;
 `
-
 const StyledTitles = styled.Text`
   color : #000144;
   text-transform: uppercase;
   font-weight: 700;
   font-size: 12px;
   margin-bottom: 5px;
+  margin-left: 12px;
 `
 
+const PromptHeader = styled.Text`
+  color : #000144;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+  margin-bottom: 5px;
+`
 const RoundedButton = styled(Button)`
   border-radius: 30px;
 `
@@ -164,6 +171,7 @@ const Textarea = styled.TextInput`
   background-color: white;
   border: solid 1px #bfbfbf;
   min-height: 100px;
+  text-align-vertical: top;
 `
 
 const Footer = styled.View`

@@ -6,7 +6,7 @@ import { Text, Image, View } from 'react-native'
 import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 import Picker from "../components/Picker";
 import TextPrompt from "../components/TextPrompt";
-import { fetchSpaces } from "../../redux/actions/spaces"
+import AddPhotos from "../components/AddPhotos";
 //Importando views and components
 
 
@@ -48,10 +48,7 @@ const SpaceForm = ({ navigation }) => {
     ],
     [({ onChange }) => <Rules.Input onChange={onChange} title="Reglas de Convivencia" placeholder="Aclaraciones, límites, reglas del lugar..." />],
 
-    [({ title }) => <View>
-      {title("Agregar fotos")}
-      <Text>0 fotos</Text>
-    </View>],
+    [({ title, onChange }) => <AddPhotos text="Agregar fotos" navigation={navigation} onChange={onChange} title={title} />],
   ]
 
 
