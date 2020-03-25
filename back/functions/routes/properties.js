@@ -15,9 +15,9 @@ router.get("/spaces", (req, res, next) => {
         }
       })
 
-      const filtrado = arr.filter(propiedad => {
-        propiedad.zone.includes(condicion.z) && propiedad.city.includes(condicion.c) && propiedad.type.includes(condicion.t)
-      })
+      const filtrado = arr.filter(propiedad => (
+        propiedad.neighborhood.includes(condicion.z) && propiedad.province.includes(condicion.c) && propiedad.type.includes(condicion.t) && propiedad.verified.includes(condicion.v)
+      ))
 
       res
         .status(200)
@@ -48,16 +48,18 @@ router.get("/userSpaces/:id", (req, res, next) => {
   const id = req.params.id
   db.collection("properties").where('userId', '==', id).get()
     .then((data) => {
+      const arr = data.docs.map(userProperties => {
+        const data = userProperties.data()
+        data.id = userProperties.id
+
+        return {
+          ...data
+        }
+      })
+
       res
         .status(200)
-        .json(data.docs.map(userProperties => {
-          const data = userProperties.data()
-          return {
-            ...data,
-            id: userProperties.id
-          }
-        }
-        ))
+        .json(arr)
     })
 })
 

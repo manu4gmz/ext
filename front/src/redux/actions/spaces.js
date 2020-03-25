@@ -11,11 +11,11 @@ const singleSpace = (space) => ({
 });
 
 export const fetchSpace = (spaceId) => dispatch => {
-    axios.get(`/singleSpace/${spaceId}`)
+    axios.get(`http://localhost:5000/ext-api/us-central1/app/api/properties/singleSpace/${spaceId}`)
         .then(res => dispatch(singleSpace(res.data)))
 }
 
 export const fetchSpaces = (datosSpace) => dispatch => {
-    axios.get(`/singleSpace?z=${datosSpace.n}&c=${datosSpace.p}&t=${datosSpace.t}&v=${datosSpace.v}`)
+    axios.get(`http://localhost:5000/ext-api/us-central1/app/api/properties/spaces?z=${datosSpace.n}&c=${datosSpace.p}&t=${datosSpace.t}&v=${datosSpace.v}`)
         .then(res => dispatch(allSpaces(res.data)))
 }

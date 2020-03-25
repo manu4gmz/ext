@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 
-import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView  } from 'react-native'
+import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView } from 'react-native'
 import styled from "styled-components/native";
 import Button from "../ui/Button";
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+/* import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view' */
 
 // Returns a function, that, as long as it continues to be invoked, will not
 // be triggered. The function will be called after it stops being called for
 // N milliseconds. If `immediate` is passed, trigger the function on the
 // leading edge, instead of the trailing.
-const debounce = (func, delay) => { 
-    let debounceTimer 
-    return function() { 
-        const context = this
-        const args = arguments 
-        clearTimeout(debounceTimer) 
-        debounceTimer = setTimeout(() => func.apply(context, args), delay) 
-    } 
+const debounce = (func, delay) => {
+  let debounceTimer
+  return function () {
+    const context = this
+    const args = arguments
+    clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => func.apply(context, args), delay)
+  }
 }
 
 const validate = debounce((value, name, validation, setForm) => {
@@ -28,43 +28,43 @@ const validate = debounce((value, name, validation, setForm) => {
   setForm((form) => ({ ...form, [name]: { value: form[name].value, error } }))
 }, 1000);
 
-function useInput(name, placeholder, validation, form, setForm, index, inline=1) {
+function useInput(name, placeholder, validation, form, setForm, index, inline = 1) {
 
-    const field = form[name] || {};
+  const field = form[name] || {};
 
-    if (typeof name == "function") return (
-      <View key={index}>
-        {
-          name({
-             title: (name)=><StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>,
-             value: field.value || "",
-             onChange: setForm,
-             index
-          })
-        }
-      </View>)
+  if (typeof name == "function") return (
+    <View key={index}>
+      {
+        name({
+          title: (name) => <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>,
+          value: field.value || "",
+          onChange: setForm,
+          index
+        })
+      }
+    </View>)
 
 
-    const onChangeText = (val) => {
-      setForm((form) => ({...form, [name]:{value:val,error:field.error}}))
-      validate(val, name, validation, setForm);
-      //console.log(form);
-    }
+  const onChangeText = (val) => {
+    setForm((form) => ({ ...form, [name]: { value: val, error: field.error } }))
+    validate(val, name, validation, setForm);
+    //console.log(form);
+  }
 
-    return (
-      <View key={index} style={{width: (100/inline - (inline == 1 ? 0 : 2))+"%"}}>
-        <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>
-        <StyledInput
-            error={field.error ? "true" : "false"}
-            value={field.value || ""}
-            onChangeText={onChangeText}
-            placeholder={placeholder}
-        />
-        {
-          field.error ? <Error>{field.error}</Error> : null
-        }
-      </View>
-    )
+  return (
+    <View key={index} style={{ width: (100 / inline - (inline == 1 ? 0 : 2)) + "%" }}>
+      <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>
+      <StyledInput
+        error={field.error ? "true" : "false"}
+        value={field.value || ""}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+      />
+      {
+        field.error ? <Error>{field.error}</Error> : null
+      }
+    </View>
+  )
 }
 
 const Form = ({ fields, onSubmit, sendText, header }) => {
@@ -95,20 +95,20 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
   }
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{height: "100%"}} enableOnAndroid={true}>
+    <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
       <ScrollView>
         <Wrapper>
-          <StyledView style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
+          <StyledView style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
             {
-              typeof (header || "") == "string" ? 
-              <View>
-                <StyledText>{(header || "")}</StyledText>
-                <Divider/>
-              </View>
-              : 
-              header({divider: (props)=><Divider {...props}/> })
+              typeof (header || "") == "string" ?
+                <View>
+                  <StyledText>{(header || "")}</StyledText>
+                  <Divider />
+                </View>
+                :
+                header({ divider: (props) => <Divider {...props} /> })
             }
-            
+
             {
               mapFields(fields)
             }
@@ -118,16 +118,16 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
 
           {
             required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
-            <Button
-              mt={"6px"} mb={"60px"}
-              bg="#4A94EA"
-              color="#F7F7F7"
-              onPress={()=>onSubmit(form)}
-            >{sendText || "Enviar"}</Button>
-            :
-            <DisabledButton
-              mt={"6px"} mb={"60px"}
-            >{sendText || "Enviar"}</DisabledButton>
+              <Button
+                mt={"6px"} mb={"60px"}
+                bg="#4A94EA"
+                color="#F7F7F7"
+                onPress={() => onSubmit(form)}
+              >{sendText || "Enviar"}</Button>
+              :
+              <DisabledButton
+                mt={"6px"} mb={"60px"}
+              >{sendText || "Enviar"}</DisabledButton>
           }
 
         </Wrapper>
