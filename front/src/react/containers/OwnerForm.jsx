@@ -2,8 +2,6 @@ import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux'
 import Button from "../ui/Button";
 import { Text, Image, View, KeyboardAvoidingView } from 'react-native'
-import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
-
 
 //Importando views and components
 import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
@@ -52,12 +50,12 @@ const OwnerForm = ({ navigation }) => {
   }
 
   return (
-      <Form
-       onSubmit={onSubmit}
-       fields={fields}
-       header={({divider})=><AddSpaceFormProgress title="Completá tus datos" state={0}/>}
-       sendText="Siguiente"
-      />
+    <Form
+      onSubmit={onSubmit}
+      fields={fields}
+      header={({ divider }) => <AddSpaceFormProgress title="Completá tus datos" state={0} />}
+      sendText="Siguiente"
+    />
   )
 }
 
