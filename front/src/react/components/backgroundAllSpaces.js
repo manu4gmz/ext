@@ -1,121 +1,274 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, Text, ImageBackground, ScrollView, Image } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Dimensions
+} from "react-native";
 import styled from "styled-components/native";
+import { Rating } from 'react-native-ratings';
 
 
+export default ({ espacios, toggleLike }) => {
+  const [mode, setMode] = useState(false);
+  return (
+    <ScrollView>
+      <View style={{ backgroundColor: "E9E9E9" }}>
+        <ListaYMapa>
+          <Lista active={!mode + ""} onPress={() => setMode(false)}>
+            Lista
+          </Lista>
+          <Lista active={mode + ""} onPress={() => setMode(true)}>
+            Mapa
+          </Lista>
+        </ListaYMapa>
+        <View>
+          <TextoBusquedas>
+            {`${espacios.length} espacios encontrados`}
+          </TextoBusquedas>
+          <View>
+            {espacios.map((espacio, index) => {
+              const screenWidth = Math.round(Dimensions.get('window').width);
+              const screenHeight = Math.round(Dimensions.get('window').height);
+              let ancho = screenWidth / 2
+              let alto = screenHeight / 5
+              return (
+                <View
+                  key={index}
+                  style={styles.imp}
+                >
+                  <View style={{ display: "flex", flexDirection: "row", height: alto }}>
+                    <View style={{ width: "50%" }}>
+                      <Thumbnail
+                        source={{ uri: espacio.imgUrl }}
+                        resizeMode="cover"
+                        style={
+                          { width: ancho, height: alto }
+                        }
+                      />
+                      {espacio.verified ? (<Verified style={{ position: "absolute", bottom: 5, right: 2, zIndex: 9 }}>
+                        <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 40, height: 40 }} />
+                      </Verified>) : null}
+                    </View>
+                    <View
+                      style={{
+                        width: "50%",
+                        marginTop: 15,
+                        marginLeft: 10,
+                        marginRight: 5
+                      }}
+                    >
+                      <View style={{ display: "flex", flexDirection: "row" }}>
+                        <Precio>{`$${espacio.precio}`}</Precio>
+                        <Text
+                          style={{
+                            marginLeft: 3,
+                            marginTop: "auto",
+                            marginBottom: 3,
+                            fontSize: 15,
+                            color: "grey"
+                          }}
+                        >
+                          +imp
+                        </Text>
+                        <TouchableOpacity style={{ margin: "auto" }} onPress={() => toggleLike()}>
+                          <Image
+                            style={{ width: 30, height: 30 }}
+                            source={require("../../public/icons/corazon-ne.png")}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <Titulo>{espacio.nombre}</Titulo>
+                      <Subtitulo>{espacio.observaciones}</Subtitulo>
+                    </View>
+                  </View>
+                  <Descripcion>{`${espacio.descripcion.slice(
+                    0,
+                    100
+                  )}...`}</Descripcion>
+                  <Comentarios>
+                    <Rating
+                      type='custom'
+                      // ratingImage={require("../../public/icons/estrella-az.png")}
+                      // ratingColor='#3498db'
+                      ratingBackgroundColor='#c8c7c8'
+                      ratingCount={5}
+                      imageSize={15}
+                      style={{ paddingVertical: 10 }}
+                    />
+                    <Text
+                      style={{ color: "grey", fontWeight: "bold", padding: 10 }}
+                    >{`${espacio.comentarios.length}  Ver comentarios`}
+                    </Text>
+                  </Comentarios>
+                  <ContenedorIconos>
+                    {espacio.caracteristicas.map((caracteristica, index) => (
+                      <ContenedorIcono key={index}>
+                        <Icono source={caracteristica.icono} />
+                        <Text style={{ textAlign: "center" }}>
+                          {`${
+                            caracteristica.cantidad
+                              ? caracteristica.cantidad + " "
+                              : ""
+                            }${caracteristica.nombre}${
+                            caracteristica.cantidad > 1 ? "s" : ""
+                            }`}
+                        </Text>
+                      </ContenedorIcono>
+                    ))}
+                  </ContenedorIconos>
+                  <ContenedorContacto>
+                    <Contacto
+                      style={{
+                        backgroundColor: "#000144",
+                        borderColor: "#000144"
+                      }}
+                    >
+                      <Text style={{ color: "white", fontSize: 16 }}>
+                        Llamar
+                        </Text>
+                    </Contacto>
+                    <Contacto
+                      style={{
+                        backgroundColor: "#4A94EB",
+                        borderColor: "#4A94EB"
+                      }}
+                    >
+                      <Text style={{ color: "white", fontSize: 16 }}>
+                        Mensaje
+                        </Text>
 
-export default ({ espacios }) => {
-
-    const [mode, setMode] = useState(false)
-    return (
-        <ScrollView>
-            <View style={{ backgroundColor: "white" }} >
-                <View style={{ backgroundColor: "#4A94EA", flexDirection: "row", height: "8%" }}>
-                    <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
-                    <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
+                    </Contacto>
+                    <Contacto
+                      style={{
+                        backgroundColor: "#00A527",
+                        borderColor: "#00A527"
+                      }}
+                    >
+                      <Image style={{ height: 24, width: 24 }} source={require("../../public/icons/whatsapp1.png")} />
+                    </Contacto>
+                  </ContenedorContacto>
                 </View>
-                <View>
-                    <TextoBusquedas >{`${espacios.length} espacios cumplen con tu busqueda`} </TextoBusquedas>
-                    {espacios.map((espacio, index) => {
-                        return (
-                            < View key={index} >
-                                <View style={{ width: "100%", alignItems: "center" }}>
-                                    <Image source={{ uri: espacio.imgUrl }}
-                                        style={{ width: 400, height: 400 }} />
-                                </View>
-                                <View>
-                                    <TextoPrecio >{espacio.precio}</TextoPrecio>
-                                    <TextoNegro >Amplio para usos multiples.-San Isidro</TextoNegro>
-                                    <TextoGrande >120 mtr2 -Baño privado-Aire Acondicionado.-Musica</TextoGrande>
-                                    <TextoComun >{espacio.descripcion}</TextoComun>
-                                    <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
-                                    <View style={styles.contenedorIconos}>
-                                        {/* <Image source={require("../../public/icons/ducha-ne.png")} style={styles.imagenInputs} />
-                                            <Image source={require("../../public/icons/toiletes-ne.png")} style={styles.imagenInputs} />
-                                            <Image source={require("../../public/icons/wifi-ne.png")} style={styles.imagenInputs} />
-                                            <Image source={require("../../public/images/sobre-bl.png")} style={styles.imagenInputs} /> */}
-                                        {espacio.caracteristicas.map((caracteristica, index) => (
+              );
+            })}
+          </View>
+        </View>
+      </View>
+    </ScrollView >
+  );
+};
 
-                                            <Image key={index} source={caracteristica.icono} style={styles.imagenInputs} />
-                                        )
-                                        )}
-                                    </View>
-                                    <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
-                                </View>
-                            </View>
-                        )
-
-                    }
-
-                    )}
-                </View>
-            </View>
-        </ScrollView >)
-}
+const ListaYMapa = styled.View`
+  background-color: #4a94ea;
+  flex-direction: row;
+  box-shadow: 0px 1px 20px grey;
+`;
 
 const Lista = styled.Text`
-    align-self: center;
-    font-size: 18px;
-    justify-content:center;
-    text-align:center;
-    margin-top: 10%;
-    padding-bottom: 5px;
-    border-color:${(props) => props.active == "true" ? "white" : "#4A94EA"};
-    border-bottom-width:3px;
-    width:50%;
-`
+  color: ${props => (props.active == "true" ? "white" : "#000144")};
+  align-self: center;
+  font-size: 18px;
+  justify-content: center;
+  text-align: center;
+  padding-bottom: 5px;
+  border-color: ${props => (props.active == "true" ? "white" : "#4A94EA")};
+  border-bottom-width: 3px;
+  width: 50%;
+`;
 const TextoBusquedas = styled.Text`
-    text-align: center;
-    padding: 1%;
-    margin-bottom: 1%;
-    background-color: #D9D5C8
+  text-align: center;
+  padding: 1%;
+  margin-bottom: 1%;
+  color: #848484;
+  border-bottom-color: #848484;
+  border-bottom-width: 1px;
+  margin: 0px;
+`;
+
+const Thumbnail = styled.Image`
+`;
+
+const Verified = styled.View`
 `
-const TextoPrecio = styled.Text`
-    font-size: 30px;
-    padding-left: 5%
-`
-const TextoComun = styled.Text`
-    padding-left: 5%;
-    margin-top: 1%
-`
-const TextoNegro = styled.Text`
-    padding-left: 5%;
-    margin-top: 1%;
-    font-weight: bold;
-    font-size: 17px
-`
-const TextoGrande = styled.Text`
-    padding-left: 5%;
-    margin-top: 2%;
-    font-size: 17px;
-    margin-bottom: 20px
-`
-const TextoCaracteristicas = styled.Text`
-    padding-left: 5%;
-    margin-top: 2%;
-    font-size: 17px;
-    margin-bottom: 20px;
-    margin-top: 30px
-`
-//<Text onPress=() => (setToogleMap(!toogleMap))} style={styles.lista}>Mapa</Text>
+
+const Precio = styled.Text`
+  font-size: 30px;
+  margin: 3px;
+`;
+const Titulo = styled.Text`
+  font-size: 17px;
+  margin: 3px;
+`;
+const Subtitulo = styled.Text`
+  font-size: 15px;
+  font-weight: 100;
+  color: grey;
+  margin: 3px;
+`;
+const Descripcion = styled.Text`
+  margin: 20px 10px 10px 10px;
+`;
+
+const Comentarios = styled.View`
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    align-self: left;
+`;
+
+const ContenedorIconos = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+  width: 100%;
+  justify-content: space-evenly;
+`;
+const ContenedorIcono = styled.View`
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  margin: 10px;
+`;
+
+const Icono = styled.Image`
+    background-color: #F7F7F7;
+    border-radius: 100px;
+    border-width: 1px;
+    border-color: #F7F7F7
+
+    height: 45px;
+    width: 45px;
+`;
+
+const ContenedorContacto = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+  justify-content: space-evenly;
+`;
+
+const Contacto = styled.View`
+  width: 120px;
+  height: 40px;
+  border-radius: 5px;
+  margin: 10px 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+// DUDA: como hacer box-shadow en stylesheet
 const styles = StyleSheet.create({
-    fondo: {
-    },
-    imagenInputs: {
-        height: 45,
-        width: 45,
-        marginRight: 20,
-        marginBottom: 20,
-    },
-    contenedorIconos: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        borderBottomColor: "black",
-        borderBottomWidth: 1,
-        width: "70%",
-        alignItems: "center",
-        alignSelf: "center",
-        backgroundColor: "#FFFFFF"
-    }
+  imp: {
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 10,
+    borderBottomColor: "#D9D5C8"
+  },
+  // sombra: {
+  //   boxShadow: [0, 1, 20, 0, "grey"]
+  // }
 })
