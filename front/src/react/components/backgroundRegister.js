@@ -9,11 +9,11 @@ const backgroundRegister = ({ Username, Password, onChangePassword, onChangeUser
 
     return (
         <Fondo>
-            <Formularios>
+            <Formularios style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
                 {fields.map(a => a.input)}
             </Formularios>
             <BtnRegistrarse title="Registrarte" name="Registrarte" onPress={() => onSubmit(Object.fromEntries(fields.map(e => [e.name, e.value])))}>Registrarte</BtnRegistrarse>
-        </Fondo >
+        </Fondo>
     )
 }
 
@@ -47,12 +47,11 @@ justify-content: left;
 `
 //Rodea todos los inputs
 const Formularios = styled.View`
-display: flex;
-background-color: #FFFFFF;
-width: 90%;
-margin: 5%;
-box-shadow: 5px 5px 10px grey;
-borderRadius: 5px;
+  display: flex;
+  background-color: #FFFFFF;
+  width: 90%;
+  margin: 5%;
+  borderRadius: 5px;
 
 `
 //Rodea tanto NOMBRE, APELLIDO, etc. como el input
@@ -91,14 +90,14 @@ color: #262626;
 const BtnRegistrarse = styled.Text`
 height: 40px;
 width: 90%;
-borderRadius: 5px;
+border-radius: 5px;
 
 background-color: #4180ED;
 color: white;
 
-paddingTop:10px;
+padding-top:10px;
 margin:10px auto;
-textAlign:center
+text-align:center
 
 `
 
