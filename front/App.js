@@ -17,6 +17,7 @@ import SingleViewPage from './src/react/containers/SingleViewPage';
 import SpaceForm from './src/react/containers/SpaceForm';
 import OwnerForm from './src/react/containers/OwnerForm';
 import AllSpaces from './src/react/containers/AllSpaces'
+import SerchSpace from "./src/react/containers/serchSpace"
 
 
 import Navbar from "./src/react/components/Navbar";
@@ -46,6 +47,7 @@ export default class App extends Component {
       <Provider store={store} >
         <NavigationContainer>
           <Stack.Navigator inicialRouteName="Login">
+            <Stack.Screen name="SerchSpace" component={SerchSpace} options={withNavbar("Busca tu espacio")} />
             <Stack.Screen name="Login" component={LoginPage} options={noNavbar} />
             <Stack.Screen name="Home" component={HomePage} options={withNavbar()} />
             <Stack.Screen name="Register" component={RegisterPage} options={withNavbar("Crea tu cuenta")} />
