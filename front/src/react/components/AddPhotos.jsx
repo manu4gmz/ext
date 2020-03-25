@@ -1,19 +1,10 @@
 import React, { Component, useEffect, useState } from 'react';
 import { Text, Image, View, ScrollView, TouchableOpacity } from 'react-native'
 import styled from "styled-components/native";
+import { connect } from "react-redux";
+import { removePicture } from "../../redux/actions/files";
 
-export default ({title,text, navigation, onChange})=> {
-
-	const [pictures, setPictures] = useState([{uri:"https://placeholder.com/500",width:500, height: 500}]);
-
-	function onTake (pic) {
-		setPictures((pics)=>{
-			console.log(pic.uri,Object.keys(pics).map(a => pics[a].uri));
-			return pics.concat([pic]);
-		});
-		console.log({uri: pic.uri});
-		console.log(Object.keys(pictures).map(key => ({uri: pictures[key].uri})));
-	}
+const AddPhotos = ({title,text, navigation, onChange, removePicture, pictures})=> {
 
 	useEffect(()=>{
 		onChange((form)=>({...form, [text]:{value:pictures, error: null}}))
@@ -27,7 +18,7 @@ export default ({title,text, navigation, onChange})=> {
 		      		return <PicWrapper key={i}  width={240*(pic.width/pic.height)} height={240*(pic.height/pic.width)}>
 		      			<Pic source={{uri: pic.uri}}/>
 		      			<ImgInteract>
-		      				<TouchableOpacity onPress={()=>setPictures(pics => pics.filter(p => p.uri != pic.uri))}>
+		      				<TouchableOpacity onPress={()=>removePicture(pic)}>
 		      					<Icon source={require("../../public/icons/cross.png")}/>
 		      				</TouchableOpacity>
 		      			</ImgInteract>
@@ -35,13 +26,26 @@ export default ({title,text, navigation, onChange})=> {
 		      	})
 		    }
     	</PicsRoll>
-    	<Photos onPress={()=>navigation.push("Camera", {onTake})}>
+    	<Photos onPress={()=>navigation.push("Camera")}>
 		    <PhotosText>+</PhotosText> 
 		    <Icon source={require("../../public/icons/camera.png")}/>
     		<PhotosText>({pictures.length || 0})</PhotosText>
     	</Photos>
   	</View>
 }
+
+const mapStateToProps = (state) => ({
+	pictures: state.images
+})
+
+const mapDispatchToProps = (dispatch) => ({
+	removePicture: (...params)=>dispatch(removePicture(...params))
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddPhotos);
+
+
 
 const PicsRoll = styled.ScrollView`
 	flex-direction: row;

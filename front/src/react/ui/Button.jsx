@@ -22,9 +22,9 @@ const Button = styled.Text`
   margin-left:${props => props.ml || "0px"};
   margin-right:${props => props.mr || "0px"};
   height: 35px;
-  line-height: 35px;
+  line-height: 25px;
+  padding: 5px 0;
   flex-grow: 1;
-  flex: 1;
   text-align : center;
   border-radius: 5px;
   color: ${props => props.color || "#F7F7F7"};

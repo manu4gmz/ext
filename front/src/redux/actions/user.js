@@ -11,9 +11,9 @@ const setLoggedUser = (logged) => ({
 export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	auth.onAuthStateChanged((user) => {
 		if (user) {
-			const userObj = { email: user.email };
+			const userObj = { email: user.email, uid: user.uid };
 			dispatch(setLoggedUser(userObj))
-			console.log("Esta logueado ! :D")
+			console.log("Esta logueado ! :D", userObj)
 			if (ifLogged && typeof ifLogged == "function") ifLogged(userObj);
 		} else {
 			dispatch(setLoggedUser({}))
