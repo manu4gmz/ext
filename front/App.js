@@ -16,6 +16,8 @@ import PaymentPage from './src/react/containers/PaymentPage';
 import SingleViewPage from './src/react/containers/SingleViewPage';
 import SpaceForm from './src/react/containers/SpaceForm';
 import OwnerForm from './src/react/containers/OwnerForm';
+import AllSpaces from './src/react/containers/AllSpaces'
+import SerchSpace from "./src/react/containers/serchSpace"
 
 
 import Navbar from "./src/react/components/Navbar";
@@ -32,7 +34,7 @@ const noNavbar = {
 }
 
 const withNavbar = (title) => ({
-  header: (props) => <Navbar {...props} title={title}/>,
+  header: (props) => <Navbar {...props} title={title} />,
   headerStyle: {
     backgroundColor: "transparent"
   }
@@ -45,13 +47,15 @@ export default class App extends Component {
       <Provider store={store} >
         <NavigationContainer>
           <Stack.Navigator inicialRouteName="Login">
+            <Stack.Screen name="SerchSpace" component={SerchSpace} options={withNavbar("Busca tu espacio")} />
             <Stack.Screen name="Login" component={LoginPage} options={noNavbar} />
-            <Stack.Screen name="Home" component={HomePage} options={withNavbar()}/>
-            <Stack.Screen name="Register" component={RegisterPage} options={withNavbar("Crea tu cuenta")}/>
-            <Stack.Screen name="Payment" component={PaymentPage} options={withNavbar("Elegí un plan")}/>
-            <Stack.Screen name="SpaceForm" component={SpaceForm} options={withNavbar("Ofrecé tu espacio")}/>
-            <Stack.Screen name="OwnerForm" component={OwnerForm} options={withNavbar("Ofrecé tu espacio")}/>
-            <Stack.Screen name="SingleView" component={SingleViewPage} options={withNavbar("Espacios")}/>
+            <Stack.Screen name="Home" component={HomePage} options={withNavbar()} />
+            <Stack.Screen name="Register" component={RegisterPage} options={withNavbar("Crea tu cuenta")} />
+            <Stack.Screen name="Payment" component={PaymentPage} options={withNavbar("Elegí un plan")} />
+            <Stack.Screen name="SpaceForm" component={SpaceForm} options={withNavbar("Ofrecé tu espacio")} />
+            <Stack.Screen name="OwnerForm" component={OwnerForm} options={withNavbar("Ofrecé tu espacio")} />
+            <Stack.Screen name="SingleView" component={SingleViewPage} options={withNavbar("Espacios")} />
+            <Stack.Screen name="AllSpaces" component={AllSpaces} options={withNavbar("Espacios")} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider >

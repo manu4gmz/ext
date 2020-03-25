@@ -3,9 +3,9 @@ import { View, Text } from "react-native";
 import styled from "styled-components/native";
 
 
-export default ({title, state}) => {
+export default ({ title, state }) => {
 
-	const states = ["Tus datos", "-","Espacios", "-","Planes"]
+	const states = ["Tus datos", "-", "Espacios", "-", "Planes"]
 
 	return (
 		<View>
@@ -13,22 +13,22 @@ export default ({title, state}) => {
 			<Container>
 				{
 					states.map((text, i) => {
-							if (text == "-") return <Line key={i}/>
+						if (text == "-") return <Line key={i} />
 
-							return <BadgeWrapper key={i}>
-								{
-									state > (i/2) ?
-									<Tick key={i} source={require('../../public/icons/tick.png')}/>
-									: <Badge key={i} showed={(state == i/2)+""}>{(i/2)+1}</Badge>
-								}
+						return <BadgeWrapper key={i}>
+							{
+								state > (i / 2) ?
+									<Tick key={i} source={require('../../public/icons/tick.png')} />
+									: <Badge key={i} showed={(state == i / 2) + ""}>{(i / 2) + 1}</Badge>
+							}
 
-								<BadgeTitle>{text}</BadgeTitle>
-							</BadgeWrapper>
-						}
+							<BadgeTitle>{text}</BadgeTitle>
+						</BadgeWrapper>
+					}
 					)
 				}
 			</Container>
-			<Divider/>
+			<Divider />
 		</View>
 	)
 }
