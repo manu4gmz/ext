@@ -10,7 +10,7 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
     const [error, setError] = useState({})
 
     useEffect(()=>{
-        getUser(()=> navigation.navigate("Home"));
+        getUser(()=> navigation.navigate('Root',{screen: "Home"}));
 
     },[])
 
@@ -33,7 +33,7 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
         getUserGoogle()
             .then(err => {
                 if (err) return setError(err.target ? err : {});
-                navigation.navigate('Home')
+                navigation.navigate('Root',{screen: "Home"})
             })
     }
 
@@ -66,6 +66,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)
+
 
 
 
