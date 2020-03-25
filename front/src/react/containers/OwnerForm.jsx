@@ -2,11 +2,11 @@ import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux'
 import Button from "../ui/Button";
 import { Text, Image, View } from 'react-native'
-import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 
 //Importando views and components
+import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 
-const mailValidation = (val)=> {
+const mailValidation = (val) => {
   while (val && val.length) {
     if (!val.includes("@")) break;
     const [mail, end] = val.split("@");
@@ -33,28 +33,28 @@ const numberValidation = (val) => {
 }
 
 const fields = [
-    ["Nombre*"],
-    ["Apellido*"],
-    ["Teléfono Móvil de contacto*","+54 9 11 5555 5555", numberValidation],
-    ["Mail","nombre@mail.com", mailValidation ],
-    ["Dirección","Av. Congreso 1332", addressValidation],
-    [({title})=>title("Via de contacto con cliente")],
-  ]
+  ["Nombre*"],
+  ["Apellido*"],
+  ["Teléfono Móvil de contacto*", "+54 9 11 5555 5555", numberValidation],
+  ["Mail", "nombre@mail.com", mailValidation],
+  ["Dirección", "Av. Congreso 1332", addressValidation],
+  [({ title }) => title("Via de contacto con cliente")],
+]
 
 import Form from '../components/Form';
 
 const OwnerForm = ({ navigation }) => {
-  const onSubmit = function (form) { 
-    console.log(form) 
+  const onSubmit = function (form) {
+    console.log(form)
     navigation.push("SpaceForm")
   }
 
   return (
     <Form
-     onSubmit={onSubmit}
-     fields={fields}
-     header={({divider})=><AddSpaceFormProgress title="Completá tus datos" state={0}/>}
-     sendText="Siguiente"
+      onSubmit={onSubmit}
+      fields={fields}
+      header={({ divider }) => <AddSpaceFormProgress title="Completá tus datos" state={0} />}
+      sendText="Siguiente"
     />
   )
 }
