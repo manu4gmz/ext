@@ -4,9 +4,11 @@ import Button from "../ui/Button";
 import { Text, Image, View, KeyboardAvoidingView } from 'react-native'
 import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 
-//Importando views and components
 
-const mailValidation = (val)=> {
+//Importando views and components
+import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
+
+const mailValidation = (val) => {
   while (val && val.length) {
     if (!val.includes("@")) break;
     const [mail, end] = val.split("@");
@@ -33,19 +35,19 @@ const numberValidation = (val) => {
 }
 
 const fields = [
-    ["Nombre*"],
-    ["Apellido*"],
-    ["Teléfono Móvil de contacto*","+54 9 11 5555 5555", numberValidation],
-    ["Mail","nombre@mail.com", mailValidation ],
-    ["Dirección","Av. Congreso 1332", addressValidation],
-    [({title})=>title("Via de contacto con cliente")],
-  ]
+  ["Nombre*"],
+  ["Apellido*"],
+  ["Teléfono Móvil de contacto*", "+54 9 11 5555 5555", numberValidation],
+  ["Mail", "nombre@mail.com", mailValidation],
+  ["Dirección", "Av. Congreso 1332", addressValidation],
+  [({ title }) => title("Via de contacto con cliente")],
+]
 
 import Form from '../components/Form';
 
 const OwnerForm = ({ navigation }) => {
-  const onSubmit = function (form) { 
-    console.log(form) 
+  const onSubmit = function (form) {
+    console.log(form)
     navigation.push("SpaceForm")
   }
 
