@@ -6,7 +6,7 @@ import { Alert } from "react-native";
 
 const storage = firebase.storage();
 
-export const uploadFiles = (files, progessCb) => (dispatch, getState) => {
+export const uploadFiles = (files, propId=1, progessCb) => (dispatch, getState) => {
 	const user = getState().user.logged;
 	const uid = user.uid;
 
@@ -20,7 +20,7 @@ export const uploadFiles = (files, progessCb) => (dispatch, getState) => {
 			return fetch(file.uri)
 			.then(response => response.blob())
 			.then(blob => {
-				const ref = storage.ref(`/images/${uid}/photo_${i}`);
+				const ref = storage.ref(`/images/${uid}/${propId}/photo_${i}`);
 				const uploadTask= ref.put(blob);
 
 				return new Promise((res, rej)=>{

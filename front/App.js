@@ -17,9 +17,8 @@ import UploadingFiles from './src/react/containers/UploadingFiles';
 import Camera from './src/react/components/Camera';
 import Navbar from "./src/react/components/Navbar";
 
-/* const Stack = createStackNavigator(); */
 
-import firebase from "./src/redux/firebase";
+
 
 const noNavbar = {
   header: () => null,
@@ -42,7 +41,7 @@ export default class App extends Component {
         <NavigationContainer>
           <DrawerContainer />
         </NavigationContainer>
-      </Provider >
+      </Provider>
     );
   }
 }

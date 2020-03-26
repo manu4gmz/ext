@@ -2,17 +2,23 @@ import React, { Component, useEffect, useState } from 'react';
 import { Text, Image, View, ScrollView, TouchableOpacity } from 'react-native'
 import styled from "styled-components/native";
 import { connect } from "react-redux";
-import { removePicture } from "../../redux/actions/files";
+import { removePicture, addPicture } from "../../redux/actions/files";
 
-const AddPhotos = ({title,text, navigation, onChange, removePicture, pictures})=> {
+const AddPhotos = ({title,text, navigation, onChange, removePicture, addPicture, pictures})=> {
 
 	useEffect(()=>{
 		onChange((form)=>({...form, [text]:{value:pictures, error: null}}))
 	},[pictures])
 
+    useEffect(()=>{
+    window.addPhoto = (pic)=>addPicture(pic);
+  },[])
+
+    console.log(pictures);
+
 	return <View>
       {title(text)}
-    	<PicsRoll horizontal={true} style={{flex: 1}}>
+    	<PicsRoll horizontal={true}>
 		    {
 		      	pictures.map((pic,i) => {
 		      		return <PicWrapper key={i}  width={240*(pic.width/pic.height)} height={240*(pic.height/pic.width)}>
@@ -39,7 +45,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-	removePicture: (...params)=>dispatch(removePicture(...params))
+	removePicture: (...params)=>dispatch(removePicture(...params)),
+	addPicture: (...params)=>dispatch(addPicture(...params))
 })
 
 
@@ -50,6 +57,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(AddPhotos);
 const PicsRoll = styled.ScrollView`
 	flex-direction: row;
 	margin: 10px 0;
+	padding-bottom: 10px;
 `
 
 const PicWrapper = styled.View`
