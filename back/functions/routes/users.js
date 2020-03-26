@@ -45,7 +45,7 @@ router.get('/:mail', (req, res, next) => {
 //* agregar un user
 router.post('/register', (req, res, next) => {
   const data = req.body.body
-  db.collection('users').set(data)
+  db.collection('users').add(data)
     .then(() => res.sendStatus(201))
     .catch(next)
 })

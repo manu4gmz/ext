@@ -18,9 +18,9 @@ const RegisterPage = ({ registerUser, navigation }) => {
             password
         })
             .then((data) => {
-                console.log('Se agrego con exito el usuario')
-                console.log(data)
-                /*  navigation.navigate('Root', { screen: "Home" }) */
+                data.status === 201
+                    ? navigation.navigate('Root', { screen: "Login" })
+                    : null
             })
     }
 
