@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, View, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { Camera } from 'expo-camera';
 import styled from "styled-components/native";
+import { connect } from "react-redux";
+import { addPicture } from "../../redux/actions/files";
 
-export default function CameraView({route, navigation}) {
+function CameraView({route, navigation, addPicture}) {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [camera, setCamera] = useState(null);
+  const [taking, setTaking] = useState(false);
+  const [flash, setFlash] = useState(null);
+
 
   const {height, width} = Dimensions.get('window');
   const newWidth = height*(3/4);
@@ -28,15 +33,14 @@ export default function CameraView({route, navigation}) {
   }
 
   function takePicture() {
-  	camera.takePictureAsync({base64: true})
+    setTaking(true)
+  	camera.takePictureAsync()
   	.then(pic => {
-  		//console.log("\n\n\n----- PICTURE -----\n\n\n",pic,"\n\n\n");
-  		const { onTake } = route.params;
-  		onTake(pic);
+      setTaking(false)
 
-      //setRecent(pic);
-      //setTimeout(()=>setRecent(null), 2000)
-      navigation.pop();
+      addPicture(pic);
+      setFlash(true);
+      setTimeout(()=>setFlash(null), 1500)
   	})
 
   }
@@ -49,6 +53,9 @@ export default function CameraView({route, navigation}) {
         left: widthOffset,
         right: widthOffset
     }}>
+    {
+      flash && <Flash />
+    }
       <Camera type={type} style={{flex: 1}} ref={cam => setCamera(cam)}>
         <Interact offset={-widthOffset}>
           <TouchableOpacity
@@ -62,7 +69,7 @@ export default function CameraView({route, navigation}) {
           </TouchableOpacity>
           <SnapButton
             onPress={() => {
-              takePicture()
+              !taking && takePicture()
             }}>
             <SnapIcon source={require("../../public/icons/camera.png")}/>
           </SnapButton>
@@ -74,6 +81,12 @@ export default function CameraView({route, navigation}) {
     </View>
   );
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  addPicture : (pic)=>dispatch(addPicture(pic))
+})
+
+export default connect(null, mapDispatchToProps)(Camera);
 
 /*
 
@@ -129,8 +142,10 @@ const Label = styled.Text`
   color: ${p => p.color || "white"};
 `
 
-const RecentImg = styled.Image`
-  width: ${props=>props.width || "120"}px;
-  height: ${props=>props.height || "120"}px;
-  right: 10px;
+const Flash = styled.View`
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  opacity: 0.7;
+  
 `

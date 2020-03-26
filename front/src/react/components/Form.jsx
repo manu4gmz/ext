@@ -28,43 +28,43 @@ const validate = debounce((value, name, validation, setForm) => {
   setForm((form) => ({ ...form, [name]: { value: form[name].value, error } }))
 }, 1000);
 
-function useInput(name, placeholder, validation, form, setForm, index, inline = 1) {
+function useInput(name, placeholder, validation, form, setForm, index, inline=1) {
 
-  const field = form[name] || {};
+    const field = form[name] || {};
 
-  if (typeof name == "function") return (
-    <View key={index}>
-      {
-        name({
-          title: (name) => <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>,
-          value: field.value || "",
-          onChange: setForm,
-          index
-        })
-      }
-    </View>)
+    if (typeof name == "function") return (
+      <View key={index}>
+        {
+          name({
+             title: (name)=><StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>,
+             value: field.value || "",
+             onChange: setForm,
+             index
+          })
+        }
+      </View>)
 
 
-  const onChangeText = (val) => {
-    setForm((form) => ({ ...form, [name]: { value: val, error: field.error } }))
-    validate(val, name, validation, setForm);
-    //console.log(form);
-  }
+    const onChangeText = (val) => {
+      setForm((form) => ({...form, [name]:{value:val,error:field.error}}))
+      validate(val, name, validation, setForm);
+      //console.log(form);
+    }
 
-  return (
-    <View key={index} style={{ width: (100 / inline - (inline == 1 ? 0 : 2)) + "%" }}>
-      <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>
-      <StyledInput
-        error={field.error ? "true" : "false"}
-        value={field.value || ""}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
-      />
-      {
-        field.error ? <Error>{field.error}</Error> : null
-      }
-    </View>
-  )
+    return (
+      <View key={index} style={{width: (100/inline - (inline == 1 ? 0 : 2))+"%"}}>
+        <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>
+        <StyledInput
+            error={field.error ? "true" : "false"}
+            value={field.value || ""}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+        />
+        {
+          field.error ? <Error>{field.error}</Error> : null
+        }
+      </View>
+    )
 }
 
 const Form = ({ fields, onSubmit, sendText, header }) => {
@@ -117,17 +117,19 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
 
 
           {
-            required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
-              <Button
-                mt={"6px"} mb={"60px"}
-                bg="#4A94EA"
-                color="#F7F7F7"
-                onPress={() => onSubmit(form)}
-              >{sendText || "Enviar"}</Button>
-              :
-              <DisabledButton
-                mt={"6px"} mb={"60px"}
-              >{sendText || "Enviar"}</DisabledButton>
+
+            //required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
+            true?
+            <Button
+              mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
+              bg="#4A94EA"
+              color="#F7F7F7"
+              onPress={()=>onSubmit(form)}
+            >{sendText || "Enviar"}</Button>
+            :
+            <DisabledButton
+              mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
+            >{sendText || "Enviar"}</DisabledButton>
           }
 
         </Wrapper>

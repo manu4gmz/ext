@@ -10,28 +10,27 @@ import AddPhotos from "../components/AddPhotos";
 //Importando views and components
 
 
-
 import Form from '../components/Form';
 
-const SpaceForm = ({ navigation }) => {
+const SpaceForm = ({ navigation, uploadFiles }) => {
 
   const Type = Picker(useState(false), useState(""));
   const Services = Picker(useState(false), useState([]));
   const Observation = TextPrompt(useState(false), useState(""));
   const Rules = TextPrompt(useState(false), useState(""));
 
-  const onSubmit = function (form) {
-    console.log(form, "ESTE ES MI FORM")
-    navigation.push("Payment")
+  const onSubmit = function (form) { 
+    navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value })
   }
 
   const fields = [
-    ["Ciudad*", "Buenos Aires, Cordoba, San Luis.."],
-    ["Calle*", "Flores, Saavedra.."],
+    ["Provincia*", "Buenos Aires, Cordoba, San Luis.."],
+    ["Ciudad*", "Flores, Saavedra.."],
+    ["Calle*", "Av. Congreso, Castillo"],
     [
-      ["Número"],
-      ["Piso"],
-      ["Depto"],
+      ["Número","1332"],
+      ["Piso","4"],
+      ["Depto","B"],
     ],
     //["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
     [({ onChange }) => <Type.Input onChange={onChange} title={"Tipo de Espacio*"} placeholder="Selecciona el espacio que ofrece." />],
@@ -75,11 +74,5 @@ const SpaceForm = ({ navigation }) => {
 }
 
 
-export default connect(null, null)(SpaceForm)
+export default connect(null, null)(SpaceForm);
 
-
-/*const mapDispatchToProps = (dispatch, ownProps) => ({
-  fetchSpaces: (space) => (dispatch(fetchSpaces(space)))
-
-})
-*/
