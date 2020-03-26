@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground, ScrollView } from 'react-native'
 import styled from "styled-components/native"
-export default () => {
+export default ({ space }) => {
     const [mode, setMode] = useState(false)
     return (
         <ScrollView>
@@ -10,18 +10,16 @@ export default () => {
                     <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
                     <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
                 </View>
-                <TextoBusquedas > 34 espacios cumplen con tu busqueda</TextoBusquedas>
                 <View style={{ width: "100%", alignItems: "center" }}>
-                    <Image source={{ uri: 'https://image.shutterstock.com/image-photo/female-ballet-student-performing-arts-260nw-1332840722.jpg' }}
-                        style={{ width: 400, height: 400 }} />
+                    {space.photos ? (<Image source={{ uri: space.photos[0] }}
+                        style={{ width: 400, height: 400 }} />) : (null)}
+
                 </View>
                 <View >
-                    <TextoPrecio >$750</TextoPrecio>
-                    <TextoNegro >Amplio para usos multiples.-San Isidro</TextoNegro>
-                    <TextoGrande >120 mtr2 -Baño privado-Aire Acondicionado.-Musica</TextoGrande>
-                    <TextoComun >Excelente espacio ubicado en zona centrica , la verdad es la mejor zona de todo san isidro. Esto
-                    es una descripcion extensa asi puedo ver si funciona bien el texto y todas sus propiedades , espero que la gente me entienda que lo
-                  que puse aca no esta bien</TextoComun>
+                    <TextoPrecio >{`$ ${space.price}`}</TextoPrecio>
+                    <TextoNegro >{`${space.title}.-${space.neighborhood}`}</TextoNegro>
+                    <TextoGrande >{`${space.size} mtr2 .-${space.type}`}</TextoGrande>
+                    <TextoComun >{space.description}</TextoComun>
                     <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
                     <View style={styles.contenedorIconos}>
                         <Image source={require("../../public/icons/ducha-ne.png")} style={styles.imagenInputs} />

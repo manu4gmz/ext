@@ -13,14 +13,14 @@ const backgroundHome = ({ navigation, user }) => {
       style={styles.fondo}
       blurRadius={4}
     >
-      <Navbar/>
+      <Navbar />
       <Wrapper>
         <ScrollView>
           <StyledView>
             <StyledTitle>Encontrá tu Espacio</StyledTitle>
             <StyledText>Descubrí espacios para todas tus reuniones laborales, fiestas, presentaciones, eventos y más.</StyledText>
             <Button
-              onPress={() => navigation.push("AllSpaces")}
+              onPress={() => navigation.push("SerchSpace")}
             >Buscar</Button>
           </StyledView>
 

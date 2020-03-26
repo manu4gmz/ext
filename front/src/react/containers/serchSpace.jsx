@@ -32,6 +32,9 @@ const SerchSpace = ({ navigation, fetchSpaces }) => {
             v: Verificado
         }
         fetchSpaces(datosSpace)
+            .then((data) => {
+                return navigation.navigate('Root', { screen: "AllSpaces" })
+            })
 
     }
 

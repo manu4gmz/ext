@@ -2,6 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 
 import BackgroundAllSpaces from "../components/backgroundAllSpaces";
+import { fetchId } from "../../redux/actions/spaces"
+
 
 // const AllSpaces = () => {
 class AllSpaces extends React.Component {
@@ -63,10 +65,16 @@ class AllSpaces extends React.Component {
       ]
     };
     this.toggleLike = this.toggleLike.bind(this);
+    this.sendId = this.sendId.bind(this);
+
   }
 
   toggleLike() {
-    console.log("like")
+    console.log("like", this.props.allSpaces)
+  }
+  sendId(id) {
+    this.props.fetchId(id)
+    return this.props.navigation.navigate('Root', { screen: `SingleView` })
   }
 
   render() {
@@ -74,9 +82,25 @@ class AllSpaces extends React.Component {
       <BackgroundAllSpaces
         espacios={this.state.espacios}
         toggleLike={this.toggleLike}
+        allSpaces={this.props.allSpaces}
+        navigation={this.props.navigation}
+        sendId={this.sendId}
       />
     );
   }
 }
 
-export default connect(null, null)(AllSpaces);
+const mapStateToProps = (state, ownProps) => {
+  return {
+
+    allSpaces: state.spaces.allSpaces
+  }
+}
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    fetchId: (id) => (dispatch(fetchId(id)))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AllSpaces);

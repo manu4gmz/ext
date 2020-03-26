@@ -12,8 +12,9 @@ import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
 
 
-export default ({ espacios, toggleLike }) => {
+export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
   const [mode, setMode] = useState(false);
+  console.log(allSpaces)
   return (
     <ScrollView>
       <View style={{ backgroundColor: "E9E9E9" }}>
@@ -27,10 +28,10 @@ export default ({ espacios, toggleLike }) => {
         </ListaYMapa>
         <View>
           <TextoBusquedas>
-            {`${espacios.length} espacios encontrados`}
+            {`${allSpaces.length} espacios encontrados`}
           </TextoBusquedas>
           <View>
-            {espacios.map((espacio, index) => {
+            {allSpaces.map((espacio, index) => {
               const screenWidth = Math.round(Dimensions.get('window').width);
               const screenHeight = Math.round(Dimensions.get('window').height);
               let ancho = screenWidth / 2
@@ -40,10 +41,11 @@ export default ({ espacios, toggleLike }) => {
                   key={index}
                   style={styles.imp}
                 >
-                  <View style={{ display: "flex", flexDirection: "row", height: alto }}>
+
+                  <TouchableOpacity onPress={() => { return sendId(espacio.id) }} style={{ display: "flex", flexDirection: "row", height: alto }} >
                     <View style={{ width: "50%" }}>
                       <Thumbnail
-                        source={{ uri: espacio.imgUrl }}
+                        source={{ uri: espacio.photos[0] }}
                         resizeMode="cover"
                         style={
                           { width: ancho, height: alto }
@@ -62,7 +64,7 @@ export default ({ espacios, toggleLike }) => {
                       }}
                     >
                       <View style={{ display: "flex", flexDirection: "row" }}>
-                        <Precio>{`$${espacio.precio}`}</Precio>
+                        <Precio>{`$${espacio.price}`}</Precio>
                         <Text
                           style={{
                             marginLeft: 3,
@@ -81,11 +83,12 @@ export default ({ espacios, toggleLike }) => {
                           />
                         </TouchableOpacity>
                       </View>
-                      <Titulo>{espacio.nombre}</Titulo>
-                      <Subtitulo>{espacio.observaciones}</Subtitulo>
+                      <Titulo>{espacio.title}</Titulo>
+                      <Subtitulo>{`${espacio.neighborhood}-${espacio.province}`}</Subtitulo>
+                      <Subtitulo>{`${espacio.size} mtr2`}</Subtitulo>
                     </View>
-                  </View>
-                  <Descripcion>{`${espacio.descripcion.slice(
+                  </TouchableOpacity>
+                  <Descripcion>{`${espacio.description.slice(
                     0,
                     100
                   )}...`}</Descripcion>
@@ -101,11 +104,11 @@ export default ({ espacios, toggleLike }) => {
                     />
                     <Text
                       style={{ color: "grey", fontWeight: "bold", padding: 10 }}
-                    >{`${espacio.comentarios.length}  Ver comentarios`}
+                    >{`${espacio.location.length}  Ver comentarios`}
                     </Text>
                   </Comentarios>
                   <ContenedorIconos>
-                    {espacio.caracteristicas.map((caracteristica, index) => (
+                    {espacio.services.map((caracteristica, index) => (
                       <ContenedorIcono key={index}>
                         <Icono source={caracteristica.icono} />
                         <Text style={{ textAlign: "center" }}>
@@ -113,7 +116,7 @@ export default ({ espacios, toggleLike }) => {
                             caracteristica.cantidad
                               ? caracteristica.cantidad + " "
                               : ""
-                            }${caracteristica.nombre}${
+                            }${caracteristica}${
                             caracteristica.cantidad > 1 ? "s" : ""
                             }`}
                         </Text>
@@ -160,6 +163,17 @@ export default ({ espacios, toggleLike }) => {
     </ScrollView >
   );
 };
+/*
+    <Text style={{ textAlign: "center" }}>
+                          {`${
+  Hay que agregarla a la tabla cantidades                          caracteristica.cantidad
+                              ? caracteristica.cantidad + " "
+                              : ""
+   Esto marca el tipo de category                         }${caracteristica}${
+                            caracteristica.cantidad > 1 ? "s" : ""
+                            }`}
+                        </Text>
+*/
 
 const ListaYMapa = styled.View`
   background-color: #4a94ea;
