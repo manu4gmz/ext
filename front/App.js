@@ -17,7 +17,7 @@ import UploadingFiles from './src/react/containers/UploadingFiles';
 import Camera from './src/react/components/Camera';
 import Navbar from "./src/react/components/Navbar";
 
-const Stack = createStackNavigator();
+/* const Stack = createStackNavigator(); */
 
 import firebase from "./src/redux/firebase";
 
@@ -29,18 +29,18 @@ const noNavbar = {
 }
 
 const withNavbar = (title) => ({
-  header: (props) => <Navbar {...props} title={title}/>,
+  header: (props) => <Navbar {...props} title={title} />,
   headerStyle: {
     backgroundColor: "transparent"
   }
 })
 
 export default class App extends Component {
-  render() {    
+  render() {
     return (
       <Provider store={store}>
         <NavigationContainer>
-          <DrawerContainer/>
+          <DrawerContainer />
         </NavigationContainer>
       </Provider >
     );

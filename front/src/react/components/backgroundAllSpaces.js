@@ -16,7 +16,7 @@ export default ({ espacios, toggleLike }) => {
   const [mode, setMode] = useState(false);
   return (
     <ScrollView>
-      <View style={{ backgroundColor: "E9E9E9" }}>
+      <View style={{ backgroundColor: "#E9E9E9" }}>
         <ListaYMapa>
           <Lista active={!mode + ""} onPress={() => setMode(false)}>
             Lista
@@ -61,7 +61,7 @@ export default ({ espacios, toggleLike }) => {
                         marginRight: 5
                       }}
                     >
-                      <View style={{ display: "flex", flexDirection: "row" }}>
+                      <View style={{ flexDirection: "row" }}>
                         <Precio>{`$${espacio.precio}`}</Precio>
                         <Text
                           style={{
@@ -74,7 +74,11 @@ export default ({ espacios, toggleLike }) => {
                         >
                           +imp
                         </Text>
-                        <TouchableOpacity style={{ margin: "auto" }} onPress={() => toggleLike()}>
+
+                        <TouchableOpacity
+                          style={{ margin: "auto" }}
+                          onPress={() => toggleLike()}
+                        >
                           <Image
                             style={{ width: 30, height: 30 }}
                             source={require("../../public/icons/corazon-ne.png")}
@@ -85,10 +89,10 @@ export default ({ espacios, toggleLike }) => {
                       <Subtitulo>{espacio.observaciones}</Subtitulo>
                     </View>
                   </View>
-                  <Descripcion>{`${espacio.descripcion.slice(
-                    0,
-                    100
-                  )}...`}</Descripcion>
+                  <Descripcion>
+                    {`${espacio.descripcion.slice(0, 100)}...`}
+                  </Descripcion>
+
                   <Comentarios>
                     <Rating
                       type='custom'
@@ -178,6 +182,7 @@ const Lista = styled.Text`
   border-bottom-width: 3px;
   width: 50%;
 `;
+
 const TextoBusquedas = styled.Text`
   text-align: center;
   padding: 1%;
@@ -216,7 +221,6 @@ const Comentarios = styled.View`
     margin: 10px;
     display: flex;
     flex-direction: row;
-    align-self: left;
 `;
 
 const ContenedorIconos = styled.View`
