@@ -4,6 +4,7 @@ import styled from "styled-components/native";
 import { connect } from 'react-redux';
 import Button from "../ui/Button";
 import HomeTabBar from "../components/HomeTabBar";
+import Navbar from './Navbar';
 
 const backgroundHome = ({ navigation, user }) => {
   return (
@@ -12,13 +13,14 @@ const backgroundHome = ({ navigation, user }) => {
       style={styles.fondo}
       blurRadius={4}
     >
+      <Navbar/>
       <Wrapper>
         <ScrollView>
           <StyledView>
             <StyledTitle>Encontrá tu Espacio</StyledTitle>
             <StyledText>Descubrí espacios para todas tus reuniones laborales, fiestas, presentaciones, eventos y más.</StyledText>
             <Button
-              onPress={()=>navigation.push("SingleView")}
+              onPress={() => navigation.push("AllSpaces")}
             >Buscar</Button>
           </StyledView>
 
@@ -26,12 +28,12 @@ const backgroundHome = ({ navigation, user }) => {
             <StyledTitle>Ofrecé tu Espacio</StyledTitle>
             <StyledText>Ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
 
-            
-              <Button
-                onPress={() => navigation.push('OwnerForm')}
-                bg="#F77171">Ofrecer
+
+            <Button
+              onPress={() => navigation.push('OwnerForm')}
+              bg="#F77171">Ofrecer
                 </Button>
-            
+
 
           </StyledView>
 

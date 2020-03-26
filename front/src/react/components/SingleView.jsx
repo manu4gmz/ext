@@ -7,8 +7,8 @@ export default () => {
         <ScrollView>
             <View style={{ backgroundColor: "white" }} >
                 <View style={{ backgroundColor: "#4A94EA", flexDirection: "row", height: "8%" }}>
-                    <Lista active={(!mode)+""} onPress={() => (setMode(false))}>Lista</Lista>
-                    <Lista active={(mode)+""} onPress={() => (setMode(true))}>Mapa</Lista>
+                    <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
+                    <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
                 </View>
                 <TextoBusquedas > 34 espacios cumplen con tu busqueda</TextoBusquedas>
                 <View style={{ width: "100%", alignItems: "center" }}>
@@ -35,6 +35,7 @@ export default () => {
         </ScrollView >
     )
 }
+
 const Lista = styled.Text`
     align-self: center;
     font-size: 18px;

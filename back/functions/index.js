@@ -2,7 +2,10 @@ const functions = require('firebase-functions');
 const express = require('express');
 const routes = require('./routes/index')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const app = express()
+
+app.use(cors())
 
 //coonfigurando parseo
 app.use(bodyParser.urlencoded({ extended: false }))
