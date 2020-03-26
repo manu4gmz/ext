@@ -17,7 +17,7 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
   console.log(allSpaces)
   return (
     <ScrollView>
-      <View style={{ backgroundColor: "E9E9E9" }}>
+      <View style={{ backgroundColor: "#E9E9E9" }}>
         <ListaYMapa>
           <Lista active={!mode + ""} onPress={() => setMode(false)}>
             Lista
@@ -63,7 +63,7 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                         marginRight: 5
                       }}
                     >
-                      <View style={{ display: "flex", flexDirection: "row" }}>
+                      <View style={{ flexDirection: "row" }}>
                         <Precio>{`$${espacio.price}`}</Precio>
                         <Text
                           style={{
@@ -76,7 +76,11 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                         >
                           +imp
                         </Text>
-                        <TouchableOpacity style={{ margin: "auto" }} onPress={() => toggleLike()}>
+
+                        <TouchableOpacity
+                          style={{ margin: "auto" }}
+                          onPress={() => toggleLike()}
+                        >
                           <Image
                             style={{ width: 30, height: 30 }}
                             source={require("../../public/icons/corazon-ne.png")}
@@ -192,6 +196,7 @@ const Lista = styled.Text`
   border-bottom-width: 3px;
   width: 50%;
 `;
+
 const TextoBusquedas = styled.Text`
   text-align: center;
   padding: 1%;
@@ -230,7 +235,8 @@ const Comentarios = styled.View`
     margin: 10px;
     display: flex;
     flex-direction: row;
-    align-self: left;
+    align-self: flex-start;
+
 `;
 
 const ContenedorIconos = styled.View`

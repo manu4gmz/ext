@@ -33,13 +33,13 @@ const numberValidation = (val) => {
 }
 
 const fields = [
-  ["Nombre*"],
-  ["Apellido*"],
-  ["Teléfono Móvil de contacto*", "+54 9 11 5555 5555", numberValidation],
-  ["Mail", "nombre@mail.com", mailValidation],
-  ["Dirección", "Av. Congreso 1332", addressValidation],
-  [({ title }) => title("Via de contacto con cliente")],
-]
+    ["Nombre*"],
+    ["Apellido*"],
+    ["Teléfono Móvil de contacto*","+54 9 11 5555 5555", numberValidation],
+    ["Mail*","nombre@mail.com", mailValidation ],
+    ["Dirección","Av. Congreso 1332", addressValidation],
+    [({title})=>title("Via de contacto con cliente")],
+  ]
 
 import Form from '../components/Form';
 
