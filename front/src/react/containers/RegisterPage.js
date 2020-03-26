@@ -1,37 +1,38 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, Image, } from 'react-native'
+import { registerUser } from '../../redux/actions/register'
 import BackgroundRegister from '../components/backgroundRegister'
 
+const RegisterPage = ({ registerUser, navigation }) => {
+    const onSubmit = (e) => {
+        const num = e['Nombre y Apellido'].value.indexOf(' ')
+        const firstName = e['Nombre y Apellido'].value.slice(0, num)
+        const lastName = e['Nombre y Apellido'].value.slice(num + 1)
+        const email = e["Email"].value
+        const password = e["contraseña"].value
 
-const RegisterPage = () => {
-    const [Username, setUsername] = useState("")
-    const [Password, setPassword] = useState("")
-
-    const onChangeUser = (e) => { setUsername(e) }
-    const onChangePassword = (e) => { setPassword(e) }
-    const onSubmit = (e) => { console.log(e) }
+        registerUser({
+            firstName,
+            lastName,
+            email,
+            password
+        })
+            .then((data) => {
+                data.status === 201
+                    ? navigation.navigate('Root', { screen: "Login" })
+                    : null
+            })
+    }
 
     return (
         <BackgroundRegister
-            // Username={Username}
-            // Password={Password}
-            // onChangePassword={onChangePassword}
-            // onChangeUser={onChangeUser}
             onSubmit={onSubmit}
-        >
-
-        </BackgroundRegister>
+        />
     )
 }
 
-const styles = StyleSheet.create({
-
+const mapDispatchToProps = (dispatch) => ({
+    registerUser: (body) => dispatch(registerUser(body))
 })
 
-export default connect(null, null)(RegisterPage)
-
-
-
-
-
+export default connect(null, mapDispatchToProps)(RegisterPage)

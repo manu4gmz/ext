@@ -16,7 +16,7 @@ router.get("/spaces", (req, res, next) => {
       })
 
       const filtrado = arr.filter(propiedad => (
-        propiedad.neighborhood.includes(condicion.z) && propiedad.province.includes(condicion.c) && propiedad.type.includes(condicion.t) && propiedad.verified.includes(condicion.v)
+        propiedad.neighborhood.includes(condicion.z) || propiedad.province.includes(condicion.c) || propiedad.type.includes(condicion.t) || propiedad.verified.includes(condicion.v)
       ))
 
       res

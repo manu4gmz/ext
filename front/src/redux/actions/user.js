@@ -1,4 +1,3 @@
-import axios from "axios"
 import { LOGGED } from "../constants"
 import firebase from "../firebase";
 
@@ -66,6 +65,7 @@ export const getUserGoogle = () => dispatch => {
 		});
 }
 
+//desloguearse de cualquier forma
 export const LogoutUser = () => {
 	return firebase.auth().signOut()
 		.then(() => {
