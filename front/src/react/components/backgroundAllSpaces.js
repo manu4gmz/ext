@@ -108,13 +108,26 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                     />
                     <Text
                       style={{ color: "grey", fontWeight: "bold", padding: 10 }}
-                    >{`${espacio.location.length}  Ver comentarios`}
+                    >{`${espacio.location.length || 0}  Ver comentarios`}
                     </Text>
                   </Comentarios>
                   <ContenedorIconos>
                     {espacio.services.map((caracteristica, index) => (
                       <ContenedorIcono key={index}>
-                        <Icono source={caracteristica.icono} />
+                        <Icono source={caracteristica === "wifi" ?
+                          (require("../../public/icons/wifi-ne.png"))
+                          :
+                          (caracteristica === "Aire Acondicionado" ?
+                            (require("../../public/icons/proyector-ne.png"))
+                            :
+                            caracteristica === "Cafe" ?
+                              (require("../../public/icons/cafe-ne.png"))
+                              :
+                              caracteristica === "Ducha" ?
+                                (require("../../public/icons/ducha-ne.png"))
+                                :
+                                null)
+                        } />
                         <Text style={{ textAlign: "center" }}>
                           {`${
                             caracteristica.cantidad
@@ -246,12 +259,15 @@ const ContenedorIconos = styled.View`
   width: 100%;
   justify-content: space-evenly;
 `;
+
 const ContenedorIcono = styled.View`
   display: flex;
   flex-direction: column;
   align-self: center;
+  align-items: center;
   margin: 10px;
-`;
+  width: 25px;
+  height: 70px;`;
 
 const Icono = styled.Image`
     background-color: #F7F7F7;
