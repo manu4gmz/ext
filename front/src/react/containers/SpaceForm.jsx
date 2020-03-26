@@ -20,13 +20,21 @@ const SpaceForm = ({ navigation, uploadFiles }) => {
   const Rules = TextPrompt(useState(false),useState(""));
 
   const onSubmit = function (form) { 
-
-    navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value })
-
-    
-
     console.log("Formulario completo",form)
-    //navigation.push("Payment")
+
+
+    /*
+    -------------------------------------------------------------------------
+
+      La siguiente linea se ejecuta una vez que se haya hecho el pedido post
+      a crear el espacio
+
+      En el segundo parametro de Navigate, en propertyId, le tenes que pasar 
+      la id del espacio que acabás de crear
+
+    */
+
+    navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value, propertyId: 2 })
   }
 
   const fields = [

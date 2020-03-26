@@ -11,23 +11,28 @@ const LoadingView = ({ navigation, route, uploadFiles }) => {
 	const [progress, setProgress] = useState(0);
 
 	useEffect(()=>{
-		const { images } = route.params;
+		const { images, propertyId } = route.params;
 
-		uploadFiles(images, setProgress)
-			.then(()=>navigation.navigate("Home"))
+		uploadFiles(images, propertyId, setProgress)
+			.then((files)=>{
+				console.log(files)
+
+			  /*
+			    -------------------------------------------------------------------------
+
+			      En "files" te llega un arreglo con todos los links del espacio.
+
+			      Aca yo haría un pedido a alguna ruta para añadirle las imagenes, y 
+			      por ultimo un navigate a la vista del espacio.
+
+			  */
+
+				navigation.navigate("Home")
+			})
 			.catch(err => {
-				console.log("error desde aca jeje")
-				Alert.alert(
-				  'Error',
-				  'Ha habido un problema subiendo las imagenes.',
-				  [
-				    {
-				      text: 'OK',
-				      onPress: () => navigation.navigate("SpaceForm")
-				    }
-				  ],
-				  { cancelable: false }
-				);
+
+				navigation.navigate("SpaceForm")
+
 			})
 
 	},[])
