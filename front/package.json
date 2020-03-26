@@ -24,6 +24,7 @@
     "react-native-camera": "^3.21.0",
     "react-native-gesture-handler": "^1.5.6",
     "react-native-google-button": "^0.1.0",
+    "react-native-paper": "^3.6.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-elements": "^1.2.7",
     "react-native-ratings": "^6.5.0",
