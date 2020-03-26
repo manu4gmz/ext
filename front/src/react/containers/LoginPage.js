@@ -53,7 +53,7 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    console.log(state);
+    //console.log(state);
     return {}
 }
 

@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     },
 
     imagenInputs2: {
-        
+
     },
 
     inputContainer: {
@@ -119,15 +119,15 @@ const Error = styled.Text`
 const TextoPrincipal = styled.Text`
     color:#E9E9E9;
     margin: 0 auto;
-    paddingBottom:120px;
-    paddingTop:30px
-    fontSize:25px
+    padding- bottom:120px;
+    padding-top:30px
+    font-size:25px
 `
 
 const RememberPassword = styled.Text`
     color:#E9E9E9;
     margin: 0 auto;
-    fontSize:15px;
+    font-size:15px;
 `
 
 const BotonIngresar = styled.Text`

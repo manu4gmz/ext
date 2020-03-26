@@ -17,9 +17,8 @@ import AllSpaces from "../containers/AllSpaces"
 import LoginPage from "../containers/LoginPage"
 import { View, StyleSheet } from 'react-native'
 import { Avatar,Title,Caption,Paragraph} from 'react-native-paper'
-
-
-
+import Camera from "../components/Camera"
+import UploadingFiles from "../containers/UploadingFiles";
 
 
 const Stack = createStackNavigator();
@@ -87,6 +86,8 @@ function Root(){
       <Stack.Screen name="OwnerForm" component={OwnerForm} options={{header: ()=> null}, titulo("Ofrece tu espacio")}/>
       <Stack.Screen name="SingleView" component={SingleViewPage} options={{header: ()=> null},titulo("Single view")}/>
       <Stack.Screen name="AllSpaces" component={AllSpaces} options={{header: ()=> null},titulo("Espacios")}/>
+      <Stack.Screen name="Camera" component={Camera} options={{header: ()=> null}}/>
+      <Stack.Screen name="UploadingFiles" component={UploadingFiles} options={{header: ()=> null}}/>
     </Stack.Navigator>
   )
 }
