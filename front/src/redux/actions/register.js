@@ -11,7 +11,7 @@ export const registerUser = (body) => dispatch => {
   registerFirebase(body.email, body.password)
 
   return axios
-    .post(`http://localhost:5000/ext-api/us-central1/app/api/users/register`, { body })
+    .post(`https://ext-api.web.app/api/us-central1/app/api/users/register`, { body })
     .then(data => data)
     .catch(error => console.log(error))
 }

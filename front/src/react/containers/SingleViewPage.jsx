@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, Text, View, Image } from "react-native";
 import SingleView from "../components/SingleView";
-import { singleSpace } from "../../redux/actions/spaces"
-const SingleViewPage = ({ space, singleSpace }) => {
+import { fetchSpace } from "../../redux/actions/spaces"
+const SingleViewPage = ({ space, fetchSpace, id }) => {
     useEffect(() => {
-        singleSpace(id);
+        fetchSpace(id);
 
     }, [])
     return <SingleView space={space} />;
@@ -13,13 +13,14 @@ const SingleViewPage = ({ space, singleSpace }) => {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        id: ownProps.match.params.id,
-        space: state.spaces.singleSpace
+        id: state.spaces.idSpace,
+        space: state.spaces.singleSpace,
+
     }
 }
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        singleSpace: (spaceId) => (dispatch(singleSpace(spaceId)))
+        fetchSpace: (spaceId) => (dispatch(fetchSpace(spaceId)))
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SingleViewPage);
