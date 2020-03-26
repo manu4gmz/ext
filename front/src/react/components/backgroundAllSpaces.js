@@ -216,7 +216,7 @@ const Comentarios = styled.View`
     margin: 10px;
     display: flex;
     flex-direction: row;
-    align-self: left;
+    align-self: flex-start;
 `;
 
 const ContenedorIconos = styled.View`
