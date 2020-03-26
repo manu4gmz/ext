@@ -10,12 +10,18 @@ const RegisterPage = ({ registerUser, navigation }) => {
         const lastName = e['Nombre y Apellido'].value.slice(num + 1)
         const email = e["Email"].value
         const password = e["contraseña"].value
+        const favoritos = []
+        const address = ''
+        const phoneNumber = ''
 
         registerUser({
             firstName,
             lastName,
             email,
-            password
+            password,
+            favoritos,
+            address,
+            phoneNumber
         })
             .then((data) => {
                 data.status === 201

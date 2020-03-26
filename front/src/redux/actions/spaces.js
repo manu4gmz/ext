@@ -27,6 +27,12 @@ export const fetchId = (id) => dispatch => {
     return dispatch(captureId(id))
 }
 
+export const addSpace = (body) => dispatch => {
+    return axios
+        .post(`http://localhost:5000/ext-api/us-central1/app/api/properties/createSpace`, body)
+        .then(res => res)
+        .catch(error => console.log(error))
+}
 
 
 //https://ext-api.web.app/api/

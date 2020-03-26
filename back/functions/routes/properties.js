@@ -77,7 +77,8 @@ router.get("/singleSpace/:id", (req, res, next) => {
 //* crear un espacio
 router.post("/createSpace", (req, res, next) => {
   const body = req.body
-  db.collection("properties").set(body)
+
+  db.collection("properties").add(body)
     .then(() => res.sendStatus(201))
     .catch(next)
 })
