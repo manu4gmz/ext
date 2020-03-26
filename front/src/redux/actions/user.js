@@ -46,7 +46,7 @@ export const logUser = (email, password) => dispatch => {
 		})
 };
 
-//logueo con facebook
+//logueo con google
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
 
@@ -57,14 +57,21 @@ export const getUserGoogle = () => dispatch => {
 			dispatch(setLoggedUser(user.email))
 			dispatch(getUser())
 		})
-		.catch(function (error) {
-			// Handle Errors here.
+		.catch((error) => {
 			const errorCode = error.code;
 			const errorMessage = error.message;
-			// The email of the user's account used.
 			const email = error.email;
-			// The firebase.auth.AuthCredential type that was used.
 			const credential = error.credential;
-			// ...
+			console.log(errorCode, errorMessage, email, credential);
 		});
+}
+
+export const LogoutUser = () => {
+	return firebase.auth().signOut()
+		.then(() => {
+			console.log('Deslogueado con exito');
+		})
+		.catch((error) => {
+			console.log(error)
+		})
 }
