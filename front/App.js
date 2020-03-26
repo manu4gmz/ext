@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux'
 import store from './src/redux/store'
-
-//navigation
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-
+import DrawerContainer from './src/react/containers/DrawerContainer';
 
 //Importando views and components
 import HomePage from './src/react/containers/HomePage'
@@ -17,10 +14,7 @@ import SingleViewPage from './src/react/containers/SingleViewPage';
 import SpaceForm from './src/react/containers/SpaceForm';
 import OwnerForm from './src/react/containers/OwnerForm';
 import UploadingFiles from './src/react/containers/UploadingFiles';
-
 import Camera from './src/react/components/Camera';
-
-
 import Navbar from "./src/react/components/Navbar";
 
 const Stack = createStackNavigator();
@@ -41,23 +35,12 @@ const withNavbar = (title) => ({
   }
 })
 
-
 export default class App extends Component {
-  render() {
+  render() {    
     return (
-      <Provider store={store} >
+      <Provider store={store}>
         <NavigationContainer>
-          <Stack.Navigator inicialRouteName="Login">
-            <Stack.Screen name="Login" component={LoginPage} options={noNavbar} />
-            <Stack.Screen name="SpaceForm" component={SpaceForm} options={withNavbar("Ofrecé tu espacio")}/>
-            <Stack.Screen name="Home" component={HomePage} options={withNavbar()}/>
-            <Stack.Screen name="Register" component={RegisterPage} options={withNavbar("Crea tu cuenta")}/>
-            <Stack.Screen name="Payment" component={PaymentPage} options={withNavbar("Elegí un plan")}/>
-            <Stack.Screen name="OwnerForm" component={OwnerForm} options={withNavbar("Ofrecé tu espacio")}/>
-            <Stack.Screen name="SingleView" component={SingleViewPage} options={withNavbar("Espacios")}/>
-            <Stack.Screen name="Camera" component={Camera} options={noNavbar}/>
-            <Stack.Screen name="UploadingFiles" component={UploadingFiles} options={noNavbar}/>
-          </Stack.Navigator>
+          <DrawerContainer/>
         </NavigationContainer>
       </Provider >
     );

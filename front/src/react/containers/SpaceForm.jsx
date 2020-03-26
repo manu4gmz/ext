@@ -14,10 +14,10 @@ import Form from '../components/Form';
 
 const SpaceForm = ({ navigation, uploadFiles }) => {
 
-  const Type = Picker(useState(false),useState(""));
-  const Services = Picker(useState(false),useState([]));
-  const Observation = TextPrompt(useState(false),useState(""));
-  const Rules = TextPrompt(useState(false),useState(""));
+  const Type = Picker(useState(false), useState(""));
+  const Services = Picker(useState(false), useState([]));
+  const Observation = TextPrompt(useState(false), useState(""));
+  const Rules = TextPrompt(useState(false), useState(""));
 
   const onSubmit = function (form) { 
     console.log("Formulario completo",form)
@@ -34,7 +34,9 @@ const SpaceForm = ({ navigation, uploadFiles }) => {
 
     */
 
+
     navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value, propertyId: 2 })
+
   }
 
   const fields = [
@@ -47,51 +49,46 @@ const SpaceForm = ({ navigation, uploadFiles }) => {
       ["Depto","B"],
     ],
     //["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
-    [({onChange})=><Type.Input onChange={onChange} title={"Tipo de Espacio*"} placeholder="Selecciona el espacio que ofrece."/>],
+    [({ onChange }) => <Type.Input onChange={onChange} title={"Tipo de Espacio*"} placeholder="Selecciona el espacio que ofrece." />],
     [
       ["Tamaño #(mtr2)#*", "mtr2"],
       ["Capacidad*", "Cant. personas"]
     ],
-    [({onChange})=><Services.Input onChange={onChange} title={"Caracteristicas y servicios*"} placeholder="Wifi, Cafe, Snacks, TV, Aire Acond.."/>],
-    [({onChange})=><Observation.Input onChange={onChange} title="Observaciones" placeholder="Horarios disponibles, particularidades, etc."/>],
+    [({ onChange }) => <Services.Input onChange={onChange} title={"Caracteristicas y servicios*"} placeholder="Wifi, Cafe, Snacks, TV, Aire Acond.." />],
+    [({ onChange }) => <Observation.Input onChange={onChange} title="Observaciones" placeholder="Horarios disponibles, particularidades, etc." />],
 
     [
       ["Valor hora ($)", "$560"],
       ["Tasa limpieza ($)*", "$180"],
     ],
-    [({onChange})=><Rules.Input onChange={onChange} title="Reglas de Convivencia" placeholder="Aclaraciones, límites, reglas del lugar..."/>],
+    [({ onChange }) => <Rules.Input onChange={onChange} title="Reglas de Convivencia" placeholder="Aclaraciones, límites, reglas del lugar..." />],
 
-    [({title, onChange})=><AddPhotos text="Agregar fotos" navigation={navigation} onChange={onChange} title={title}/>],
+    [({ title, onChange }) => <AddPhotos text="Agregar fotos" navigation={navigation} onChange={onChange} title={title} />],
   ]
 
 
 
   return (
-    <View style={{flex:1}}>
-    <Type.Modal title={"Tipo de Espacio*"} options={["Casa","Depósito","Habitación","Oficina","Quinta","Salón","Terreno"]}/>
-    <Services.Modal title={"Caracteristicas y servicios*"} options={["Aire Acondicionado","Wifi","LCD","Cafe/Infusiones","Snacks","Música","Vajilla"]}/>
-    <Observation.Modal title={"Observaciones*"} placeholder={
-      "Coloque aquí las observaciones y características del espacio para que lea su cliente. Sea breve y claro."
-    }/>
-    <Rules.Modal title={"Reglas de convivencia"} placeholder={
-      "Coloque aquí las reglas del espacio, los límites, si acepta o no mascotas, los temas de órden y limpieza, etc. Sea breve y claro."
-    }/>
+    <View style={{ flex: 1 }}>
+      <Type.Modal title={"Tipo de Espacio*"} options={["Casa", "Depósito", "Habitación", "Oficina", "Quinta", "Salón", "Terreno"]} />
+      <Services.Modal title={"Caracteristicas y servicios*"} options={["Aire Acondicionado", "Wifi", "LCD", "Cafe/Infusiones", "Snacks", "Música", "Vajilla"]} />
+      <Observation.Modal title={"Observaciones*"} placeholder={
+        "Coloque aquí las observaciones y características del espacio para que lea su cliente. Sea breve y claro."
+      } />
+      <Rules.Modal title={"Reglas de convivencia"} placeholder={
+        "Coloque aquí las reglas del espacio, los límites, si acepta o no mascotas, los temas de órden y limpieza, etc. Sea breve y claro."
+      } />
 
-    <Form
-     onSubmit={onSubmit}
-     fields={fields}
-     header={({divider})=><AddSpaceFormProgress title="Presentá tu espacio" state={1} divider={divider}/>}
-     sendText="Siguiente"
-    />
+      <Form
+        onSubmit={onSubmit}
+        fields={fields}
+        header={({ divider }) => <AddSpaceFormProgress title="Presentá tu espacio" state={1} divider={divider} />}
+        sendText="Siguiente"
+      />
     </View>
   )
 }
 
 
+export default connect(null, null)(SpaceForm);
 
-const mapDispatchToProps = (dispatch) => ({
-  
-})
-
-
-export default connect(null, mapDispatchToProps)(SpaceForm);

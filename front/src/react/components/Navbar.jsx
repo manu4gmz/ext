@@ -3,19 +3,21 @@ import { Button, Text, View, Image, TouchableOpacity  } from "react-native";
 import styled from "styled-components/native";
 import { connect } from "react-redux";
 import Icon from "../ui/Icon";
+import { useNavigation } from "@react-navigation/native"
 
 const Navbar = (props) => {
+  const navigation = useNavigation();
   return (
     <Background>
 
       <Wrapper>
-        {
+        {/* {
           props.title ? <Back source={require('../../public/icons/back.png')} onPress={()=>props.navigation.pop()}/> :
-           <Icon source={require('../../public/images/isologotipo-only.png')}/>
-        }
-       
+           <Icon source={require('../../public/icons/sidebar.png')}/>
+        } */}
+        <Icon onPress={()=> navigation.toggleDrawer()} source={require('../../public/icons/sidebar.png')}/>
         <Title>{props.title || `Hola ${((props.user || {}).email)||""}!`}</Title>
-        <SidebarBtn source={require('../../public/icons/sidebar.png')}/>
+        <Icon source={require('../../public/images/isologotipo-only.png')}/>
       </Wrapper>
     </Background>
   )
