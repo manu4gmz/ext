@@ -4,40 +4,38 @@ import styled from "styled-components/native";
 import { connect } from "react-redux";
 import { removePicture, addPicture } from "../../redux/actions/files";
 
-const AddPhotos = ({title,text, navigation, onChange, removePicture, addPicture, pictures})=> {
+const AddPhotos = ({ title, text, navigation, onChange, removePicture, addPicture, pictures }) => {
 
-	useEffect(()=>{
-		onChange((form)=>({...form, [text]:{value:pictures, error: null}}))
-	},[pictures])
+	useEffect(() => {
+		onChange((form) => ({ ...form, [text]: { value: pictures, error: null } }))
+	}, [pictures])
 
-    useEffect(()=>{
-    window.addPhoto = (pic)=>addPicture(pic);
-  },[])
-
-    console.log(pictures);
+	useEffect(() => {
+		window.addPhoto = (pic) => addPicture(pic);
+	}, [])
 
 	return <View>
-      {title(text)}
-    	<PicsRoll horizontal={true}>
-		    {
-		      	pictures.map((pic,i) => {
-		      		return <PicWrapper key={i}  width={240*(pic.width/pic.height)} height={240*(pic.height/pic.width)}>
-		      			<Pic source={{uri: pic.uri}}/>
-		      			<ImgInteract>
-		      				<TouchableOpacity onPress={()=>removePicture(pic)}>
-		      					<Icon source={require("../../public/icons/cross.png")}/>
-		      				</TouchableOpacity>
-		      			</ImgInteract>
-		      		</PicWrapper>
-		      	})
-		    }
-    	</PicsRoll>
-    	<Photos onPress={()=>navigation.push("Camera")}>
-		    <PhotosText>+</PhotosText> 
-		    <Icon source={require("../../public/icons/camera.png")}/>
-    		<PhotosText>({pictures.length || 0})</PhotosText>
-    	</Photos>
-  	</View>
+		{title(text)}
+		<PicsRoll horizontal={true}>
+			{
+				pictures.map((pic, i) => {
+					return <PicWrapper key={i} width={240 * (pic.width / pic.height)} height={240 * (pic.height / pic.width)}>
+						<Pic source={{ uri: pic.uri }} />
+						<ImgInteract>
+							<TouchableOpacity onPress={() => removePicture(pic)}>
+								<Icon source={require("../../public/icons/cross.png")} />
+							</TouchableOpacity>
+						</ImgInteract>
+					</PicWrapper>
+				})
+			}
+		</PicsRoll>
+		<Photos onPress={() => navigation.push("Camera")}>
+			<PhotosText>+</PhotosText>
+			<Icon source={require("../../public/icons/camera.png")} />
+			<PhotosText>({pictures.length || 0})</PhotosText>
+		</Photos>
+	</View>
 }
 
 const mapStateToProps = (state) => ({
@@ -45,8 +43,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-	removePicture: (...params)=>dispatch(removePicture(...params)),
-	addPicture: (...params)=>dispatch(addPicture(...params))
+	removePicture: (...params) => dispatch(removePicture(...params)),
+	addPicture: (...params) => dispatch(addPicture(...params))
 })
 
 
@@ -61,8 +59,8 @@ const PicsRoll = styled.ScrollView`
 `
 
 const PicWrapper = styled.View`
-	width: ${props=>props.width || "240"}px;
-	height: ${props=>props.height || "240"}px;
+	width: ${props => props.width || "240"}px;
+	height: ${props => props.height || "240"}px;
 	margin-right: 10px;
 	overflow: hidden;
 	border-radius: 3px;
