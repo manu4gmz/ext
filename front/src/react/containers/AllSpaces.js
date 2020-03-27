@@ -64,7 +64,6 @@ class AllSpaces extends React.Component {
         }
       ]
     };
-    this.toggleLike = this.toggleLike.bind(this);
     this.sendId = this.sendId.bind(this);
 
   }
@@ -78,7 +77,6 @@ class AllSpaces extends React.Component {
     return (
       <BackgroundAllSpaces
         espacios={this.state.espacios}
-        toggleLike={this.toggleLike}
         allSpaces={this.props.allSpaces}
         navigation={this.props.navigation}
         sendId={this.sendId}
