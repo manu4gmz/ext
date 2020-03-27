@@ -29,13 +29,16 @@ const SerchSpace = ({ navigation, fetchSpaces }) => {
     const [Verificado, setVerificado] = useState(false)
 
     const onSubmit = function (form) {
-        const datosSpace = {
-            n: form["Barrio"].value,
-            p: form["Provincia*"].value,
-            t: form["Tipo de Espacio"].value,
-            v: Verificado
-        }
-        fetchSpaces(datosSpace)
+        let filter = {};
+
+        if (form["Barrio"] && form["Barrio"].value) filter.z = form["Barrio"].value;
+        if (form["Provincia*"] && form["Provincia*"].value) filter.p = form["Provincia*"].value;
+        if (form["Tipo de Espacio"] && form["Tipo de Espacio"].value) filter.t = form["Tipo de Espacio"].value;
+        if (Verificado) filter.v = Verificado;
+
+        console.log(filter);
+
+        fetchSpaces(filter)
             .then((data) => {
                 return navigation.navigate('Root', { screen: "AllSpaces" })
             })
