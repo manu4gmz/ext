@@ -36,8 +36,8 @@ function CustomDrawerContent(props) {
           source={require("../../public/images/isologotipo-only.png")}
           size={68}
         />
-        <Title style={styles.title}>Dawid Duchovny</Title>
-        <Caption style={styles.caption}>fox@mulder.com</Caption>
+        <Title style={styles.title}>Nombre y Apellido</Title>
+        <Caption style={styles.caption}>nombre@apellido.com</Caption>
       </View>
 
       <DrawerItem
@@ -46,8 +46,13 @@ function CustomDrawerContent(props) {
       />
 
       <DrawerItem
-        label="Payment"
-        onPress={() => props.navigation.navigate('Root', { screen: "Payment" }, props)}
+        label="Register"
+        onPress={() => props.navigation.navigate('Root', { screen: "Register" }, props)}
+      />
+
+      <DrawerItem
+        label="Login"
+        onPress={() => props.navigation.navigate('Root', { screen: "Login" }, props)}
       />
 
       <DrawerItem
@@ -89,9 +94,9 @@ function Root() {
     }
   })
   return (
-    <Stack.Navigator inicialRouteName="Login">
-      <Stack.Screen name="Login" component={LoginPage} options={{ header: () => null }} />
+    <Stack.Navigator inicialRouteName="Home">
       <Stack.Screen name="Home" component={HomePage} options={{ header: () => null }} />
+      <Stack.Screen name="Login" component={LoginPage} options={{ header: () => null }} />
       <Stack.Screen name="SerchSpace" component={SerchSpace} options={{ header: () => null }, titulo("Busca tu espacio")} />
       <Stack.Screen name="Register" component={RegisterPage} options={{ header: () => null }, titulo("Crea tu cuenta")} />
       <Stack.Screen name="Payment" component={PaymentPage} options={{ header: () => null }, titulo("Elegi tu plan")} />
@@ -112,7 +117,7 @@ export default () => {
       inicialRouteName="Login"
       hideStatusBar="true"
       drawerType="slide"
-      drawerStyle={{ width: 150 }}
+      drawerStyle={{ width: 200 }}
       drawerContent={props => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen

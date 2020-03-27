@@ -12,7 +12,6 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 		if (user) {
 			const userObj = { email: user.email, uid: user.uid };
 			dispatch(setLoggedUser(userObj))
-			console.log("Esta logueado ! :D", userObj)
 			if (ifLogged && typeof ifLogged == "function") ifLogged(userObj);
 		} else {
 			dispatch(setLoggedUser({}))

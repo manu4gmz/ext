@@ -6,5 +6,5 @@ export const REMOVE_PICTURE = "REMOVE_PICTURE"
 export const SPACE = "SPACE"
 export const ALLSPACES = "ALLSPACES"
 export const IDSPACE = "IDSPACE"
-
+export const PORPERTIESID = 'PORPERTIES_ID'
 

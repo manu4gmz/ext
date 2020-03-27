@@ -14,7 +14,6 @@ import { Rating } from 'react-native-ratings';
 
 export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
   const [mode, setMode] = useState(false);
-  console.log(allSpaces)
   return (
     <ScrollView>
       <View style={{ backgroundColor: "#E9E9E9" }}>

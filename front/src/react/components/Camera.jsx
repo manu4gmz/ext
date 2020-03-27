@@ -6,19 +6,19 @@ import styled from "styled-components/native";
 import { connect } from "react-redux";
 import { addPicture } from "../../redux/actions/files";
 
-function CameraView({route, navigation, addPicture, pictures}) {
-  const [ hasPermission, setHasPermission ] = useState(null);
-  const [ hasCameraRoll, setHasCameraRoll ] = useState(null);
-  const [ type, setType ] = useState(Camera.Constants.Type.back);
-  const [ camera, setCamera ] = useState(null);
-  const [ taking, setTaking ] = useState(false);
-  const [ preview, setPreview ] = useState(80);
-  const [ flash, setFlash ] = useState(null);
+function CameraView({ route, navigation, addPicture, pictures }) {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [hasCameraRoll, setHasCameraRoll] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [camera, setCamera] = useState(null);
+  const [taking, setTaking] = useState(false);
+  const [preview, setPreview] = useState(80);
+  const [flash, setFlash] = useState(null);
 
 
-  const {height, width} = Dimensions.get('window');
-  const newWidth = height*(3/4);
-  const widthOffset = -((newWidth-width)/2);
+  const { height, width } = Dimensions.get('window');
+  const newWidth = height * (3 / 4);
+  const widthOffset = -((newWidth - width) / 2);
 
   useEffect(() => {
     (async () => {
@@ -41,14 +41,14 @@ function CameraView({route, navigation, addPicture, pictures}) {
 
   function takePicture() {
     setTaking(true)
-  	camera.takePictureAsync()
-  	.then(pic => {
-      setTaking(false)
+    camera.takePictureAsync()
+      .then(pic => {
+        setTaking(false)
 
-      addPicture(pic);
-      setFlash(true);
-      setTimeout(()=>setFlash(null), 1000)
-  	})
+        addPicture(pic);
+        setFlash(true);
+        setTimeout(() => setFlash(null), 1000)
+      })
   }
 
   function getFromGallery() {
@@ -56,46 +56,41 @@ function CameraView({route, navigation, addPicture, pictures}) {
       allowsEditing: true,
       allowsMultipleSelection: true
     })
-    .then(data => {
-      addPicture({
-        uri: data.uri,
-        height: data.height,
-        width: data.width
+      .then(data => {
+        addPicture({
+          uri: data.uri,
+          height: data.height,
+          width: data.width
+        })
       })
-    })
   }
-
-
-
-  console.log(pictures)
-
 
   return (
     <View style={{
-        position:"relative", 
-        flex: 1, 
-        width: newWidth, 
-        left: widthOffset,
-        right: widthOffset
+      position: "relative",
+      flex: 1,
+      width: newWidth,
+      left: widthOffset,
+      right: widthOffset
     }}>
-    {
-      flash && <Flash />
-    }
+      {
+        flash && <Flash />
+      }
       <Back offset={widthOffset} onPress={() => navigation.pop()}>
         <BackIcon source={require('../../public/icons/back.png')} />
         <Label ml={12}>Volver</Label>
       </Back>
-      <Camera type={type} style={{flex: 1}} ref={cam => setCamera(cam)}>
+      <Camera type={type} style={{ flex: 1 }} ref={cam => setCamera(cam)}>
         <Interact>
-            <PreviewRow horizontal={true} width={width} offset={widthOffset}>
-              {
-                pictures.map((pic, i) =>
-                  <TouchableOpacity onPress={()=>setPreview(a => a==80 ? 240 : 80)} >
-                    <PreviewImage key={i} source={{uri:pic.uri}} width={pic.width} height={pic.height} preview={preview}/>
-                  </TouchableOpacity>
-                )
-              }
-            </PreviewRow>
+          <PreviewRow horizontal={true} width={width} offset={widthOffset}>
+            {
+              pictures.map((pic, i) =>
+                <TouchableOpacity onPress={() => setPreview(a => a == 80 ? 240 : 80)} >
+                  <PreviewImage key={i} source={{ uri: pic.uri }} width={pic.width} height={pic.height} preview={preview} />
+                </TouchableOpacity>
+              )
+            }
+          </PreviewRow>
 
           <InteractRow>
             <TouchableOpacity
@@ -111,7 +106,7 @@ function CameraView({route, navigation, addPicture, pictures}) {
               onPress={() => {
                 !taking && takePicture()
               }}>
-              <SnapIcon source={require("../../public/icons/camera.png")}/>
+              <SnapIcon source={require("../../public/icons/camera.png")} />
             </SnapButton>
 
             <TouchableOpacity onPress={() => getFromGallery()}>
@@ -129,7 +124,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  addPicture : (pic)=>dispatch(addPicture(pic))
+  addPicture: (pic) => dispatch(addPicture(pic))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CameraView);
@@ -201,15 +196,15 @@ const Flash = styled.View`
 
 const PreviewRow = styled.ScrollView`
   flex-direction: row;
-  width: ${p=>p.width}px;
-  left: ${p=>-(p.offset)}px;
+  width: ${p => p.width}px;
+  left: ${p => -(p.offset)}px;
   position: relative;
   margin-bottom: 10px;
 `
 
 const PreviewImage = styled.Image`
-  height: ${p=>p.preview}px;
-  width: ${p=>p.preview*(p.width/p.height)}px;
+  height: ${p => p.preview}px;
+  width: ${p => p.preview * (p.width / p.height)}px;
   border: solid 2px white;
   border-radius: 2px;
   margin-left: 5px;
@@ -218,7 +213,7 @@ const PreviewImage = styled.Image`
 
 const Back = styled.TouchableOpacity`
   position: absolute;
-  left: ${p=>-p.offset}px;
+  left: ${p => -p.offset}px;
   top: 10px;
   z-index: 1;
   flex: 1;

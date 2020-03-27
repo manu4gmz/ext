@@ -15,12 +15,13 @@ const mapStateToProps = (state, ownProps) => {
     return {
         id: state.spaces.idSpace,
         space: state.spaces.singleSpace,
-
     }
 }
+
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         fetchSpace: (spaceId) => (dispatch(fetchSpace(spaceId)))
     }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(SingleViewPage);
