@@ -78,7 +78,6 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
 
                         <TouchableOpacity
                           style={{ margin: "auto" }}
-                          onPress={() => toggleLike()}
                         >
                           <Image
                             style={{ width: 30, height: 30 }}
