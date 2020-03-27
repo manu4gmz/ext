@@ -92,7 +92,7 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                       <Subtitulo>{`${espacio.size} mtr2`}</Subtitulo>
                     </View>
                   </TouchableOpacity>
-                  <Descripcion>{`${espacio.description.slice(
+                  <Descripcion>{`${(espacio.description || "").slice(
                     0,
                     100
                   )}...`}</Descripcion>
@@ -108,11 +108,11 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                     />
                     <Text
                       style={{ color: "grey", fontWeight: "bold", padding: 10 }}
-                    >{`${espacio.location.length || 0}  Ver comentarios`}
+                    >{`${(espacio.location || "").length || 0}  Ver comentarios`}
                     </Text>
                   </Comentarios>
                   <ContenedorIconos>
-                    {espacio.services.map((caracteristica, index) => (
+                    {(espacio.services || []).map((caracteristica, index) => (
                       <ContenedorIcono key={index}>
                         <Icono source={caracteristica === "wifi" ?
                           (require("../../public/icons/wifi-ne.png"))
@@ -128,6 +128,8 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                                 :
                                 null)
                         } />
+                        {/*
+
                         <Text style={{ textAlign: "center" }}>
                           {`${
                             caracteristica.cantidad
@@ -137,6 +139,7 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                             caracteristica.cantidad > 1 ? "s" : ""
                             }`}
                         </Text>
+                        */}
                       </ContenedorIcono>
                     ))}
                   </ContenedorIconos>
