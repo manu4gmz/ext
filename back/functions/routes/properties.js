@@ -15,9 +15,12 @@ router.get("/spaces", (req, res, next) => {
         }
       })
 
-      const filtrado = arr.filter(propiedad => (
-        propiedad.neighborhood.includes(condicion.z) || propiedad.province.includes(condicion.c) || propiedad.type.includes(condicion.t) || propiedad.verified.includes(condicion.v)
-      ))
+      const filtrado = arr.filter(propiedad => {
+        return ((condicion.z && propiedad.neighborhood == condicion.z)
+          && (condicion.c && propiedad.province == condicion.c)
+          && (condicion.t && propiedad.type == condicion.t)
+          && (condicion.v && propiedad.verified == condicion.v))
+      })
 
       res
         .status(200)
@@ -77,11 +80,15 @@ router.get("/singleSpace/:id", (req, res, next) => {
 //* crear un espacio
 router.post("/createSpace", (req, res, next) => {
   const body = req.body
-
   db.collection("properties").add(body)
-    .then(() => res.sendStatus(201))
+    .then((data) => {
+      res
+        .status(200)
+        .json(data.id)
+    })
     .catch(next)
 })
+
 
 //* eliminar un espacio 
 router.delete("/deleteSpace/:id", (req, res, next) => {
@@ -89,6 +96,18 @@ router.delete("/deleteSpace/:id", (req, res, next) => {
   db.collection("properties").doc(id).delete()
     .then(() => {
       res.sendStatus(200)
+    })
+    .catch(next)
+})
+
+
+//* updatear un espacio 
+router.put('/update/:id', (req, res, next) => {
+  const id = req.params.id
+  const body = req.body
+  db.collection('properties').doc(id).update({ photos: body.photos })
+    .then(data => {
+      res.sendStatus(201)
     })
     .catch(next)
 })

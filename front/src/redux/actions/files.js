@@ -6,50 +6,45 @@ import { Alert } from "react-native";
 
 const storage = firebase.storage();
 
-export const uploadFiles = (files, propId=1, progessCb) => (dispatch, getState) => {
+export const uploadFiles = (files, propId = 1, progessCb) => (dispatch, getState) => {
 	const user = getState().user.logged;
 	const uid = user.uid;
 
-	console.log("Al action le llegaron "+files.length+" fotos.")
+	console.log("Al action le llegaron " + files.length + " fotos.")
 
 	let progress = [];
 
 	return Bluebird.all(
-		files.map((file,i) => {
+		files.map((file, i) => {
 
 			return fetch(file.uri)
-			.then(response => response.blob())
-			.then(blob => {
-				const ref = storage.ref(`/images/${uid}/${propId}/photo_${i}`);
-				const uploadTask= ref.put(blob);
+				.then(response => response.blob())
+				.then(blob => {
+					const ref = storage.ref(`/images/${uid}/${propId}/photo_${i}`);
+					const uploadTask = ref.put(blob);
 
-				return new Promise((res, rej)=>{
+					return new Promise((res, rej) => {
 
-					uploadTask.on('state_changed', function(snapshot){
-					  progress[i] = Math.floor(((snapshot.bytesTransferred / snapshot.totalBytes) * 100)/files.length);
-					  progessCb(progress.reduce((acc, num) => acc + num));
-					}, function(error) {
-					  rej({file, error});
-					}, function() {
-					  uploadTask.snapshot.ref.getDownloadURL()
-					  .then(function(downloadURL) {
-					  	res(downloadURL);
-					  });
-					});
+						uploadTask.on('state_changed', function (snapshot) {
+							progress[i] = Math.floor(((snapshot.bytesTransferred / snapshot.totalBytes) * 100) / files.length);
+							progessCb(progress.reduce((acc, num) => acc + num));
+						}, function (error) {
+							rej({ file, error });
+						}, function () {
+							uploadTask.snapshot.ref.getDownloadURL()
+								.then(function (downloadURL) {
+									res(downloadURL);
+								});
+						});
+					})
+
+
 				})
-
-
-			})
 		})
 	)
-	.then(data => {
-		console.log("Data from fb storage",data)
-		return data;
-	})
-
-	//firebase.storage().ref('/your/path/here').child('file_name')
-	//.putString(your_base64_image, ‘base64’, {contentType:’image/jpg’});
-
+		.then(data => {
+			return data;
+		})
 }
 
 
