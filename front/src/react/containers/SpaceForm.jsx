@@ -1,21 +1,14 @@
 import React, { Component, useEffect, useState } from 'react';
 import { connect } from 'react-redux'
-import Button from "../ui/Button";
-import Icon from "../ui/Icon";
-import { Text, Image, View } from 'react-native'
+import { View } from 'react-native'
 import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 import Picker from "../components/Picker";
 import TextPrompt from "../components/TextPrompt";
 import AddPhotos from "../components/AddPhotos";
-//Importando views and components
-
 import { addSpace } from '../../redux/actions/spaces'
-
-
 import Form from '../components/Form';
 
 const SpaceForm = ({ navigation, uploadFiles, addSpace, user }) => {
-
   const Type = Picker(useState(false), useState(""));
   const Services = Picker(useState(false), useState([]));
   const Observation = TextPrompt(useState(false), useState(""));
@@ -41,29 +34,18 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user }) => {
       description: form["Descripcion"].value,
       userId: user,
       location: [],
-      photos: []
+      photos: [],
+      title: form['Titulo*'].value,
+      services: form["Caracteristicas y servicios*"].value
     }
 
-    /*
-    -------------------------------------------------------------------------
-      La siguiente linea se ejecuta una vez que se haya hecho el pedido post
-      a crear el espacio
-    
-      En el segundo parametro de Navigate, en propertyId, le tenes que pasar 
-      el id del espacio que acabás de crear
-    */
-
     addSpace(datosSpace)
-      .then(data => {
-        data.status === 201
-          ? navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value, propertyId: 2 })
-          : null
-      })
-
+      .then(data => navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value, propertyId: data }))
   }
 
   const fields = [
     ["Provincia*", "Buenos Aires, Cordoba, San Luis.."],
+    ["Titulo*", "Excelente lugar para..."],
     ["Ciudad*", "Flores, Saavedra.."],
     ["Calle*", "Av. Congreso, Castillo"],
     [
@@ -71,7 +53,6 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user }) => {
       ["Piso", "4"],
       ["Depto", "B"],
     ],
-    //["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
     [({ onChange }) => <Type.Input onChange={onChange} title={"Tipo de Espacio*"} placeholder="Selecciona el espacio que ofrece." />],
     [
       ["Tamaño #(mtr2)#*", "mtr2"],
@@ -87,9 +68,7 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user }) => {
       ["Tasa limpieza ($)*", "$180"],
     ],
 
-
     [({ onChange }) => <Rules.Input onChange={onChange} title="Reglas de Convivencia" placeholder="Aclaraciones, límites, reglas del lugar..." />],
-
     [({ title, onChange }) => <AddPhotos text="Agregar fotos" navigation={navigation} onChange={onChange} title={title} />],
   ]
 

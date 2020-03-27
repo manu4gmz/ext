@@ -1,5 +1,10 @@
 import axios from "axios"
-import { SPACE, ALLSPACES, IDSPACE } from "../constants"
+import { SPACE, ALLSPACES, IDSPACE, PORPERTIESID } from "../constants"
+
+const propertiesId = (id) => ({
+    type: PORPERTIESID,
+    id
+})
 
 const allSpaces = (allSpaces) => ({
     type: ALLSPACES,
@@ -32,10 +37,14 @@ export const fetchId = (id) => dispatch => {
 
 export const addSpace = (body) => dispatch => {
     return axios
-        .post(`http://localhost:5000/ext-api/us-central1/app/api/properties/createSpace`, body)
-        .then(res => res)
+        .post(`https://ext-api.web.app/api/properties/createSpace`, body)
+        .then(res => res.data)
         .catch(error => console.log(error))
 }
 
-
-//https://ext-api.web.app/api/
+export const addPhotos = (id, body) => dispatch => {
+    return axios
+        .put(`https://ext-api.web.app/api/properties/update/${id}`, body)
+        .then(res => res.data)
+        .catch(error => console.log(error))
+}

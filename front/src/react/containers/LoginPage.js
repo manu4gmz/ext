@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { StyleSheet, Text, View, Image, } from 'react-native'
 import BackgroundLogin from '../components/backgroundLogin'
 import { logUser, getUserGoogle, getUser } from "../../redux/actions/user";
 
@@ -9,10 +8,10 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
     const [Password, setPassword] = useState("")
     const [error, setError] = useState({})
 
-    useEffect(()=>{
-        getUser(()=> navigation.navigate('Root',{screen: "Home"}));
+    useEffect(() => {
+        getUser(() => navigation.navigate('Root', { screen: "Home" }));
 
-    },[])
+    }, [])
 
 
     function clearError(name) {
@@ -33,7 +32,7 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
         getUserGoogle()
             .then(err => {
                 if (err) return setError(err.target ? err : {});
-                navigation.navigate('Root',{screen: "Home"})
+                navigation.navigate('Root', { screen: "Home" })
             })
     }
 
@@ -52,11 +51,6 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
     )
 }
 
-const mapStateToProps = (state, ownProps) => {
-    //console.log(state);
-    return {}
-}
-
 const mapDispatchToProps = (dispatch, ownProps) => ({
     logUser: (...params) => dispatch(logUser(...params)),
     getUserGoogle: () => dispatch(getUserGoogle()),
@@ -65,7 +59,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)
+export default connect(null, mapDispatchToProps)(LoginPage)
 
 
 
