@@ -94,14 +94,14 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
     /> : null,2],
     ["Calle*", "Av. Congreso, Castillo"],
     [
-      ["Número", "1332"],
-      ["Piso", "4"],
-      ["Depto", "B"],
+      ["Número", "1332", (val)=>!isNaN(val) ? null : "Debe ser un número"],
+      ["Piso", "4", (val)=>!isNaN(val) ? null : "Debe ser un número"],
+      ["Depto", "B", (val)=>val.length == 1 ? null : "Debe ser un solo caracter"],
     ],
     [({ onChange }) => <Type.Input onChange={onChange} title={"Tipo de Espacio*"} placeholder="Selecciona el espacio que ofrece." />],
     [
-      ["Tamaño #(mtr2)#*", "mtr2"],
-      ["Capacidad*", "Cant. personas"]
+      ["Tamaño #(mtr2)#*", "mtr2", (val)=>!isNaN(val) ? null : "Debe ser un número"],
+      ["Capacidad*", "Cant. personas", (val)=>!isNaN(val) ? null : "Debe ser un número"]
     ],
 
     [({ onChange }) => <Descripcion.Input onChange={onChange} title="Descripcion" placeholder="Breve descripcion del lugar..." />],
@@ -109,8 +109,8 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
     [({ onChange }) => <Observation.Input onChange={onChange} title="Observaciones" placeholder="Horarios disponibles, particularidades, etc." />],
 
     [
-      ["Valor hora ($)", "$560"],
-      ["Tasa limpieza ($)*", "$180"],
+      ["Valor hora ($)", "$560", (val)=>!isNaN(val) ? null : "Debe ser un número"],
+      ["Tasa limpieza ($)*", "$180", (val)=>!isNaN(val) ? null : "Debe ser un número"],
     ],
 
     [({ onChange }) => <Rules.Input onChange={onChange} title="Reglas de Convivencia" placeholder="Aclaraciones, límites, reglas del lugar..." />],

@@ -21,13 +21,13 @@ const debounce = (func, delay) => {
     debounceTimer = setTimeout(() => func.apply(context, args), delay)
   }
 }
-
+/*
 const validate = debounce((value, name, validation, setForm) => {
   let error = null;
   if (typeof validation == "function") error = validation(value);
   if (name[name.length - 1] == "*") error = !value ? "Completa este campo" : error;
   setForm((form) => ({ ...form, [name]: { value: form[name].value, error } }))
-}, 1000);
+}, 1000);*/
 
 function useInput(name, placeholder, validation, form, setForm, index, inline = 1) {
 
@@ -46,9 +46,17 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
     </View>
   )
 
+  const validate = () => {
+    const value = field.value || "";
+    let error = null;
+    if (typeof validation == "function") error = validation(value);
+    if (name[name.length - 1] == "*") error = !value ? "Completa este campo" : error;
+    setForm((form) => ({ ...form, [name]: { value, error } }))
+  }
+
   const onChangeText = (val) => {
     setForm((form) => ({ ...form, [name]: { value: val, error: field.error } }))
-    validate(val, name, validation, setForm);
+    //validate(val, name, validation, setForm);
   }
 
   return (
@@ -59,6 +67,7 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
         value={field.value || ""}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        onBlur={validate}
       />
       {
         field.error ? <Error>{field.error}</Error> : null
@@ -128,7 +137,7 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm }) => 
 
           {
 
-            true ?
+             required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
               <Button
                 mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
                 bg="#4A94EA"
@@ -202,7 +211,8 @@ const StyledInput = styled.TextInput`
 color : ${props => props.error == "true" ? "red" : "#262626"};
 padding-left : 12px;
 height: 35px;
-line-height: 35px;
+max-height: 35px;
+line-height: 20px;
 border-radius : 5px;
   flex:1;
 margin : 5px 0;
