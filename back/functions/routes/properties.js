@@ -83,7 +83,7 @@ router.post("/createSpace", (req, res, next) => {
   db.collection("properties").add(body)
     .then((data) => {
       res
-        .status(200)
+        .status(201)
         .json(data.id)
     })
     .catch(next)
