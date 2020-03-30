@@ -3,9 +3,11 @@ import { connect } from 'react-redux'
 import BackgroundHome from '../components/backgroundHome'
 import { View } from "react-native";
 
-const HomePage = ({ navigation, user }) => {
+const HomePage = ({ navigation, user, usuario }) => {
+  console.log('esto llega como props', usuario);
+
   return (
-  	<BackgroundHome user={user} navigation={navigation}/>
+    <BackgroundHome user={user} navigation={navigation} />
   )
 }
 

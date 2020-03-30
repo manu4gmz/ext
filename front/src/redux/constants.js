@@ -7,4 +7,5 @@ export const SPACE = "SPACE"
 export const ALLSPACES = "ALLSPACES"
 export const IDSPACE = "IDSPACE"
 export const PORPERTIESID = 'PORPERTIES_ID'
+export const USERINFO = 'USERINFO'
 

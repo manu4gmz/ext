@@ -19,6 +19,7 @@ import { View, StyleSheet } from 'react-native'
 import { Avatar, Title, Caption, Paragraph } from 'react-native-paper'
 import Camera from "../components/Camera"
 import UploadingFiles from "../containers/UploadingFiles";
+import Profile from './Profile'
 
 //importando action creator
 import { LogoutUser } from '../../redux/actions/user'
@@ -53,6 +54,11 @@ function CustomDrawerContent(props) {
       <DrawerItem
         label="Login"
         onPress={() => props.navigation.navigate('Root', { screen: "Login" }, props)}
+      />
+
+      <DrawerItem
+        label="Mi Perfil"
+        onPress={() => props.navigation.navigate('Root', { screen: "Profile" }, props)}
       />
 
       <DrawerItem
@@ -102,6 +108,7 @@ function Root() {
       <Stack.Screen name="Payment" component={PaymentPage} options={{ header: () => null }, titulo("Elegi tu plan")} />
       <Stack.Screen name="SpaceForm" component={SpaceForm} options={{ header: () => null }, titulo("Encontra tu espacio")} />
       <Stack.Screen name="OwnerForm" component={OwnerForm} options={{ header: () => null }, titulo("Ofrece tu espacio")} />
+      <Stack.Screen name="Profile" component={Profile} options={{ header: () => null }, titulo("Mi Perfil")} />
       <Stack.Screen name="SingleView" component={SingleViewPage} options={{ header: () => null }, titulo("Single view")} />
       <Stack.Screen name="AllSpaces" component={AllSpaces} options={{ header: () => null }, titulo("Espacios")} />
       <Stack.Screen name="Camera" component={Camera} options={{ header: () => null }} />
