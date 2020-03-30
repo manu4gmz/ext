@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 
-import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView } from 'react-native'
+import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import styled from "styled-components/native";
 import Button from "../ui/Button";
 
@@ -33,7 +33,7 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
   const field = form[name] || {};
 
   if (typeof name == "function") return (
-    <View key={index}>
+    <View key={index} style={{zIndex: placeholder || 1}}>
       {
         name({
           title: (name) => <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>,
@@ -42,8 +42,8 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
           index
         })
       }
-    </View>)
-
+    </View>
+  )
 
   const onChangeText = (val) => {
     setForm((form) => ({ ...form, [name]: { value: val, error: field.error } }))
@@ -95,7 +95,9 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
-      <ScrollView>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+    
+      <ScrollView keyboardShouldPersistTaps='handled'>
         <Wrapper>
           <StyledView style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
             {
@@ -117,7 +119,7 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
 
           {
 
-            required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
+            true ?
               <Button
                 mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
                 bg="#4A94EA"
@@ -132,7 +134,7 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
 
         </Wrapper>
       </ScrollView>
-
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   )
 }

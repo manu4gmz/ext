@@ -9,7 +9,7 @@ const backgorunPayment = ({ navigation }) => {
    
       <View style={styles.fondo}>
         <ScrollView>
-          <View style={{padding: "20px"}}>
+          <View style={{padding: 20}}>
             <AddSpaceFormProgress state={2} title="Elegí un plan"/>
           </View>
           <View style={styles.box1}>
