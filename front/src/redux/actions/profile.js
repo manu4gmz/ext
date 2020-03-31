@@ -6,10 +6,11 @@ const setUserInfo = (info) => ({
   info
 })
 
-export const getInfo = (mail) => dispatch => {
-
+export const getUserInfo = (id) => dispatch => {
   return axios
-    .get(`http://localhost:5000/ext-api/us-central1/app/api/users/info/${mail}`)
-    .then(res => dispatch(setUserInfo(res.data)))
+    .get(`https://ext-api.web.app/api/users/info/${id}`)
+    .then(res => {
+      dispatch(setUserInfo(res.data))
+    })
     .catch(error => console.log(error))
 }

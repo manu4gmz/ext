@@ -3,88 +3,107 @@ import { View } from 'react-native'
 import styled from "styled-components/native";
 import { connect } from "react-redux";
 
-const Profile = ({ user }) => {
-  console.log(user);
+const Profile = ({ user, userInfo }) => {
   return (
     <ViewPrincipal>
-      <Wrapper>
-        <ImgProfile source={require('../../public/icons/profile.png')} />
-        <InfoContainer>
-          <Title>Sebastian Gonzalez</Title>
-          <ViewText>
-            <IconText source={require('../../public/icons/celu.jpg')} />
-            <Text>Bienvenido</Text>
-          </ViewText>
-          <ViewText>
-            <IconText source={require('../../public/icons/celu.jpg')} />
-            <Text>Bienvenido</Text>
-          </ViewText>
-          <ViewText>
-            <IconText source={require('../../public/icons/celu.jpg')} />
-            <Text>Bienvenido</Text>
-          </ViewText>
-        </InfoContainer>
+      {user.uid
+        ? <View>
+          <Wrapper>
+            <ImgProfile source={require('../../public/icons/profile.png')} />
+            <InfoContainer>
 
-        <Icon
-          margen={'20px'}
-          margenLeft={'2%'}
-          source={require('../../public/icons/edit.png')}
-        />
-      </Wrapper>
-      <Divider />
+              <Title>{`${userInfo.firstName} ${userInfo.lastName}`}</Title>
 
-      <Container>
-        <Wrapper>
-          <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
-          <TextLink>Publicaciones</TextLink>
-        </Wrapper>
+              <ViewText>
+                <IconText source={require('../../public/icons/celu.jpg')} />
+                <Text>{`${userInfo.email}`}</Text>
+              </ViewText>
 
-        <Wrapper>
-          <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
-          <TextLink>Mensajes</TextLink>
-        </Wrapper>
+              <ViewText>
+                <IconText source={require('../../public/icons/celu.jpg')} />
+                {userInfo.phoneNumber
+                  ? <Text>{`${userInfo.phoneNumber}`}</Text>
+                  : <Text>No disponible</Text>
+                }
+              </ViewText>
 
-        <Wrapper>
-          <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
-          <TextLink>Pagos</TextLink>
-        </Wrapper>
+              <ViewText>
+                <IconText source={require('../../public/icons/celu.jpg')} />
+                {userInfo.address
+                  ? <Text>{`${userInfo.address}`}</Text>
+                  : <Text>No disponible</Text>
+                }
+              </ViewText>
 
-        <Wrapper>
-          <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
-          <TextLink>Favoritos</TextLink>
-        </Wrapper>
-      </Container>
+            </InfoContainer>
 
-      <Divider />
+            <Icon
+              margen={'20px'}
+              margenLeft={'2%'}
+              source={require('../../public/icons/edit.png')}
+            />
+          </Wrapper>
+          <Divider />
 
-      <Container>
-        <Wrapper>
-          <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
-          <TextLink>Mis Datos</TextLink>
-        </Wrapper>
+          <Container>
+            <Wrapper>
+              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
+              <TextLink>Publicaciones</TextLink>
+            </Wrapper>
 
-        <Wrapper>
-          <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
-          <TextLink>Reputacion</TextLink>
-        </Wrapper>
+            <Wrapper>
+              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
+              <TextLink>Mensajes</TextLink>
+            </Wrapper>
 
-        <Wrapper>
-          <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
-          <TextLink>Ajustes</TextLink>
-        </Wrapper>
+            <Wrapper>
+              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
+              <TextLink>Pagos</TextLink>
+            </Wrapper>
 
-        <Wrapper>
-          <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
-          <TextLink>Ayuda</TextLink>
-        </Wrapper>
-      </Container>
+            <Wrapper>
+              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
+              <TextLink>Favoritos</TextLink>
+            </Wrapper>
+          </Container>
 
-    </ViewPrincipal>
+          <Divider />
+
+          <Container>
+            <Wrapper>
+              <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
+              <TextLink>Mis Datos</TextLink>
+            </Wrapper>
+
+            <Wrapper>
+              <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
+              <TextLink>Reputacion</TextLink>
+            </Wrapper>
+
+            <Wrapper>
+              <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
+              <TextLink>Ajustes</TextLink>
+            </Wrapper>
+
+            <Wrapper>
+              <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
+              <TextLink>Ayuda</TextLink>
+            </Wrapper>
+          </Container>
+        </View>
+
+        : <View>
+          <Title>Tenes que loguearte para ver tu perfil</Title>
+        </View>
+      }
+
+    </ViewPrincipal >
   )
 }
 
 const MapStateToProps = (state, ownProps) => ({
-  user: state.user.logged
+  user: state.user.logged,
+  userInfo: state.profile.userInfo
 })
 
 export default connect(MapStateToProps, null)(Profile);
@@ -96,7 +115,7 @@ const Wrapper = styled.View`
 `
 const ViewPrincipal = styled.View`
   justify-content: space-between;
-  margin: 0px 15px;
+  margin: 0px 10px;
   max-width: 500px;
   align-self: center;
 
@@ -117,6 +136,7 @@ margin: 0;
 const Title = styled.Text`
 font-weight: bold;
 font-size : 18px;
+margin-bottom:5px;
 `
 const InfoContainer = styled.View`
 justify-content : center;
@@ -131,7 +151,7 @@ margin-left : ${props => props.margenLeft}
 const IconText = styled.Image`
 height: 15px;
 width: 20px;
-margin : 2px 10px;
+margin : 2px 10px 2px 0;
 `
 const IconPrincipal = styled.Image`
 height: 30px;

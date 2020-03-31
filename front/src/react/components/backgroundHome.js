@@ -6,7 +6,7 @@ import Button from "../ui/Button";
 import HomeTabBar from "../components/HomeTabBar";
 import Navbar from './Navbar';
 
-const backgroundHome = ({ navigation, user }) => {
+const backgroundHome = ({ navigation, userInfo }) => {
 
   return (
     <ImageBackground
