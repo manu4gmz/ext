@@ -16,10 +16,10 @@ router.get("/spaces", (req, res, next) => {
       })
 
       const filtrado = arr.filter(propiedad => {
-        return ((condicion.z && propiedad.neighborhood == condicion.z)
-          && (condicion.c && propiedad.province == condicion.c)
-          && (condicion.t && propiedad.type == condicion.t)
-          && (condicion.v && propiedad.verified == condicion.v))
+        return ((!condicion.n || propiedad.neighborhood == condicion.n)
+          && (!condicion.p || propiedad.province == condicion.p)
+          && (!condicion.t || propiedad.type == condicion.t)
+          && (condicion.v == true ? propiedad.verified == true : true))
       })
 
       res
@@ -83,7 +83,7 @@ router.post("/createSpace", (req, res, next) => {
   db.collection("properties").add(body)
     .then((data) => {
       res
-        .status(200)
+        .status(201)
         .json(data.id)
     })
     .catch(next)

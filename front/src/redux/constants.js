@@ -8,4 +8,5 @@ export const ALLSPACES = "ALLSPACES"
 export const IDSPACE = "IDSPACE"
 export const PORPERTIESID = 'PORPERTIES_ID'
 export const SET_FORM = 'SET_FORM'
+export const USERINFO = 'USERINFO'
 
