@@ -70,4 +70,14 @@ router.delete('/delete/:id', (req, res, next) => {
     .catch(next)
 })
 
+//* traer un user por su id
+
+router.get('/info/:id', async (req, res, next) => {
+  const id = req.params.id
+  const data = await db.collection('users').doc(id).get()
+  res
+    .status(200)
+    .json(data.data())
+})
+
 module.exports = router

@@ -1,23 +1,22 @@
 import React, { useEffect } from "react";
-import { Button, Text, View, Image, TouchableOpacity  } from "react-native";
+import { Button, Text, View, Image, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { connect } from "react-redux";
 import Icon from "../ui/Icon";
 import { useNavigation } from "@react-navigation/native"
 
-const Navbar = (props) => {
+const Navbar = ({ title, userInfo }) => {
   const navigation = useNavigation();
   return (
     <Background>
-
       <Wrapper>
         {/* {
           props.title ? <Back source={require('../../public/icons/back.png')} onPress={()=>props.navigation.pop()}/> :
            <Icon source={require('../../public/icons/sidebar.png')}/>
         } */}
-        <Icon onPress={()=> navigation.toggleDrawer()} source={require('../../public/icons/sidebar.png')}/>
-        <Title>{props.title || `Hola ${((props.user || {}).email)||""}!`}</Title>
-        <Icon source={require('../../public/images/isologotipo-only.png')}/>
+        <Icon onPress={() => navigation.toggleDrawer()} source={require('../../public/icons/sidebar.png')} />
+        <Title>{title || `Hola ${((userInfo.firstName || ', Bienvenido!')) || ""}!`}</Title>
+        <Icon source={require('../../public/images/isologotipo-only.png')} />
       </Wrapper>
     </Background>
   )
@@ -48,19 +47,15 @@ const SidebarBtn = styled.Image`
   width: 30px;
   margin-top: 3px;
 `
-
-const mapStateToProps = (state) => ({
-  user: state.user.logged
-})
-
 const Back = styled(Icon)`
   height: 20px;
   width: 20px;
   margin-top: 3px;
 `
 
-const mapDispatchToProps = (dispatch) => ({
-  
+const mapStateToProps = (state) => ({
+  user: state.user.logged,
+  userInfo: state.profile.userInfo
 })
 
 export default connect(mapStateToProps, null)(Navbar);
