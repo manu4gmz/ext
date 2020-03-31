@@ -128,7 +128,7 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm }) => 
 
           {
 
-            true ?
+           required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
               <Button
                 mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
                 bg="#4A94EA"

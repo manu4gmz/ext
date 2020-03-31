@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import BackgroundPayment from '../components/backgroundPayment'
 
 
-const PaymentPage = () => {
+const PaymentPage = (props) => {
   return (
-    <BackgroundPayment />
+    <BackgroundPayment {...props} />
   )
 }
 

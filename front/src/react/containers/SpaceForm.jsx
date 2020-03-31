@@ -46,31 +46,32 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
   const onSubmit = function (form) {
     const datosSpace = {
       verificated: false,
-      neighborhood: form["Barrio*"].value,
-      province: form["Provincia*"].value,
-      type: form["Tipo de Espacio*"].value,
-      street: form["Calle*"].value,
-      streetNumber: form["Número"].value,
-      floor: form['Piso'].value,
-      apt: form['Depto'].value,
-      size: form["Tamaño #(mtr2)#*"].value,
-      capacity: form["Capacidad*"].value,
-      price: form["Valor hora ($)"].value,
-      cleanup: form["Tasa limpieza ($)*"].value,
-      rules: form["Reglas de Convivencia"].value,
-      observations: form["Observaciones"].value,
-      description: form["Descripcion"].value,
+      neighborhood:        (form["Barrio*"] || {}).value,
+      province:         (form["Provincia*"] || {}).value,
+      type:       (form["Tipo de Espacio*"] || {}).value,
+      street:               (form["Calle*"] || {}).value,
+      streetNumber:         (form["Número"] || {}).value,
+      floor:                  (form['Piso'] || {}).value,
+      apt:                   (form['Depto'] || {}).value,
+      size:       (form["Tamaño #(mtr2)#*"] || {}).value,
+      capacity:         (form["Capacidad*"] || {}).value,
+      price:        (form["Valor hora ($)"] || {}).value,
+      cleanup:  (form["Tasa limpieza ($)*"] || {}).value,
+      rules: (form["Reglas de Convivencia"] || {}).value,
+      observations:  (form["Observaciones"] || {}).value,
+      description:     (form["Descripcion"] || {}).value,
       userId: user,
+      visible: false,
       location: [],
-      photos: [],
+      photos: ((form["Agregar fotos"] || {}).value || []),
       title: form['Titulo*'].value,
       services: form["Caracteristicas y servicios*"].value
     }
 
-    console.log(datosSpace)
+    //navigation.navigate("PreviewSpace", { space: datosSpace })
 
     addSpace(datosSpace)
-      .then(data => navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value, propertyId: data }))
+      .then(propertyId => navigation.navigate("Payment", { space: datosSpace, propertyId }))
   }
 
   const fields = [
