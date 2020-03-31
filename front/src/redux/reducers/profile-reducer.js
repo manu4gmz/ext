@@ -1,15 +1,14 @@
 import { USERINFO } from "../constants"
 
-const initialCartState = {
+const inicialState = {
   userInfo: {}
 }
 
-export default function (state = initialCartState, action) {
+export default (state = inicialState, action) => {
   switch (action.type) {
     case USERINFO:
-      return { ...state, singleSpace: action.info }
+      return { ...state, userInfo: action.info }
     default:
       return state;
   }
-
 }
