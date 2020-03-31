@@ -38,7 +38,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         console.log(form)
 
         if (form["Provincia*"] && province.id && form["Provincia*"].value) filter.p = form["Provincia*"].value;
-        if (form["Barrio"] && province.id && form["Barrio"].value) filter.z = form["Barrio"].value;
+        if (form["Barrio"] && province.id && form["Barrio"].value) filter.n = form["Barrio"].value;
         if (form["Tipo de Espacio"] && form["Tipo de Espacio"].value) filter.t = form["Tipo de Espacio"].value;
         if (Verificado) filter.v = Verificado;
 

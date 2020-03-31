@@ -62,15 +62,17 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
       description: form["Descripcion"].value,
       userId: user,
       location: [],
-      photos: [],
+      photos: form["Agregar fotos"].value,
       title: form['Titulo*'].value,
       services: form["Caracteristicas y servicios*"].value
     }
 
-    console.log(datosSpace)
+    navigation.navigate("PreviewSpace", { space: datosSpace })
+    
+    //console.log(datosSpace)
 
-    addSpace(datosSpace)
-      .then(data => navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value, propertyId: data }))
+    //addSpace(datosSpace)
+    //  .then(data => navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value, propertyId: data }))
   }
 
   const fields = [
