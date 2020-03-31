@@ -63,11 +63,6 @@ function CustomDrawerContent(props) {
       />
 
       <DrawerItem
-        label="Preview"
-        onPress={() => props.navigation.navigate('Root', { screen: "PreviewSpace" }, props)}
-      />
-
-      <DrawerItem
         label="Logout"
         onPress={
           () => LogoutUser().then(() => props.navigation.navigate('Root', { screen: "Login" }))}

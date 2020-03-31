@@ -5,13 +5,16 @@ export default ({ space }) => {
     const [mode, setMode] = useState(false)
     return (
         <ScrollView>
-            <View style={{ backgroundColor: "#4A94EA", flexDirection: "row", height: "8%" }}>
+            <View style={{ backgroundColor: "#4A94EA", flexDirection: "row"}}>
                 <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
                 <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
             </View>
             <View style={{ width: "100%", alignItems: "center" }}>
-                {space.photos ? (<Image source={{ uri: space.photos[0] }}
-                    style={{ width: 400, height: 400 }} />) : (null)}
+                {
+                    space.photos && space.photos.length ? 
+                        <Image source={{ uri: space.photos[0] }} style={{ width: 400, height: 400 }} /> 
+                        : <NoPhotos>No hay fotos para mostrar</NoPhotos>
+                }
 
             </View>
             <Container>
@@ -36,7 +39,6 @@ const Lista = styled.Text`
     font-size: 18px;
     justify-content:center;
     text-align:center;
-    margin-top: 10%;
     padding-bottom: 5px;
     border-color:${(props) => props.active == "true" ? "white" : "#4A94EA"};
     border-bottom-width:3px;
@@ -91,4 +93,10 @@ const Capitalize = styled.Text`
 
 const Container = styled.View`
     margin: 10px 12px;
+`
+const NoPhotos = styled.Text`
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 30px;
 `
