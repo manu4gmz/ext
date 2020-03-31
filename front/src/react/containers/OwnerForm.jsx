@@ -50,6 +50,7 @@ const OwnerForm = ({ navigation }) => {
 
   return (
     <Form
+      name="owner"
       onSubmit={onSubmit}
       fields={fields}
       header={({ divider }) => <AddSpaceFormProgress title="Completá tus datos" state={0} />}

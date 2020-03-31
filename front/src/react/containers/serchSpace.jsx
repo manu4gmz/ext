@@ -29,9 +29,9 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     const Rules = TextPrompt(useState(false), useState(""));
     const [Verificado, setVerificado] = useState(false);
 
-    const [ provincias, setProvincias ] = useState([])
-    const [ localidades, setLocalidades ] = useState([])
-    const [ province, setProvince ] = useState({})
+    const [provincias, setProvincias] = useState([])
+    const [localidades, setLocalidades] = useState([])
+    const [province, setProvince] = useState({})
 
     const onSubmit = function (form) {
         let filter = {};
@@ -52,18 +52,18 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
 
 
 
-    function getProvincias (val) {
+    function getProvincias(val) {
         fetchProvincias(val)
-        .then(data => setProvincias(data))
+            .then(data => setProvincias(data))
     }
 
 
 
-    function getLocalidades (val) {
+    function getLocalidades(val) {
         fetchLocalidades(val, province.id)
-        .then(data => {
-            setLocalidades(data);
-        })
+            .then(data => {
+                setLocalidades(data);
+            })
     }
 
     const handleSelectProvince = (val) => {
@@ -74,23 +74,23 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     }
 
     const fields = [
-        [({ onChange })=> <Typeahead 
-            title="Provincia*" 
-            placeholder="Buenos Aires, Cordoba, San Luis.." 
-            getOptions={getProvincias} 
+        [({ onChange }) => <Typeahead
+            title="Provincia*"
+            placeholder="Buenos Aires, Cordoba, San Luis.."
+            getOptions={getProvincias}
             handleSelect={handleSelectProvince}
             onChange={onChange}
             options={provincias}
-        />,12],
+        />, 12],
         //[({ onChange }) => <Province.Input onChange={onChange} title={"Provincia*"} placeholder="Buenos Aires, Cordoba, San Luis.." />],
-        [({ onChange })=> province.id ? <Typeahead 
-            title="Barrio" 
-            placeholder="Flores, Saavedra.." 
-            getOptions={getLocalidades} 
-            handleSelect={()=>null}
+        [({ onChange }) => province.id ? <Typeahead
+            title="Barrio"
+            placeholder="Flores, Saavedra.."
+            getOptions={getLocalidades}
+            handleSelect={() => null}
             onChange={onChange}
             options={localidades}
-        /> : null,11],
+        /> : null, 11],
 
         //["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
         [({ onChange }) => <Type.Input onChange={onChange} title={"Tipo de Espacio"} placeholder="Selecciona el espacio que ofrece." />],
@@ -99,15 +99,15 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
             ["Valor max ($)", "$300"],
         ],
         [({ onChange }) => <CheckBoxWrapper>
-                <CheckBox  onPress={() => (setVerificado(!Verificado))}>
-                    <Check>{Verificado ? <Dot /> : null}</Check>
-                    <CheckLabel>Verificado</CheckLabel>
-                </CheckBox>
-                <CheckBox  onPress={() => (setVerificado(!Verificado))}>
-                    <Check>{Verificado ? <Dot /> : null}</Check>
-                    <CheckLabel>Con fotos</CheckLabel>
-                </CheckBox>
-            </CheckBoxWrapper>
+            <CheckBox onPress={() => (setVerificado(!Verificado))}>
+                <Check>{Verificado ? <Dot /> : null}</Check>
+                <CheckLabel>Verificado</CheckLabel>
+            </CheckBox>
+            <CheckBox onPress={() => (setVerificado(!Verificado))}>
+                <Check>{Verificado ? <Dot /> : null}</Check>
+                <CheckLabel>Con fotos</CheckLabel>
+            </CheckBox>
+        </CheckBoxWrapper>
         ],
     ]
     // <Rules.Input onChange={onChange} title="Verificado" placeholder="Aclaraciones, límites, reglas del lugar..." />
@@ -121,10 +121,11 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
             <Type.Modal title={"Tipo de Espacio*"} options={["Casa", "Depósito", "Habitación", "Oficina", "Quinta", "Salón", "Terreno"]} />
             <Services.Modal title={"Caracteristicas y servicios*"} options={["Aire Acondicionado", "Wifi", "LCD", "Cafe/Infusiones", "Snacks", "Música", "Vajilla"]} />
             <Form
+                name="search"
                 onSubmit={onSubmit}
                 fields={fields}
                 sendText="Siguiente"
-                header={()=>null}
+                header={() => null}
             />
         </View>
     )

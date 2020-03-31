@@ -142,6 +142,7 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
       } />
 
       <Form
+        name="space"
         onSubmit={onSubmit}
         fields={fields}
         header={({ divider }) => <AddSpaceFormProgress title="Presentá tu espacio" state={1} divider={divider} />}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import saveForm from "../../redux/actions/forms";
 import { connect } from 'react-redux'
 
 import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
@@ -66,7 +67,7 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
   )
 }
 
-const Form = ({ fields, onSubmit, sendText, header }) => {
+const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm }) => {
   const [form, setForm] = useState({});
 
   const checkRequired = ([name, , val]) => {
@@ -92,6 +93,14 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
         useInput(field[0], field[1], field[2], form, setForm, i, inline)
     )
   }
+
+  useEffect(()=>{
+    saveForm(form)
+  }, [form])
+
+  useEffect(()=>{
+    setForm(initialForm)
+  }, [])
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
@@ -138,6 +147,15 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
     </KeyboardAvoidingView>
   )
 }
+
+const mapStateToProps = (state, ownProps) => ({
+    initialForm: state.forms[ownProps.name] || {}
+})
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    saveForm: (form)=>dispatch(saveForm(ownProps.name, form))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(Form)
 
 const Divider = styled.View`
   height: 1px;
@@ -214,8 +232,6 @@ const DisabledButton = styled(Button)`
 const Error = styled.Text`
   color: red;  
 `
-
-export default connect(null, null)(Form)
 
 
 
