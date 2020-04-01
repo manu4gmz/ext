@@ -12,8 +12,13 @@ import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
 
 
-export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
+export default ({ espacios, sendId, toggleLike, allSpaces, total, pages, navigation }) => {
   const [mode, setMode] = useState(false);
+
+  let indexes = [];
+  for (let i = 1; i < pages+1; i++) indexes.push(i);
+    console.log(indexes);
+
   return (
     <ScrollView>
       <View style={{ backgroundColor: "#E9E9E9" }}>
@@ -175,10 +180,25 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                 </View>
               );
             })}
+            <PaginationWrapper style={{flex:1}}>
+              <TouchableOpacity>
+                <PaginationText>Anterior</PaginationText>
+              </TouchableOpacity>
+              {
+                indexes.map((index) => (
+                  <TouchableOpacity>
+                    <PaginationText>{index}</PaginationText>
+                  </TouchableOpacity>
+                ))
+              }
+              <TouchableOpacity>
+                <PaginationText>Siguiente</PaginationText>
+              </TouchableOpacity>
+            </PaginationWrapper>
           </View>
         </View>
       </View>
-    </ScrollView >
+    </ScrollView>
   );
 };
 /*
@@ -309,3 +329,18 @@ const styles = StyleSheet.create({
   //   boxShadow: [0, 1, 20, 0, "grey"]
   // }
 })
+
+
+const PaginationWrapper = styled.View`
+  width: 100%;
+  height: 36px;
+  flex-direction: row;
+  justify-content: center;
+`
+
+const PaginationText = styled.Text`
+  font-size: 14px;
+  color: #4082d1;
+  padding: 10px;
+`
+
