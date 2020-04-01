@@ -113,4 +113,52 @@ router.put('/update/:id', (req, res, next) => {
 })
 
 
+
+router.get("/:page", (req, res) => {
+  const pagesCount = 10;
+
+  const condicion = req.query
+
+  if (isNaN(req.params.page)) res.status(401).json({msg: "Page must be a number"})
+
+  db.collection("properties").get()
+    .then((data) => {
+      const arr = data.docs.map(lugar => {
+        const propiedad = lugar.data()
+        propiedad.id = lugar.id
+        return {
+          ...propiedad
+        }
+      })
+
+      const filtrado = arr.filter(propiedad => {
+        return ((!condicion.n || propiedad.neighborhood == condicion.n)
+          && (!condicion.p || propiedad.province == condicion.p)
+          && (!condicion.t || propiedad.type == condicion.t)
+          && (condicion.v == true ? propiedad.verified == true : true))
+      })
+
+      return filtrado;
+    })
+    .then(properties => {
+      const maxPage = Math.ceil(properties.length/pagesCount);
+      let page = ((req.params.page-1) % maxPage)+1;
+      res.status(200).json({
+        properties: properties.slice(pagesCount*(page-1), pagesCount*(page-1) + pagesCount).map((p, i) => i +":  "+ p.id + "   |   "+ p.title),
+        pages: maxPage,
+        total: properties.length,
+      })
+      
+    })
+
+    .catch(err => {
+      res.send(`
+          <h1>Internal server error</h1>
+          <pre>${err}</pre>
+
+        `)
+    })
+})
+
+
 module.exports = router
