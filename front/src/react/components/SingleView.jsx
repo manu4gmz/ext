@@ -1,8 +1,46 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground, ScrollView } from 'react-native'
-import styled from "styled-components/native"
+import React, { useState, useEffect, useRef } from 'react'
+import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView } from 'react-native'
+import styled from "styled-components/native";
+import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
+
 export default ({ space }) => {
     const [mode, setMode] = useState(false)
+
+    const [index, setIndex] = useState(0)
+    const [pics, setPics] = useState([])
+
+    const [oldPos, setOldPos] = useState(0)
+    //let pics = useRef((space.photos || []).map(_=>React.createRef()));
+
+    const [offsetAnim] = useState(new Animated.Value(0) )
+
+    const { width: vw } = Dimensions.get('window'); 
+
+    useEffect(()=>{
+       // console.log(pics);
+        
+
+        Animated.timing(offsetAnim,{
+            toValue: vw * -index,
+            duration: 300
+        }).start();
+    },[index])
+
+    function changeIndex(amount) {
+        if (index+amount >= space.photos.length) setIndex(0);
+        else if (index+amount < 0) setIndex(space.photos.length-1);
+        else setIndex(index+amount);
+    }
+
+    function onFling(ev) {
+        if (ev.nativeEvent.state > 3) {
+            console.log(ev.nativeEvent)
+            if (ev.nativeEvent.absoluteX - oldPos < 0) changeIndex(1);
+            else if (ev.nativeEvent.absoluteX - oldPos > 0) changeIndex(-1);
+        }
+        setOldPos(ev.nativeEvent.absoluteX);
+    }
+
     return (
         <ScrollView>
             <View style={{ backgroundColor: "#4A94EA", flexDirection: "row"}}>
@@ -12,7 +50,20 @@ export default ({ space }) => {
             <View style={{ width: "100%", alignItems: "center" }}>
                 {
                     space.photos && space.photos.length ? 
-                        <Image source={{ uri: space.photos[0] }} style={{ width: 400, height: 400 }} /> 
+                        <FlingGestureHandler direction={Directions.LEFT | Directions.RIGHT} onHandlerStateChange={onFling}>
+                        <View>
+                            <CarouselLabel>{index+1}/{space.photos.length}</CarouselLabel>
+                            <Animated.View style={{ flexDirection: "row", width: vw, position: "relative", left: offsetAnim }}>
+                            {
+                                space.photos.map((uri,i) => (
+                                    <CarouselContainer key={i} style={{width: vw}}>
+                                        <CarouselImage source={{uri}} style={{ width: 400, height: 400 }} /> 
+                                    </CarouselContainer>
+                                ))
+                            }
+                            </Animated.View>
+                        </View>
+                        </FlingGestureHandler>
                         : <NoPhotos>No hay fotos para mostrar</NoPhotos>
                 }
 
@@ -33,6 +84,7 @@ export default ({ space }) => {
         </ScrollView>
     )
 }
+
 
 const Lista = styled.Text`
     align-self: center;
@@ -99,4 +151,27 @@ const NoPhotos = styled.Text`
     font-weight: 500;
     text-align: center;
     margin-top: 30px;
+`
+
+const CarouselContainer = styled.View`
+    height: 400px;
+`
+
+const Carousel = styled.View`
+    height: 400px;
+    position: relative;
+    flex-direction: row;
+`
+
+const CarouselImage = styled.Image`
+
+`
+
+const CarouselLabel = styled.Text`
+    position: absolute;
+    z-index: 2;
+    right: 10px;
+    top: 10px;
+    color:white;
+    font-size: 14px;
 `
