@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView, Linking } from 'react-native'
 import styled from "styled-components/native";
 import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
+import Boton from './../ui/Button'
+import qs from 'qs'
 
 export default ({ space }) => {
     const [mode, setMode] = useState(false)
@@ -12,24 +14,24 @@ export default ({ space }) => {
     const [oldPos, setOldPos] = useState(0)
     //let pics = useRef((space.photos || []).map(_=>React.createRef()));
 
-    const [offsetAnim] = useState(new Animated.Value(0) )
+    const [offsetAnim] = useState(new Animated.Value(0))
 
-    const { width: vw } = Dimensions.get('window'); 
+    const { width: vw } = Dimensions.get('window');
 
-    useEffect(()=>{
-       // console.log(pics);
-        
+    useEffect(() => {
+        // console.log(pics);
 
-        Animated.timing(offsetAnim,{
+
+        Animated.timing(offsetAnim, {
             toValue: vw * -index,
             duration: 300
         }).start();
-    },[index])
+    }, [index])
 
     function changeIndex(amount) {
-        if (index+amount >= space.photos.length) setIndex(0);
-        else if (index+amount < 0) setIndex(space.photos.length-1);
-        else setIndex(index+amount);
+        if (index + amount >= space.photos.length) setIndex(0);
+        else if (index + amount < 0) setIndex(space.photos.length - 1);
+        else setIndex(index + amount);
     }
 
     function onFling(ev) {
@@ -41,28 +43,56 @@ export default ({ space }) => {
         setOldPos(ev.nativeEvent.absoluteX);
     }
 
+    async function sendEmail(to, subject, body, options = {}) {
+        const { cc, bcc } = options;
+
+        let url = `mailto:${to}`;
+
+        // Create email link query
+        const query = qs.stringify({
+            subject: subject,
+            body: body,
+            cc: cc,
+            bcc: bcc
+        });
+
+        if (query.length) {
+            url += `?${query}`;
+        }
+
+        // check if we can use this link
+        const canOpen = await Linking.canOpenURL(url);
+
+        if (!canOpen) {
+            throw new Error('Provided URL can not be handled');
+        }
+
+        return Linking.openURL(url);
+    }
+
+
     return (
         <ScrollView>
-            <View style={{ backgroundColor: "#4A94EA", flexDirection: "row"}}>
+            <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
                 <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
                 <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
             </View>
             <View style={{ width: "100%", alignItems: "center" }}>
                 {
-                    space.photos && space.photos.length ? 
+                    space.photos && space.photos.length ?
                         <FlingGestureHandler direction={Directions.LEFT | Directions.RIGHT} onHandlerStateChange={onFling}>
-                        <View>
-                            <CarouselLabel>{index+1}/{space.photos.length}</CarouselLabel>
-                            <Animated.View style={{ flexDirection: "row", width: vw, position: "relative", left: offsetAnim }}>
-                            {
-                                space.photos.map((uri,i) => (
-                                    <CarouselContainer key={i} style={{width: vw}}>
-                                        <CarouselImage source={{uri}} style={{ width: 400, height: 400 }} /> 
-                                    </CarouselContainer>
-                                ))
-                            }
-                            </Animated.View>
-                        </View>
+                            <View>
+                                <CarouselLabel>{index + 1}/{space.photos.length}</CarouselLabel>
+                                <Animated.View style={{ flexDirection: "row", width: vw, position: "relative", left: offsetAnim }}>
+                                    {
+                                        space.photos.map((uri, i) => (
+                                            <CarouselContainer key={i} style={{ width: vw }}>
+                                                <CarouselImage source={{ uri }} style={{ width: 400, height: 400 }} />
+                                            </CarouselContainer>
+                                        ))
+                                    }
+                                </Animated.View>
+                            </View>
                         </FlingGestureHandler>
                         : <NoPhotos>No hay fotos para mostrar</NoPhotos>
                 }
@@ -75,11 +105,36 @@ export default ({ space }) => {
                 <TextoComun>{space.description}</TextoComun>
                 <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
                 <ServicesWrapper>
-                    <Service source={require("../../public/icons/ducha-ne.png")}/>
-                    <Service source={require("../../public/icons/toiletes-ne.png")}/>
-                    <Service source={require("../../public/icons/wifi-ne.png")}/>
+                    <Service source={require("../../public/icons/ducha-ne.png")} />
+                    <Service source={require("../../public/icons/toiletes-ne.png")} />
+                    <Service source={require("../../public/icons/wifi-ne.png")} />
                 </ServicesWrapper>
                 <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
+
+                <DoubleWraper>
+                    <Boton
+                        onPress={() =>
+                            sendEmail(
+                                'robertovilla2102@gmail.com',
+                                'Greeting!',
+                                'I think you are fucked up how many letters you get.')
+                                .then(() => {
+                                    console.log('Our email successful');
+                                })}
+                        bg="#4A94EA"
+                        color="#F7F7F7"
+                        mr="5px"
+                    >Email
+                  </Boton>
+
+                    <Boton
+                        onPress={() => Linking.openURL(`tel:+54 9 ${'11 65342325'}`)}
+                        bg="#F77171"
+                        color="#F7F7F7"
+                        ml="5px"
+                    >Llamar
+                  </Boton>
+                </DoubleWraper>
             </Container>
         </ScrollView>
     )
@@ -174,4 +229,9 @@ const CarouselLabel = styled.Text`
     top: 10px;
     color:white;
     font-size: 14px;
+`
+const DoubleWraper = styled.View`
+flex-direction: row;
+justify-content: space-between;
+margin: 3% 0px;
 `

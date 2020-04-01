@@ -5,6 +5,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  Linking
 } from "react-native";
 import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
@@ -78,7 +79,7 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
 
                     <TouchableOpacity>
                       <Image
-                        style={{ width: 30, height: 30, marginRight: '2px' }}
+                        style={{ width: 30, height: 30, marginRight: 2 }}
                         source={require("../../public/icons/corazon-ne.png")}
                       />
                     </TouchableOpacity>
@@ -97,6 +98,7 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                   </Boton>
 
                     <Boton
+                      onPress={() => Linking.openURL(`tel:${+541123561654}`)}
                       bg="#F77171"
                       color="#F7F7F7"
                       ml="5px"
