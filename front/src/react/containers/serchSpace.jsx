@@ -28,7 +28,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     const onSubmit = function (form) {
         let filter = {};
         if (form["Provincia*"] && province.id && form["Provincia*"].value) filter.p = form["Provincia*"].value;
-        if (form["Barrio"] && province.id && form["Barrio"].value) filter.z = form["Barrio"].value;
+        if (form["Barrio"] && province.id && form["Barrio"].value) filter.n = form["Barrio"].value;
         if (form["Tipo de Espacio"] && form["Tipo de Espacio"].value) filter.t = form["Tipo de Espacio"].value;
         if (Verificado) filter.v = Verificado;
 
@@ -105,6 +105,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
             <Type.Modal title={"Tipo de Espacio*"} options={["Casa", "Depósito", "Habitación", "Oficina", "Quinta", "Salón", "Terreno"]} />
             <Services.Modal title={"Caracteristicas y servicios*"} options={["Aire Acondicionado", "Wifi", "LCD", "Cafe/Infusiones", "Snacks", "Música", "Vajilla"]} />
             <Form
+                name="search"
                 onSubmit={onSubmit}
                 fields={fields}
                 sendText="Siguiente"

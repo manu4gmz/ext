@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import saveForm from "../../redux/actions/forms";
 import { connect } from 'react-redux'
 
 import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
@@ -66,7 +67,7 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
   )
 }
 
-const Form = ({ fields, onSubmit, sendText, header }) => {
+const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm }) => {
   const [form, setForm] = useState({});
 
   const checkRequired = ([name, , val]) => {
@@ -93,6 +94,14 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
     )
   }
 
+  useEffect(() => {
+    saveForm(form)
+  }, [form])
+
+  useEffect(() => {
+    setForm(initialForm)
+  }, [])
+
   return (
     <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -116,10 +125,8 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
 
             </StyledView>
 
-
             {
-
-              true ?
+              required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
                 <Button
                   mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
                   bg="#4A94EA"
@@ -131,13 +138,21 @@ const Form = ({ fields, onSubmit, sendText, header }) => {
                   mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
                 >{sendText || "Enviar"}</DisabledButton>
             }
-
           </Wrapper>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   )
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  initialForm: state.forms[ownProps.name] || {}
+})
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  saveForm: (form) => dispatch(saveForm(ownProps.name, form))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(Form)
 
 const Divider = styled.View`
   height: 1px;
@@ -213,8 +228,6 @@ const DisabledButton = styled(Button)`
 const Error = styled.Text`
   color: red;  
 `
-
-export default connect(null, null)(Form)
 
 
 

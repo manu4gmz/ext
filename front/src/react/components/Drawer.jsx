@@ -13,6 +13,7 @@ import PaymentPage from "../containers/PaymentPage"
 import SpaceForm from "../containers/SpaceForm"
 import OwnerForm from "../containers/OwnerForm"
 import SingleViewPage from "../containers/SingleViewPage"
+import PreviewSpace from "../containers/PreviewSpace"
 import AllSpaces from "../containers/AllSpaces"
 import LoginPage from "../containers/LoginPage"
 import { View, StyleSheet } from 'react-native'
@@ -87,7 +88,6 @@ function CustomDrawerContent(props) {
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
-
   },
   userInfoSection: {
     paddingLeft: 25,
@@ -128,6 +128,7 @@ function Root() {
       <Stack.Screen name="AllSpaces" component={AllSpaces} options={{ header: () => null }, titulo("Espacios")} />
       <Stack.Screen name="Camera" component={Camera} options={{ header: () => null }} />
       <Stack.Screen name="UploadingFiles" component={UploadingFiles} options={{ header: () => null }} />
+      <Stack.Screen name="PreviewSpace" component={PreviewSpace} options={{ header: () => null }, titulo("Vista previa")} />
     </Stack.Navigator>
   )
 }
