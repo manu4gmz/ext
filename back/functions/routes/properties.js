@@ -144,7 +144,7 @@ router.get("/:page", (req, res) => {
       const maxPage = Math.ceil(properties.length/pagesCount);
       let page = ((req.params.page-1) % maxPage)+1;
       res.status(200).json({
-        properties: properties.slice(pagesCount*(page-1), pagesCount*(page-1) + pagesCount).map((p, i) => i +":  "+ p.id + "   |   "+ p.title),
+        properties: properties.slice(pagesCount*(page-1), pagesCount*(page-1) + pagesCount),
         pages: maxPage,
         total: properties.length,
       })
