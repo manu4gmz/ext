@@ -130,7 +130,7 @@ console.log(filter);
             </StyledView>
           );
         })}
-        <PaginationWrapper style={{flex:1}}>
+        <PaginationWrapper>
           {
             index > 1 ?
             <TouchableOpacity onPress={()=>setIndex(index-1)}>
@@ -223,7 +223,7 @@ const DoubleWraper = styled.View`
 const PaginationWrapper = styled.View`
   flex-direction: row;
   justify-content: center;
-  display: flex;
+  margin-bottom: 24px;
 `
 
 const PaginationText = styled.Text`
@@ -244,7 +244,7 @@ const Badge = styled.View`
 const BadgeText = styled.Text`
   font-size: 12px;
   color:white;
-  line-height: 24px;
+  line-height: 16px;
   flex: 1;
   text-transform: capitalize;
   margin-right: 4px;
@@ -257,11 +257,9 @@ const BadgeRemove = styled.Image`
 
 const BadgeWrapper = styled.View`
   width: 100%;
-  flex: 1;
   flex-direction: row;
   margin-top: 12px;
   margin-bottom: 12px;
-  padding-bottom: 24px;
   margin-left: 12px;
 `
 
