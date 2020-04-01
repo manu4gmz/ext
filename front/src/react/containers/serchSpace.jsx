@@ -7,17 +7,9 @@ import Picker from "../components/Picker";
 import TextPrompt from "../components/TextPrompt";
 import styled from "styled-components/native";
 import Typeahead from "../components/Typeahead";
-
 import { fetchSpaces } from "../../redux/actions/spaces"
 import { fetchProvincias, fetchLocalidades } from "../../redux/actions/locations";
 import { connect } from 'react-redux'
-
-
-
-//Importando views and components
-
-
-
 import Form from '../components/Form';
 
 const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias }) => {
@@ -35,14 +27,10 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
 
     const onSubmit = function (form) {
         let filter = {};
-        console.log(form)
-
         if (form["Provincia*"] && province.id && form["Provincia*"].value) filter.p = form["Provincia*"].value;
         if (form["Barrio"] && province.id && form["Barrio"].value) filter.n = form["Barrio"].value;
         if (form["Tipo de Espacio"] && form["Tipo de Espacio"].value) filter.t = form["Tipo de Espacio"].value;
         if (Verificado) filter.v = Verificado;
-
-        console.log(filter);
 
         fetchSpaces(filter)
             .then((data) => {
@@ -50,14 +38,10 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
             })
     }
 
-
-
     function getProvincias(val) {
         fetchProvincias(val)
             .then(data => setProvincias(data))
     }
-
-
 
     function getLocalidades(val) {
         fetchLocalidades(val, province.id)

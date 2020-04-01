@@ -34,7 +34,7 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
   const field = form[name] || {};
 
   if (typeof name == "function") return (
-    <View key={index} style={{zIndex: placeholder || 1}}>
+    <View key={index} style={{ zIndex: placeholder || 1 }}>
       {
         name({
           title: (name) => <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>,
@@ -94,66 +94,63 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm }) => 
     )
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     saveForm(form)
   }, [form])
 
-  useEffect(()=>{
+  useEffect(() => {
     setForm(initialForm)
   }, [])
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-    
-      <ScrollView keyboardShouldPersistTaps='handled'>
-        <Wrapper>
-          <StyledView style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+
+        <ScrollView keyboardShouldPersistTaps='handled'>
+          <Wrapper>
+            <StyledView style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
+              {
+                typeof (header || "") == "string" ?
+                  <View>
+                    <StyledText>{(header || "")}</StyledText>
+                    <Divider />
+                  </View>
+                  :
+                  header({ divider: (props) => <Divider {...props} /> })
+              }
+
+              {
+                mapFields(fields)
+              }
+
+            </StyledView>
+
             {
-              typeof (header || "") == "string" ?
-                <View>
-                  <StyledText>{(header || "")}</StyledText>
-                  <Divider />
-                </View>
+              required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
+                <Button
+                  mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
+                  bg="#4A94EA"
+                  color="#F7F7F7"
+                  onPress={() => onSubmit(form)}
+                >{sendText || "Enviar"}</Button>
                 :
-                header({ divider: (props) => <Divider {...props} /> })
+                <DisabledButton
+                  mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
+                >{sendText || "Enviar"}</DisabledButton>
             }
-
-            {
-              mapFields(fields)
-            }
-
-          </StyledView>
-
-
-          {
-
-           required.every(e => Object.keys(form).includes(e)) && Object.keys(form).every(e => !form[e].error) ?
-              <Button
-                mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
-                bg="#4A94EA"
-                color="#F7F7F7"
-                onPress={() => onSubmit(form)}
-              >{sendText || "Enviar"}</Button>
-              :
-              <DisabledButton
-                mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
-              >{sendText || "Enviar"}</DisabledButton>
-          }
-
-        </Wrapper>
-      </ScrollView>
+          </Wrapper>
+        </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   )
 }
 
 const mapStateToProps = (state, ownProps) => ({
-    initialForm: state.forms[ownProps.name] || {}
+  initialForm: state.forms[ownProps.name] || {}
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    saveForm: (form)=>dispatch(saveForm(ownProps.name, form))
+  saveForm: (form) => dispatch(saveForm(ownProps.name, form))
 })
 export default connect(mapStateToProps, mapDispatchToProps)(Form)
 
@@ -175,7 +172,6 @@ const StyledView = styled.View`
   margin: 15px 5px;
   background-color: #F7F7F7;
   padding : 20px 20px 15px;
-
   border-radius: 10px;
 `
 
