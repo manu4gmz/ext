@@ -77,7 +77,9 @@ class AllSpaces extends React.Component {
     return (
       <BackgroundAllSpaces
         espacios={this.state.espacios}
-        allSpaces={this.props.allSpaces}
+        allSpaces={this.props.allSpaces.properties}
+        total={this.props.allSpaces.total}
+        pages={this.props.allSpaces.pages}
         navigation={this.props.navigation}
         sendId={this.sendId}
       />
