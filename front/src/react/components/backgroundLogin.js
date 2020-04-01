@@ -119,9 +119,9 @@ const Error = styled.Text`
 const TextoPrincipal = styled.Text`
     color:#E9E9E9;
     margin: 0 auto;
-    padding- bottom:120px;
+    padding-bottom:120px;
     padding-top:30px
-    font-size:25px
+    font-size:23px
 `
 
 const RememberPassword = styled.Text`

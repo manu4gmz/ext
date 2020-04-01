@@ -14,7 +14,6 @@ import { Rating } from 'react-native-ratings';
 
 export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
   const [mode, setMode] = useState(false);
-  console.log(allSpaces)
   return (
     <ScrollView>
       <View style={{ backgroundColor: "#E9E9E9" }}>
@@ -79,7 +78,6 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
 
                         <TouchableOpacity
                           style={{ margin: "auto" }}
-                          onPress={() => toggleLike()}
                         >
                           <Image
                             style={{ width: 30, height: 30 }}
@@ -92,7 +90,7 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                       <Subtitulo>{`${espacio.size} mtr2`}</Subtitulo>
                     </View>
                   </TouchableOpacity>
-                  <Descripcion>{`${espacio.description.slice(
+                  <Descripcion>{`${(espacio.description || "").slice(
                     0,
                     100
                   )}...`}</Descripcion>
@@ -108,13 +106,28 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                     />
                     <Text
                       style={{ color: "grey", fontWeight: "bold", padding: 10 }}
-                    >{`${espacio.location.length}  Ver comentarios`}
+                    >{`${(espacio.location || "").length || 0}  Ver comentarios`}
                     </Text>
                   </Comentarios>
                   <ContenedorIconos>
-                    {espacio.services.map((caracteristica, index) => (
+                    {(espacio.services || []).map((caracteristica, index) => (
                       <ContenedorIcono key={index}>
-                        <Icono source={caracteristica.icono} />
+                        <Icono source={caracteristica === "wifi" ?
+                          (require("../../public/icons/wifi-ne.png"))
+                          :
+                          (caracteristica === "Aire Acondicionado" ?
+                            (require("../../public/icons/proyector-ne.png"))
+                            :
+                            caracteristica === "Cafe" ?
+                              (require("../../public/icons/cafe-ne.png"))
+                              :
+                              caracteristica === "Ducha" ?
+                                (require("../../public/icons/ducha-ne.png"))
+                                :
+                                null)
+                        } />
+                        {/*
+
                         <Text style={{ textAlign: "center" }}>
                           {`${
                             caracteristica.cantidad
@@ -124,6 +137,7 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                             caracteristica.cantidad > 1 ? "s" : ""
                             }`}
                         </Text>
+                        */}
                       </ContenedorIcono>
                     ))}
                   </ContenedorIconos>
@@ -246,12 +260,15 @@ const ContenedorIconos = styled.View`
   width: 100%;
   justify-content: space-evenly;
 `;
+
 const ContenedorIcono = styled.View`
   display: flex;
   flex-direction: column;
   align-self: center;
+  align-items: center;
   margin: 10px;
-`;
+  width: 25px;
+  height: 70px;`;
 
 const Icono = styled.Image`
     background-color: #F7F7F7;

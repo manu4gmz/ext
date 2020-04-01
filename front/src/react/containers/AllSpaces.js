@@ -64,14 +64,10 @@ class AllSpaces extends React.Component {
         }
       ]
     };
-    this.toggleLike = this.toggleLike.bind(this);
     this.sendId = this.sendId.bind(this);
 
   }
 
-  toggleLike() {
-    console.log("like", this.props.allSpaces)
-  }
   sendId(id) {
     this.props.fetchId(id)
     return this.props.navigation.navigate('Root', { screen: `SingleView` })
@@ -81,7 +77,6 @@ class AllSpaces extends React.Component {
     return (
       <BackgroundAllSpaces
         espacios={this.state.espacios}
-        toggleLike={this.toggleLike}
         allSpaces={this.props.allSpaces}
         navigation={this.props.navigation}
         sendId={this.sendId}
