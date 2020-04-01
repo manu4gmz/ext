@@ -9,6 +9,7 @@ import {
 import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
 import Boton from './../ui/Button'
+import Carousel from "../components/Carousel";
 
 function indexes(index, total) {
     let indexes = [];
@@ -18,11 +19,11 @@ function indexes(index, total) {
     return indexes;
 }
 
-export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, index, sendId }) => {
+export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, index, sendId, filter, removeFilter }) => {
   const [mode, setMode] = useState(false);
 
-  console.log(index);
-  console.log(pages);
+console.log(filter);
+
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -34,6 +35,21 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
             Mapa
           </Lista>
         </ListaYMapa>
+
+        <BadgeWrapper>
+        {
+          Object.keys(filter).map(key => (
+            <Badge key={key}>
+              <TouchableOpacity onPress={()=>removeFilter(key)}>
+                <BadgeRemove  source={require("../../public/icons/cross.png")}/>
+              </TouchableOpacity>
+              <BadgeText>
+              {filter[key] == "ciudad autónoma de buenos aires" ? "capital federal" : filter[key]} 
+              </BadgeText>
+            </Badge>
+          ))
+        }
+        </BadgeWrapper>
 
         <TextoBusquedas>
           {`${total} espacios encontrados`}
@@ -50,17 +66,12 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
               <View>
                 <View style={{
                   width: '100%',
-                  height: 250
+                  height: 250,
+                  borderTopLeftRadius: 5,
+                  borderTopRightRadius: 5,
+                  overflow: "hidden"
                 }} >
-                  <Thumbnail
-                    source={{ uri: espacio.photos[0] }}
-                    resizeMode="cover"
-                    style={{
-                      flex: 1,
-                      borderTopLeftRadius: 5,
-                      borderTopRightRadius: 5,
-                    }}
-                  />
+                  <Carousel images={espacio.photos} height={250}/>
                   {espacio.verified ? (<Verified style={{ position: "absolute", bottom: 5, right: 2, zIndex: 9 }}>
                     <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 40, height: 40 }} />
                   </Verified>) : null}
@@ -88,7 +99,7 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
 
                     <TouchableOpacity>
                       <Image
-                        style={{ width: 30, height: 30, marginRight: '2px' }}
+                        style={{ width: 30, height: 30, marginRight: 2 }}
                         source={require("../../public/icons/corazon-ne.png")}
                       />
                     </TouchableOpacity>
@@ -196,13 +207,10 @@ const Lista = styled.Text`
   width: 50%;
 `
 const TextoBusquedas = styled.Text`
-  text-align: center;
-  padding: 1%;
-  margin-bottom: 1%;
-  color: #848484;
-  border-bottom-color: #848484;
-  border-bottom-width: 1px;
-  margin: 0px;
+  font-size: 18px;
+  margin-left: 12px;
+  color: black;
+  font-weight: 600;
 `
 const Verified = styled.View`
 `
@@ -213,12 +221,9 @@ const DoubleWraper = styled.View`
 `
 
 const PaginationWrapper = styled.View`
-  width: 100%;
-  height: 36px;
   flex-direction: row;
   justify-content: center;
-  margin-bottom: 24px;
-  padding-bottom: 36px;
+  display: flex;
 `
 
 const PaginationText = styled.Text`
@@ -228,9 +233,37 @@ const PaginationText = styled.Text`
   font-weight: ${p=> p.bold=="true" ? 700 : 100};
 `
 
+const Badge = styled.View`
+  height: 24px;
+  background-color: #F77171;
+  padding: 4px;
+  border-radius: 6px;
+  flex-direction: row;
+  margin-right: 12px;
+`
+const BadgeText = styled.Text`
+  font-size: 12px;
+  color:white;
+  line-height: 24px;
+  flex: 1;
+  text-transform: capitalize;
+  margin-right: 4px;
+`
+const BadgeRemove = styled.Image`
+  margin-right: 4px;
+  width: 16px;
+  height: 16px;
+`
 
-
-
+const BadgeWrapper = styled.View`
+  width: 100%;
+  flex: 1;
+  flex-direction: row;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 24px;
+  margin-left: 12px;
+`
 
 
 

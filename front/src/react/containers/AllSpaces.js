@@ -27,6 +27,16 @@ function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
     return navigation.navigate(`SingleView`, {propertyId: id})
   }
 
+  function removeFilter(key) {
+    const { query } = route.params;
+    delete query[key]
+    console.log(key, route.params.query);
+    
+    fetchSpaces(query, route.params.index);
+
+    
+  }
+
   return (
     <BackgroundAllSpaces
       allSpaces={allSpaces.properties}
@@ -37,6 +47,8 @@ function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
       setIndex={setIndex}
       scrollView={scrollView}
       index={route.params.index}
+      filter={route.params.query}
+      removeFilter={removeFilter}
     />
   );
 }
