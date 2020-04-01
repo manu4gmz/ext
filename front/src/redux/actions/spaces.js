@@ -32,7 +32,6 @@ export const fetchSpaces = (datosSpace, page = 1) => dispatch => {
     return axios.get(`https://ext-api.web.app/api/properties/${page}${queries ? "?"+queries : ""}`)
         .then(res => res.data)
         .then(data => {
-            console.log(data)
             dispatch(allSpaces(data))
         })
 }

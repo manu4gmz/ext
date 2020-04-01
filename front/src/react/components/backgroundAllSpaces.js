@@ -10,15 +10,21 @@ import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
 import Boton from './../ui/Button'
 
+function indexes(index, total) {
+    let indexes = [];
+    let start = index-2 < 1 ? 1 : index-2;
+    if (total-4 >= 1 && start+3 >= total) start = total-4;
+    for (let i = start; i < start+5 && i <= total; i++) indexes.push(i);
+    return indexes;
+}
 
-export default ({ espacios, sendId, toggleLike, allSpaces, navigation, total, pages }) => {
+export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, index, sendId }) => {
   const [mode, setMode] = useState(false);
 
-  let indexes = [];
-  for (let i = 1; i < pages+1; i++) indexes.push(i);
-
+  console.log(index);
+  console.log(pages);
   return (
-    <ScrollView>
+    <ScrollView ref={scrollView}>
       <View>
         <ListaYMapa>
           <Lista active={!mode + ""} onPress={() => setMode(false)}>
@@ -30,7 +36,7 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation, total, pa
         </ListaYMapa>
 
         <TextoBusquedas>
-          {`${allSpaces.length} espacios encontrados`}
+          {`${total} espacios encontrados`}
         </TextoBusquedas>
       </View>
 
@@ -109,27 +115,33 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation, total, pa
 
                   </DoubleWraper>
                 </ViewInfo>
-                <PaginationWrapper style={{flex:1}}>
-                  <TouchableOpacity>
-                    <PaginationText>Anterior</PaginationText>
-                  </TouchableOpacity>
-                  {
-                    indexes.map((index) => (
-                      <TouchableOpacity>
-                        <PaginationText>{index}</PaginationText>
-                      </TouchableOpacity>
-                    ))
-                  }
-                  <TouchableOpacity>
-                    <PaginationText>Siguiente</PaginationText>
-                  </TouchableOpacity>
-                </PaginationWrapper>
               </View>
             </StyledView>
           );
         })}
+        <PaginationWrapper style={{flex:1}}>
+          {
+            index > 1 ?
+            <TouchableOpacity onPress={()=>setIndex(index-1)}>
+              <PaginationText>Anterior</PaginationText>
+            </TouchableOpacity> : null
+          }
+          {
+            indexes(index,pages).map((i) => (
+              <TouchableOpacity key={i} onPress={()=>setIndex(i)}>
+                <PaginationText bold={(index==i)+""}>{i}</PaginationText>
+              </TouchableOpacity>
+            ))
+          }
+          {
+            index < total ?
+            <TouchableOpacity onPress={()=>setIndex(index+1)}>
+              <PaginationText>Siguiente</PaginationText>
+            </TouchableOpacity> : null
+          }
+        </PaginationWrapper>
       </Wrapper>
-    </ScrollView >
+    </ScrollView>
   );
 };
 
@@ -154,7 +166,7 @@ const Wrapper = styled.View`
 const Thumbnail = styled.Image`
 `
 const ViewInfo = styled.View`
-padding : 6px 12px 0px 12px;
+padding: 18px;
 `
 const Precio = styled.Text`
   font-size: 20px;
@@ -197,8 +209,62 @@ const Verified = styled.View`
 const DoubleWraper = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin: 3% 0px;
+  margin-top: 12px;
 `
+
+const PaginationWrapper = styled.View`
+  width: 100%;
+  height: 36px;
+  flex-direction: row;
+  justify-content: center;
+  margin-bottom: 24px;
+  padding-bottom: 36px;
+`
+
+const PaginationText = styled.Text`
+  font-size: 14px;
+  color: #4082d1;
+  padding: 10px;
+  font-weight: ${p=> p.bold=="true" ? 700 : 100};
+`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* import React, { useState } from "react";
 import {
   View,

@@ -1,7 +1,11 @@
 import { SPACE, ALLSPACES, IDSPACE } from "../constants"
 
 const initialCartState = {
-    allSpaces: [],
+    allSpaces: {
+        properties: [],
+        total: 0,
+        pages: 0,
+    },
     singleSpace: {},
     idSpace: ""
 }

@@ -7,7 +7,6 @@ import Picker from "../components/Picker";
 import TextPrompt from "../components/TextPrompt";
 import styled from "styled-components/native";
 import Typeahead from "../components/Typeahead";
-import { fetchSpaces } from "../../redux/actions/spaces"
 import { fetchProvincias, fetchLocalidades } from "../../redux/actions/locations";
 import { connect } from 'react-redux'
 import Form from '../components/Form';
@@ -32,10 +31,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         if (form["Tipo de Espacio"] && form["Tipo de Espacio"].value) filter.t = form["Tipo de Espacio"].value;
         if (Verificado) filter.v = Verificado;
 
-        fetchSpaces(filter)
-            .then((data) => {
-                return navigation.navigate('Root', { screen: "AllSpaces" })
-            })
+        navigation.navigate("AllSpaces", { query: filter, index:1 })
     }
 
     function getProvincias(val) {
@@ -117,7 +113,6 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
 
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    fetchSpaces: (space) => dispatch(fetchSpaces(space)),
     fetchProvincias: (val) => dispatch(fetchProvincias(val)),
     fetchLocalidades: (val, id) => dispatch(fetchLocalidades(val, id)),
 })
