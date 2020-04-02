@@ -10,11 +10,17 @@ import { fetchSpaces } from "../../redux/actions/spaces"
 function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
 
   const scrollView = useRef(null);
+  const [ loading, setLoading ] = useState(true)
+  const [ spaces, setSpaces ] = useState({properties:[], total: 0, pages: 0});
 
   //const [index, setIndex] = useState(1);
 
   useEffect(()=>{
-    fetchSpaces(route.params.query, route.params.index);
+    fetchSpaces(route.params.query, route.params.index)
+    .then(data => {
+      setLoading(false);
+      setSpaces(data);
+    });
   },[])
 
   function setIndex(i) {
@@ -32,16 +38,21 @@ function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
     delete query[key]
     console.log(key, route.params.query);
     
-    fetchSpaces(query, route.params.index);
+    setLoading(true);
+    fetchSpaces(query, 1)
+    .then(data => {
+      setLoading(false);
+      setSpaces(data);
+    });
 
     
   }
 
   return (
     <BackgroundAllSpaces
-      allSpaces={allSpaces.properties}
-      total={allSpaces.total}
-      pages={allSpaces.pages}
+      allSpaces={spaces.properties}
+      total={spaces.total}
+      pages={spaces.pages}
       navigation={navigation}
       sendId={sendId}
       setIndex={setIndex}
@@ -49,6 +60,7 @@ function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
       index={route.params.index}
       filter={route.params.query}
       removeFilter={removeFilter}
+      loading={loading}
     />
   );
 }

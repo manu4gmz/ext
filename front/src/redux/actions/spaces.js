@@ -33,6 +33,7 @@ export const fetchSpaces = (datosSpace, page = 1) => dispatch => {
         .then(res => res.data)
         .then(data => {
             dispatch(allSpaces(data))
+            return data;
         })
 }
 export const fetchId = (id) => dispatch => {

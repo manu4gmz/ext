@@ -135,7 +135,10 @@ router.get("/:page", (req, res) => {
         return ((!condicion.n || propiedad.neighborhood == condicion.n)
           && (!condicion.p || propiedad.province == condicion.p)
           && (!condicion.t || propiedad.type == condicion.t)
-          && (condicion.v == true ? propiedad.verified == true : true))
+          && (!condicion.max || Number(propiedad.price) <= Number(condicion.max))
+          && (!condicion.min || Number(propiedad.price) >= Number(condicion.min))
+          && (!condicion.v || propiedad.verified == true)
+          && (!condicion.photos || (propiedad.photos || []).length > 0))
       })
 
       return filtrado;

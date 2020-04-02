@@ -19,6 +19,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     const Observation = TextPrompt(useState(false), useState(""));
     const Rules = TextPrompt(useState(false), useState(""));
     const [Verificado, setVerificado] = useState(false);
+    const [ConFotos, setConFotos] = useState(false);
 
     const [provincias, setProvincias] = useState([])
     const [localidades, setLocalidades] = useState([])
@@ -29,7 +30,12 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         if (form["Provincia*"] && province.id && form["Provincia*"].value) filter.p = form["Provincia*"].value;
         if (form["Barrio"] && province.id && form["Barrio"].value) filter.n = form["Barrio"].value;
         if (form["Tipo de Espacio"] && form["Tipo de Espacio"].value) filter.t = form["Tipo de Espacio"].value;
+        if (form["Valor min ($)"] && form["Valor min ($)"].value) filter.min = form["Valor min ($)"].value;
+        if (form["Valor max ($)"] && form["Valor max ($)"].value) filter.max = form["Valor max ($)"].value;
         if (Verificado) filter.v = Verificado;
+        if (ConFotos) filter.photos = ConFotos;
+
+
 
         navigation.navigate("AllSpaces", { query: filter, index:1 })
     }
@@ -80,11 +86,11 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         ],
         [({ onChange }) => <CheckBoxWrapper>
             <CheckBox onPress={() => (setVerificado(!Verificado))}>
-                <Check>{Verificado ? <Dot /> : null}</Check>
-                <CheckLabel>Verificado</CheckLabel>
+                <Check><Dot active={Verificado+""}/></Check>
+                <CheckLabel>Verificados</CheckLabel>
             </CheckBox>
-            <CheckBox onPress={() => (setVerificado(!Verificado))}>
-                <Check>{Verificado ? <Dot /> : null}</Check>
+            <CheckBox onPress={() => (setConFotos(!ConFotos))}>
+                <Check><Dot active={ConFotos+""}/></Check>
                 <CheckLabel>Con fotos</CheckLabel>
             </CheckBox>
         </CheckBoxWrapper>
@@ -127,20 +133,20 @@ const CheckBox = styled.TouchableOpacity`
 const Check = styled.View`
   border: solid 1px #cccccc;
   border-radius: 50px;
-  height: 20px;
-  width: 20px;
+  height: 24px;
+  width: 24px;
   justify-content: center;
 `
 
 const Dot = styled.Text`
-  height: 10px;
-  width: 10px;
+  height: 12px;
+  width: 12px;
   align-self: center;
-  background-color: #2cca31;
+  background-color: ${p=>p.active == "true" ? "#2cca31" : "#d9d5c8"};
   border-radius: 40px;
 `
 const CheckLabel = styled.Text`
-    font-size: 14px;
+    font-size: 12px;
     padding-top:2px;
 `
 

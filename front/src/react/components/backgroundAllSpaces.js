@@ -4,12 +4,14 @@ import {
   Text,
   ScrollView,
   Image,
-  TouchableOpacity,
+  TouchableOpacity
 } from "react-native";
 import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
 import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
+import FadeInView from "../components/FadeInView";
+import Loading from "../components/Loading";
 
 function indexes(index, total) {
     let indexes = [];
@@ -19,10 +21,36 @@ function indexes(index, total) {
     return indexes;
 }
 
-export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, index, sendId, filter, removeFilter }) => {
+function mapBadge(filter, remove) {
+  const map = {
+    v: _ => "Solo verificados",
+    photos: _ => "Solo con fotos",
+    t: val => val,
+    p: val => val == "ciudad autónoma de buenos aires" ? "capital federal" : val,
+    n: val => val,
+    min: val => "Minimo $"+val,
+    max: val => "Máximo $"+val,
+
+  }
+
+   return Object.keys(filter).map((key,i) => {
+    const text = map[key](filter[key])
+
+    return (
+      <Badge key={i}>
+        <TouchableOpacity onPress={()=>remove(key)}>
+          <BadgeRemove  source={require("../../public/icons/cross.png")}/>
+        </TouchableOpacity>
+        <BadgeText>{text}</BadgeText>
+      </Badge>
+    )
+   })
+
+}
+
+export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, index, sendId, filter, removeFilter, loading }) => {
   const [mode, setMode] = useState(false);
 
-console.log(filter);
 
   return (
     <ScrollView ref={scrollView}>
@@ -38,35 +66,32 @@ console.log(filter);
 
         <BadgeWrapper>
         {
-          Object.keys(filter).map(key => (
-            <Badge key={key}>
-              <TouchableOpacity onPress={()=>removeFilter(key)}>
-                <BadgeRemove  source={require("../../public/icons/cross.png")}/>
-              </TouchableOpacity>
-              <BadgeText>
-              {filter[key] == "ciudad autónoma de buenos aires" ? "capital federal" : filter[key]} 
-              </BadgeText>
-            </Badge>
-          ))
+          mapBadge(filter, removeFilter)
         }
         </BadgeWrapper>
-
-        <TextoBusquedas>
-          {`${total} espacios encontrados`}
-        </TextoBusquedas>
+        {
+          !loading ? 
+          <TextoBusquedas>
+            {`${total} espacios encontrados`}
+          </TextoBusquedas> : null
+        }
       </View>
 
+      {
+        !loading ? 
+
       <Wrapper>
-        {allSpaces.map((espacio, index) => {
+        { allSpaces.map((espacio, index) => {
           return (
+                <FadeInView key={index} order={index}>
             <StyledView
-              key={index}
+              
               style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
             >
               <View>
                 <View style={{
                   width: '100%',
-                  height: 250,
+                  height: (espacio.photos || []).length ? 250 : "auto",
                   borderTopLeftRadius: 5,
                   borderTopRightRadius: 5,
                   overflow: "hidden"
@@ -76,10 +101,10 @@ console.log(filter);
                     <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 40, height: 40 }} />
                   </Verified>) : null}
                 </View>
-
                 <ViewInfo>
                   <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                     <TouchableOpacity
+                      style={{flex:1}}
                       onPress={() => { return sendId(espacio.id) }}
                     >
                       <Titulo>{espacio.title}</Titulo>
@@ -126,8 +151,10 @@ console.log(filter);
 
                   </DoubleWraper>
                 </ViewInfo>
+
               </View>
             </StyledView>
+            </FadeInView>
           );
         })}
         <PaginationWrapper>
@@ -145,13 +172,16 @@ console.log(filter);
             ))
           }
           {
-            index < total ?
+            index < pages ?
             <TouchableOpacity onPress={()=>setIndex(index+1)}>
               <PaginationText>Siguiente</PaginationText>
             </TouchableOpacity> : null
           }
         </PaginationWrapper>
       </Wrapper>
+      
+        : <Loading/>
+      }
     </ScrollView>
   );
 };
@@ -239,7 +269,8 @@ const Badge = styled.View`
   padding: 4px;
   border-radius: 6px;
   flex-direction: row;
-  margin-right: 12px;
+  margin-bottom: 6px;
+  margin-right: 6px;
 `
 const BadgeText = styled.Text`
   font-size: 12px;
@@ -261,15 +292,8 @@ const BadgeWrapper = styled.View`
   margin-top: 12px;
   margin-bottom: 12px;
   margin-left: 12px;
+  flex-wrap: wrap;
 `
-
-
-
-
-
-
-
-
 
 
 

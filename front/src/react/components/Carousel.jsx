@@ -30,35 +30,31 @@ export default ({images, height}) => {
     }
     function onFling(ev) {
         if (ev.nativeEvent.state > 3) {
-            console.log(ev.nativeEvent)
             if (ev.nativeEvent.absoluteX - oldPos < 0) changeIndex(1);
             else if (ev.nativeEvent.absoluteX - oldPos > 0) changeIndex(-1);
         }
         setOldPos(ev.nativeEvent.absoluteX);
     }
 
+    if (!images.length) return <NoPhotos>No hay fotos para mostrar</NoPhotos>
+
     return (
 
     	<View style={{ width: "100%", alignItems: "center" }}>
-            {
-                images.length ? 
-                    <FlingGestureHandler direction={Directions.LEFT | Directions.RIGHT} onHandlerStateChange={onFling}>
-                    <View>
-                        <CarouselLabel>{index+1}/{images.length}</CarouselLabel>
-                        <Animated.View style={{ flexDirection: "row", width: vw, position: "relative", left: offsetAnim }}>
-                        {
-                            images.map((uri,i) => (
-                                <CarouselContainer key={i} style={{width: vw}} height={height}>
-                                    <CarouselImage source={{uri}} style={{ width: vw, height: height || 400 }} /> 
-                                </CarouselContainer>
-                            ))
-                        }
-                        </Animated.View>
-                    </View>
-                    </FlingGestureHandler>
-                    : <NoPhotos>No hay fotos para mostrar</NoPhotos>
-            }
-
+            <FlingGestureHandler direction={Directions.LEFT | Directions.RIGHT} onHandlerStateChange={onFling}>
+            <View>
+                <CarouselLabel>{index+1}/{images.length}</CarouselLabel>
+                <Animated.View style={{ flexDirection: "row", width: vw, position: "relative", left: offsetAnim }}>
+                {
+                    images.map((uri,i) => (
+                        <CarouselContainer key={i} style={{width: vw}} height={height}>
+                            <CarouselImage source={{uri}} style={{ width: vw, height: height || 400 }} /> 
+                        </CarouselContainer>
+                    ))
+                }
+                </Animated.View>
+            </View>
+            </FlingGestureHandler>
         </View>
 
     )
@@ -69,6 +65,8 @@ const NoPhotos = styled.Text`
     font-weight: 500;
     text-align: center;
     margin-top: 30px;
+    width: 100%;
+    color: #b2b2b2;
 `
 
 const CarouselContainer = styled.View`
