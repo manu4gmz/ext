@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 import { StyleSheet, Text, View, Image } from "react-native";
 import SingleView from "../components/SingleView";
 import { fetchSpace } from "../../redux/actions/spaces"
-const SingleViewPage = ({ space, fetchSpace, id }) => {
-    const [region, setRegion] = useState({ latitude: null, longitude: null, latitudeDelta: null, longitudeDelta: null })
+const SingleViewPage = ({ space, fetchSpace, id, route }) => {
     useEffect(() => {
-        fetchSpace(id)
+        fetchSpace(route.params.propertyId);
+
     }, [])
     return <SingleView space={space} />;
 };

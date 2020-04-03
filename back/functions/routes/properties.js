@@ -16,10 +16,10 @@ router.get("/spaces", (req, res, next) => {
       })
 
       const filtrado = arr.filter(propiedad => {
-        return ((condicion.z && propiedad.neighborhood == condicion.z)
-          && (condicion.c && propiedad.province == condicion.c)
-          && (condicion.t && propiedad.type == condicion.t)
-          && (condicion.v && propiedad.verified == condicion.v))
+        return ((!condicion.n || propiedad.neighborhood == condicion.n)
+          && (!condicion.p || propiedad.province == condicion.p)
+          && (!condicion.t || propiedad.type == condicion.t)
+          && (condicion.v == true ? propiedad.verified == true : true))
       })
 
       res
@@ -83,7 +83,7 @@ router.post("/createSpace", (req, res, next) => {
   db.collection("properties").add(body)
     .then((data) => {
       res
-        .status(200)
+        .status(201)
         .json(data.id)
     })
     .catch(next)
@@ -111,6 +111,28 @@ router.put('/update/:id', (req, res, next) => {
     })
     .catch(next)
 })
+
+router.put('/coordenadas/:id', (req, res, next) => {
+  const id = req.params.id
+  const body = req.body
+  console.log(req.body, "Este es el req body antes de updatear")
+  db.collection('properties').doc(id).get()
+    .then((data) => {
+
+      const propiedad = data.data()
+      const resultado = propiedad.location.push(body)
+      console.log(resultado, "ste es el resultado de dos array ")
+      db.collection('properties').doc(id).update({ location: resultado })
+        .then(data => {
+          res.sendStatus(200)
+        })
+
+    })
+
+    .catch(next)
+})
+
+
 
 
 module.exports = router

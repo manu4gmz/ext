@@ -1,52 +1,118 @@
 import React, { Component, useEffect, useState } from 'react';
-import { connect } from 'react-redux'
 import { View } from 'react-native'
 import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 import Picker from "../components/Picker";
 import TextPrompt from "../components/TextPrompt";
+import Typeahead from "../components/Typeahead";
 import AddPhotos from "../components/AddPhotos";
-import { addSpace } from '../../redux/actions/spaces'
 import Form from '../components/Form';
 
-const SpaceForm = ({ navigation, uploadFiles, addSpace, user }) => {
+import { fetchProvincias, fetchLocalidades, fetchCoords } from "../../redux/actions/locations";
+import { addSpace } from '../../redux/actions/spaces'
+import { connect } from 'react-redux'
+
+const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, fetchProvincias, fetchCoords, coordenadasCiudad }) => {
   const Type = Picker(useState(false), useState(""));
   const Services = Picker(useState(false), useState([]));
   const Observation = TextPrompt(useState(false), useState(""));
   const Rules = TextPrompt(useState(false), useState(""));
   const Descripcion = TextPrompt(useState(false), useState(""));
 
+  /****************  Geo normalization **************/
+
+  const [provincias, setProvincias] = useState([])
+  const [localidades, setLocalidades] = useState([])
+  const [province, setProvince] = useState({})
+  const [region, setRegion] = useState({})
+
+  function getProvincias(val) {
+    fetchProvincias(val)
+      .then(data => setProvincias(data))
+  }
+
+
+  function getLocalidades(val) {
+    fetchLocalidades(val, province.id)
+      .then(data => {
+        const body = data.map((elemento) => {
+          return { label: elemento.label, id: elemento.id }
+        })
+        setLocalidades(body);
+        if (data[0].coordenadas) setRegion(data[0].coordenadas)
+      })
+  }
+
+  const handleSelectProvince = (val) => {
+    if (!val) return setProvince({});
+    setProvince(val);
+  }
+
+  /**************************************************/
+
+
   const onSubmit = function (form) {
+    console.log(region)
     const datosSpace = {
       verificated: false,
-      neighborhood: form["Ciudad*"].value,
-      province: form["Provincia*"].value,
-      type: form["Tipo de Espacio*"].value,
-      street: form["Calle*"].value,
-      streetNumber: form["Número"].value,
-      floor: form['Piso'].value,
-      apt: form['Depto'].value,
-      size: form["Tamaño #(mtr2)#*"].value,
-      capacity: form["Capacidad*"].value,
-      price: form["Valor hora ($)"].value,
-      cleanup: form["Tasa limpieza ($)*"].value,
-      rules: form["Reglas de Convivencia"].value,
-      observations: form["Observaciones"].value,
-      description: form["Descripcion"].value,
+      neighborhood: (form["Barrio*"] || {}).value,
+      province: (form["Provincia*"] || {}).value,
+      type: (form["Tipo de Espacio*"] || {}).value,
+      street: (form["Calle*"] || {}).value,
+      streetNumber: (form["Número"] || {}).value,
+      floor: (form['Piso'] || {}).value,
+      apt: (form['Depto'] || {}).value,
+      size: (form["Tamaño #(mtr2)#*"] || {}).value,
+      capacity: (form["Capacidad*"] || {}).value,
+      price: (form["Valor hora ($)"] || {}).value,
+      cleanup: (form["Tasa limpieza ($)*"] || {}).value,
+      rules: (form["Reglas de Convivencia"] || {}).value,
+      observations: (form["Observaciones"] || {}).value,
+      description: (form["Descripcion"] || {}).value,
       userId: user,
-      location: [],
-      photos: [],
+      visible: false,
+      location: [region],
+      photos: ((form["Agregar fotos"] || {}).value || []),
       title: form['Titulo*'].value,
       services: form["Caracteristicas y servicios*"].value
     }
 
+    //navigation.navigate("PreviewSpace", { space: datosSpace })
+    const coords = {
+      p: datosSpace.province,
+      n: datosSpace.neighborhood,
+      s: datosSpace.street,
+      sn: datosSpace.streetNumber
+    }
     addSpace(datosSpace)
-      .then(data => navigation.navigate("UploadingFiles", { images: form["Agregar fotos"].value, propertyId: data }))
+      .then((propertyId) => {
+        fetchCoords(coords, propertyId)
+          .then((data) =>
+            navigation.navigate("Payment", { space: datosSpace, propertyId })
+          )
+
+      })
+
   }
 
   const fields = [
-    ["Provincia*", "Buenos Aires, Cordoba, San Luis.."],
     ["Titulo*", "Excelente lugar para..."],
-    ["Ciudad*", "Flores, Saavedra.."],
+    [({ onChange }) => <Typeahead
+      title="Provincia*"
+      placeholder="Buenos Aires, Cordoba, San Luis.."
+      getOptions={getProvincias}
+      handleSelect={handleSelectProvince}
+      onChange={onChange}
+      options={provincias}
+    />, 3],
+    //[({ onChange }) => <Province.Input onChange={onChange} title={"Provincia*"} placeholder="Buenos Aires, Cordoba, San Luis.." />],
+    [({ onChange }) => province.id ? <Typeahead
+      title="Barrio*"
+      placeholder="Flores, Saavedra.."
+      getOptions={getLocalidades}
+      handleSelect={() => null}
+      onChange={onChange}
+      options={localidades}
+    /> : null, 2],
     ["Calle*", "Av. Congreso, Castillo"],
     [
       ["Número", "1332"],
@@ -95,6 +161,7 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user }) => {
       } />
 
       <Form
+        name="space"
         onSubmit={onSubmit}
         fields={fields}
         header={({ divider }) => <AddSpaceFormProgress title="Presentá tu espacio" state={1} divider={divider} />}
@@ -106,11 +173,16 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user }) => {
 
 
 const mapStateToProps = (state, ownProps) => ({
-  user: state.user.logged.uid
+  user: state.user.logged.uid,
+  coordenadasCiudad: state.spaces.coordenadas
+
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  addSpace: (body) => dispatch(addSpace(body))
+  addSpace: (body) => dispatch(addSpace(body)),
+  fetchProvincias: (val) => dispatch(fetchProvincias(val)),
+  fetchLocalidades: (val, id) => dispatch(fetchLocalidades(val, id)),
+  fetchCoords: (coordenadas, id) => dispatch(fetchCoords(coordenadas, id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpaceForm);

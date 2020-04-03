@@ -69,8 +69,8 @@ class AllSpaces extends React.Component {
   }
 
   sendId(id) {
-    this.props.fetchId(id)
-    return this.props.navigation.navigate('Root', { screen: `SingleView` })
+    //this.props.fetchId(id)
+    return this.props.navigation.navigate(`SingleView`, {propertyId: id})
   }
 
   render() {

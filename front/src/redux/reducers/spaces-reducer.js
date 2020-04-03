@@ -3,7 +3,8 @@ import { SPACE, ALLSPACES, IDSPACE } from "../constants"
 const initialCartState = {
     allSpaces: [],
     singleSpace: {},
-    idSpace: ""
+    idSpace: "",
+    coordenadas: {}
 }
 export default function (state = initialCartState, action) {
     switch (action.type) {
@@ -13,6 +14,8 @@ export default function (state = initialCartState, action) {
             return { ...state, idSpace: action.idSpace }
         case ALLSPACES:
             return { ...state, allSpaces: action.allSpaces }
+        case "COORDENADAS":
+            return { ...state, coordenadas: action.coordenadas }
         default:
             return state;
     }

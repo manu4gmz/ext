@@ -89,7 +89,6 @@ export default ([modal, setModal],[value, setValue]) => {
 const Wrapper = styled.View`
   position: absolute;
   z-index: 10;
-  top: 85px;
   left: 0px;
   width: 100%;
   height: 100%;
