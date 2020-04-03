@@ -1,23 +1,52 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView, Linking } from 'react-native'
 import styled from "styled-components/native";
 import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
+import Boton from './../ui/Button'
+import qs from 'qs'
 import Carousel from "../components/Carousel";
 import Loading from "../components/Loading";
 
-
 export default ({ space, loading }) => {
     const [mode, setMode] = useState(false)
-
     if (loading) return <Loading/>;
+  
+    async function sendEmail(to, subject, body, options = {}) {
+        const { cc, bcc } = options;
+
+        let url = `mailto:${to}`;
+
+        // Create email link query
+        const query = qs.stringify({
+            subject: subject,
+            body: body,
+            cc: cc,
+            bcc: bcc
+        });
+
+        if (query.length) {
+            url += `?${query}`;
+        }
+
+        // check if we can use this link
+        const canOpen = await Linking.canOpenURL(url);
+
+        if (!canOpen) {
+            throw new Error('Provided URL can not be handled');
+        }
+
+        return Linking.openURL(url);
+    }
+
 
     return (
         <ScrollView>
-            <View style={{ backgroundColor: "#4A94EA", flexDirection: "row"}}>
+            <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
                 <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
                 <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
             </View>
             <Carousel images={space.photos || []}/>
+
             <Container>
                 <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
                 <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
@@ -25,11 +54,36 @@ export default ({ space, loading }) => {
                 <TextoComun>{space.description}</TextoComun>
                 <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
                 <ServicesWrapper>
-                    <Service source={require("../../public/icons/ducha-ne.png")}/>
-                    <Service source={require("../../public/icons/toiletes-ne.png")}/>
-                    <Service source={require("../../public/icons/wifi-ne.png")}/>
+                    <Service source={require("../../public/icons/ducha-ne.png")} />
+                    <Service source={require("../../public/icons/toiletes-ne.png")} />
+                    <Service source={require("../../public/icons/wifi-ne.png")} />
                 </ServicesWrapper>
                 <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
+
+                <DoubleWraper>
+                    <Boton
+                        onPress={() =>
+                            sendEmail(
+                                'robertovilla2102@gmail.com',
+                                'Greeting!',
+                                'I think you are fucked up how many letters you get.')
+                                .then(() => {
+                                    console.log('Our email successful');
+                                })}
+                        bg="#4A94EA"
+                        color="#F7F7F7"
+                        mr="5px"
+                    >Email
+                  </Boton>
+
+                    <Boton
+                        onPress={() => Linking.openURL(`tel:+54 9 ${'11 65342325'}`)}
+                        bg="#F77171"
+                        color="#F7F7F7"
+                        ml="5px"
+                    >Llamar
+                  </Boton>
+                </DoubleWraper>
             </Container>
         </ScrollView>
     )
@@ -95,6 +149,11 @@ const Capitalize = styled.Text`
 
 const Container = styled.View`
     margin: 10px 12px;
+`
+const DoubleWraper = styled.View`
+flex-direction: row;
+justify-content: space-between;
+margin: 3% 0px;
 `
 const Span = styled.Text`
     font-weight: 200;
