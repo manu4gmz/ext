@@ -23,6 +23,7 @@ function AllSpaces({ allSpaces,user, navigation, route, fetchSpaces }) {
       setLoading(false);
       setSpaces(data);
     });
+    if (!user) return;
     fetchFav(user.uid)
      .then(data =>{
        setFavs(data.data.favoritos)
@@ -42,13 +43,14 @@ function AllSpaces({ allSpaces,user, navigation, route, fetchSpaces }) {
   }
 
   function favorites(id,userId){
-    setFavs(...favs,id)
-    .then(()=> {
-      Axios
-      .put(`https://ext-api.web.app/api/users/fav/${userId}`, {id})
-      .then(res => res.data)
-      .catch(error => console.log(error))
-    })
+    if (favs && favs.includes(id)) return;
+    setFavs(favs => [...favs, id])
+
+    Axios
+    .put(`https://ext-api.web.app/api/users/fav/${userId}`, {id})
+    .then(res => res.data)
+    .catch(error => console.log(error))
+
     // console.log(id,userId,"favorites")
   
   }
@@ -74,7 +76,7 @@ function AllSpaces({ allSpaces,user, navigation, route, fetchSpaces }) {
   return (
     <BackgroundAllSpaces
       allSpaces={spaces.properties}
-      favs={favs}
+      favs={favs || []}
       user={user}
       total={spaces.total}
       pages={spaces.pages}
