@@ -44,7 +44,7 @@ function AllSpaces({ allSpaces,user, navigation, route, fetchSpaces }) {
 
   function favorites(id,userId){
     if (favs && favs.includes(id)) return;
-    setFavs(favs => [...favs, id])
+    setFavs(favs => [...(favs || []), id])
 
     Axios
     .put(`https://ext-api.web.app/api/users/fav/${userId}`, {id})
