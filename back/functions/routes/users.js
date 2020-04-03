@@ -80,4 +80,32 @@ router.get('/info/:id', async (req, res, next) => {
     .json(data.data())
 })
 
+//* agregar favoritos
+router.put('/fav/:id', (req, res, next) => {
+  console.log(req.body)
+  const id = req.params.id
+  const dataaa = req.body.id
+  db.collection('users').doc(id).get()
+  .then((data)=>{
+    const newdata= data.data()
+    newdata.favoritos.push(dataaa)
+    const favfinal = [... new Set(newdata.favoritos)]
+    db.collection("users").doc(id).update({favoritos: favfinal})
+    
+  })
+  .then(() => {
+  res.status(201)
+  })
+  .catch(next)
+  })
+
+//*buscar favoritos
+router.get("/favs/:id",(req,res,next)=>{
+  const id = req.params.id
+  db.collection("users").doc(id).get()
+    .then((data)=>data.data())
+    .then((data)=>res.status(201).send(data))
+    .catch(next)
+})
+
 module.exports = router
