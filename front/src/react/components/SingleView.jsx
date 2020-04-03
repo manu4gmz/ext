@@ -3,9 +3,13 @@ import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollV
 import styled from "styled-components/native";
 import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
 import Carousel from "../components/Carousel";
+import Loading from "../components/Loading";
 
-export default ({ space }) => {
+
+export default ({ space, loading }) => {
     const [mode, setMode] = useState(false)
+
+    if (loading) return <Loading/>;
 
     return (
         <ScrollView>
@@ -15,7 +19,7 @@ export default ({ space }) => {
             </View>
             <Carousel images={space.photos || []}/>
             <Container>
-                <TextoPrecio>${space.price}</TextoPrecio>
+                <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
                 <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
                 <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
                 <TextoComun>{space.description}</TextoComun>
@@ -91,4 +95,8 @@ const Capitalize = styled.Text`
 
 const Container = styled.View`
     margin: 10px 12px;
+`
+const Span = styled.Text`
+    font-weight: 200;
+    font-size: 12px;
 `
