@@ -108,8 +108,8 @@ const styles = StyleSheet.create({
 });
 
 function Root() {
-  const titulo = (title) => ({
-    header: (props) => <Navbar {...props} title={title} />,
+  const titulo = (title, backRoute) => ({
+    header: (props) => <Navbar {...props} title={title} backRoute={backRoute}/>,
     headerStyle: {
       backgroundColor: "transparent"
     }
@@ -125,7 +125,7 @@ function Root() {
       <Stack.Screen name="OwnerForm" component={OwnerForm} options={{ header: () => null }, titulo("Ofrece tu espacio")} />
       <Stack.Screen name="Profile" component={Profile} options={{ header: () => null }, titulo("Mi Perfil")} />
       <Stack.Screen name="SingleView" component={SingleViewPage} options={{ header: () => null }, titulo("Single view")} />
-      <Stack.Screen name="AllSpaces" component={AllSpaces} options={{ header: () => null }, titulo("Espacios")} />
+      <Stack.Screen name="AllSpaces" component={AllSpaces} options={{ header: () => null }, titulo("Espacios","SerchSpace")} />
       <Stack.Screen name="Camera" component={Camera} options={{ header: () => null }} />
       <Stack.Screen name="UploadingFiles" component={UploadingFiles} options={{ header: () => null }} />
       <Stack.Screen name="PreviewSpace" component={PreviewSpace} options={{ header: () => null }, titulo("Vista previa")} />

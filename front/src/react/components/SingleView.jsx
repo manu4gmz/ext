@@ -4,45 +4,13 @@ import styled from "styled-components/native";
 import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
 import Boton from './../ui/Button'
 import qs from 'qs'
+import Carousel from "../components/Carousel";
+import Loading from "../components/Loading";
 
-export default ({ space }) => {
+export default ({ space, loading }) => {
     const [mode, setMode] = useState(false)
-
-    const [index, setIndex] = useState(0)
-    const [pics, setPics] = useState([])
-
-    const [oldPos, setOldPos] = useState(0)
-    //let pics = useRef((space.photos || []).map(_=>React.createRef()));
-
-    const [offsetAnim] = useState(new Animated.Value(0))
-
-    const { width: vw } = Dimensions.get('window');
-
-    useEffect(() => {
-        // console.log(pics);
-
-
-        Animated.timing(offsetAnim, {
-            toValue: vw * -index,
-            duration: 300
-        }).start();
-    }, [index])
-
-    function changeIndex(amount) {
-        if (index + amount >= space.photos.length) setIndex(0);
-        else if (index + amount < 0) setIndex(space.photos.length - 1);
-        else setIndex(index + amount);
-    }
-
-    function onFling(ev) {
-        if (ev.nativeEvent.state > 3) {
-            console.log(ev.nativeEvent)
-            if (ev.nativeEvent.absoluteX - oldPos < 0) changeIndex(1);
-            else if (ev.nativeEvent.absoluteX - oldPos > 0) changeIndex(-1);
-        }
-        setOldPos(ev.nativeEvent.absoluteX);
-    }
-
+    if (loading) return <Loading/>;
+  
     async function sendEmail(to, subject, body, options = {}) {
         const { cc, bcc } = options;
 
@@ -77,29 +45,10 @@ export default ({ space }) => {
                 <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
                 <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
             </View>
-            <View style={{ width: "100%", alignItems: "center" }}>
-                {
-                    space.photos && space.photos.length ?
-                        <FlingGestureHandler direction={Directions.LEFT | Directions.RIGHT} onHandlerStateChange={onFling}>
-                            <View>
-                                <CarouselLabel>{index + 1}/{space.photos.length}</CarouselLabel>
-                                <Animated.View style={{ flexDirection: "row", width: vw, position: "relative", left: offsetAnim }}>
-                                    {
-                                        space.photos.map((uri, i) => (
-                                            <CarouselContainer key={i} style={{ width: vw }}>
-                                                <CarouselImage source={{ uri }} style={{ width: 400, height: 400 }} />
-                                            </CarouselContainer>
-                                        ))
-                                    }
-                                </Animated.View>
-                            </View>
-                        </FlingGestureHandler>
-                        : <NoPhotos>No hay fotos para mostrar</NoPhotos>
-                }
+            <Carousel images={space.photos || []}/>
 
-            </View>
             <Container>
-                <TextoPrecio>${space.price}</TextoPrecio>
+                <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
                 <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
                 <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
                 <TextoComun>{space.description}</TextoComun>
@@ -201,37 +150,12 @@ const Capitalize = styled.Text`
 const Container = styled.View`
     margin: 10px 12px;
 `
-const NoPhotos = styled.Text`
-    font-size: 15px;
-    font-weight: 500;
-    text-align: center;
-    margin-top: 30px;
-`
-
-const CarouselContainer = styled.View`
-    height: 400px;
-`
-
-const Carousel = styled.View`
-    height: 400px;
-    position: relative;
-    flex-direction: row;
-`
-
-const CarouselImage = styled.Image`
-
-`
-
-const CarouselLabel = styled.Text`
-    position: absolute;
-    z-index: 2;
-    right: 10px;
-    top: 10px;
-    color:white;
-    font-size: 14px;
-`
 const DoubleWraper = styled.View`
 flex-direction: row;
 justify-content: space-between;
 margin: 3% 0px;
+`
+const Span = styled.Text`
+    font-weight: 200;
+    font-size: 12px;
 `

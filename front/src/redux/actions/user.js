@@ -21,6 +21,11 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	});
 }
 
+export const fetchFav = (userId)=>{
+	return axios.get(`https://ext-api.web.app/api/users/favs/${userId}`)
+		.then((data)=> data)
+  }
+
 export const logUser = (email, password) => dispatch => {
 	return auth.signInWithEmailAndPassword(email, password)
 		.then(() => dispatch(getUser()))

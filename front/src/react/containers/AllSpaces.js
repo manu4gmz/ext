@@ -1,100 +1,110 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 
 import BackgroundAllSpaces from "../components/backgroundAllSpaces";
-import { fetchId } from "../../redux/actions/spaces"
+//import { fetchId } from "../../redux/actions/spaces"
+import { fetchSpaces } from "../../redux/actions/spaces"
+import { fetchFav } from "../../redux/actions/user"
+import Axios from "axios";
 
 
 // const AllSpaces = () => {
-class AllSpaces extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      espacios: [
-        {
-          id: 1,
-          nombre: "Amplio espacio para usos multiples.",
-          observaciones: "San Isidro - Buenos Aires - 120mtr2",
-          precio: 750,
-          imgUrl:
-            "https://image.shutterstock.com/image-photo/female-ballet-student-performing-arts-260nw-1332840722.jpg",
-          categories: "120 mtr2 -Baño privado-Aire Acondicionado.-Musica",
-          descripcion:
-            "Excelente espacio ubicado en zona centrica , la verdad es la mejor zona de todo san isidro. Esto es una descripcion extensa asi puedo ver si funciona bien el texto y todas sus propiedades , espero que la gente me entienda que lo que puse aca no esta bien",
-          caracteristicas: [
-            {
-              nombre: "Wifi",
-              cantidad: NaN,
-              icono: require("../../public/icons/wifi-ne.png")
-            },
-            {
-              nombre: "Baño",
-              cantidad: 1,
-              icono: require("../../public/icons/toiletes-ne.png")
-            },
-            {
-              nombre: "Ducha",
-              cantidad: 3,
-              icono: require("../../public/icons/ducha-ne.png")
-            }
-          ],
-          comentarios: [
-            { user: "Pepe", comentario: "muy bueno" },
-            { user: "Nachito", comentario: "He visto mejores" }
-          ],
-          verified: true
-        },
-        {
-          id: 2,
-          nombre: "Amplio espacio para usos multiples.",
-          precio: 970,
-          imgUrl:
-            "https://http2.mlstatic.com/emprendimiento-nunez-2464-D_NQ_NP_945278-MLA32880901619_112019-F.webp",
-          caracteristicas: [
-            {
-              nombre: "Ducha",
-              cantidad: 1,
-              icono: require("../../public/icons/ducha-ne.png")
-            }
-          ],
-          descripcion:
-            "Excelente espacio ubicado en zona centrica , la verdad Desde Mercado Libre, nunca te pediremos contraseñas, PIN o códigos de verificación a través de WhatsApp, teléfono, SMS o email.",
-          comentarios: [],
-          verified: false
-        }
-      ]
-    };
-    this.sendId = this.sendId.bind(this);
+function AllSpaces({ allSpaces,user, navigation, route, fetchSpaces }) {
 
+  const scrollView = useRef(null);
+  const [ loading, setLoading ] = useState(true)
+  const [ spaces, setSpaces ] = useState({properties:[], total: 0, pages: 0});
+  const [ favs, setFavs ] = useState([])
+  //const [index, setIndex] = useState(1);
+
+  useEffect(()=>{
+    fetchSpaces(route.params.query, route.params.index)
+    .then(data => {
+      setLoading(false);
+      setSpaces(data);
+    });
+    fetchFav(user.uid)
+     .then(data =>{
+       setFavs(data.data.favoritos)
+     })
+  },[])
+
+
+
+  function setIndex(i) {
+    console.log(i);
+    navigation.push("AllSpaces", {query:route.params.query, index: i})
   }
 
-  sendId(id) {
-    //this.props.fetchId(id)
-    return this.props.navigation.navigate(`SingleView`, {propertyId: id})
+  function sendId(id) {
+    //fetchId(id)
+    return navigation.navigate(`SingleView`, {propertyId: id})
   }
 
-  render() {
-    return (
-      <BackgroundAllSpaces
-        espacios={this.state.espacios}
-        allSpaces={this.props.allSpaces}
-        navigation={this.props.navigation}
-        sendId={this.sendId}
-      />
-    );
+  function favorites(id,userId){
+    setFavs(...favs,id)
+    .then(()=> {
+      Axios
+      .put(`https://ext-api.web.app/api/users/fav/${userId}`, {id})
+      .then(res => res.data)
+      .catch(error => console.log(error))
+    })
+    // console.log(id,userId,"favorites")
+  
   }
+
+  function removeFilter(key) {
+    const { query } = route.params;
+    delete query[key]
+    console.log(key, route.params.query);
+    
+    setLoading(true);
+    fetchSpaces(query, 1)
+    .then(data => {
+      setLoading(false);
+      setSpaces(data);
+    });
+
+    
+    
+  }
+
+  
+
+  return (
+    <BackgroundAllSpaces
+      allSpaces={spaces.properties}
+      favs={favs}
+      user={user}
+      total={spaces.total}
+      pages={spaces.pages}
+      navigation={navigation}
+      sendId={sendId}
+      favorites={favorites}
+      setIndex={setIndex}
+      scrollView={scrollView}
+      index={route.params.index}
+      filter={route.params.query}
+      removeFilter={removeFilter}
+      loading={loading}
+    />
+  );
 }
 
+
+
 const mapStateToProps = (state, ownProps) => {
+  console.log(state)
   return {
 
-    allSpaces: state.spaces.allSpaces
+    allSpaces: state.spaces.allSpaces,
+    user: state.user.logged
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchId: (id) => (dispatch(fetchId(id)))
+    fetchSpaces: (query, index) => (dispatch(fetchSpaces(query, index)))
   }
 }
 
