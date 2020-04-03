@@ -28,14 +28,10 @@ const backgroundHome = ({ navigation, userInfo }) => {
           <StyledView>
             <StyledTitle>Ofrecé tu Espacio</StyledTitle>
             <StyledText>Ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
-
-
             <Button
               onPress={() => navigation.push('OwnerForm')}
               bg="#F77171">Ofrecer
-                </Button>
-
-
+            </Button>
           </StyledView>
 
           <DoubleWraper>
@@ -105,7 +101,6 @@ margin-bottom : 10px;
 font-size: 15px ;
 color : gray;
 `
-
 const View = styled.View`
 margin : 2% 0;
 `

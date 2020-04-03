@@ -14,22 +14,27 @@ const singleSpace = (space) => ({
     type: SPACE,
     space
 });
+
 const captureId = (idSpace) => ({
     type: IDSPACE,
     idSpace
 });
 
 export const fetchSpace = (spaceId) => dispatch => {
-    axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
+    return axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
         .then(res => dispatch(singleSpace(res.data)))
 }
 
-export const fetchSpaces = (datosSpace) => dispatch => {
+export const fetchSpaces = (datosSpace, page = 1) => dispatch => {
     const queries = Object.keys(datosSpace).map(key => key+"="+datosSpace[key]).join("&");
 
     console.log(`https://ext-api.web.app/api/properties/${queries ? "spaces?"+queries : "allSpaces"}`)
-    return axios.get(`https://ext-api.web.app/api/properties/${queries ? "spaces?"+queries : "allSpaces"}`)
-        .then(res => dispatch(allSpaces(res.data)))
+    return axios.get(`https://ext-api.web.app/api/properties/${page}${queries ? "?"+queries : ""}`)
+        .then(res => res.data)
+        .then(data => {
+            dispatch(allSpaces(data))
+            return data;
+        })
 }
 export const fetchId = (id) => dispatch => {
     return dispatch(captureId(id))

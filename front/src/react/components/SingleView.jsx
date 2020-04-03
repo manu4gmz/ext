@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground, ScrollView } from 'react-native'
-import styled from "styled-components/native"
+import React, { useState, useEffect, useRef } from 'react'
+import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView } from 'react-native'
+import styled from "styled-components/native";
+import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
+import Carousel from "../components/Carousel";
+import Loading from "../components/Loading";
 import MapView, { Marker } from 'react-native-maps';
 const lugares = [{
     title: "Agustiniano",
@@ -20,34 +23,33 @@ const lugares = [{
     latitude: -34.569393,
     longitude: -58.542963
 }]
-export default ({ space }) => {
+export default ({ space, loading }) => {
     const [mode, setMode] = useState(false)
+
+    if (loading) return <Loading />;
+
     return (
         <ScrollView>
             <View style={{ backgroundColor: "white" }} >
-                <View style={{ backgroundColor: "#4A94EA", flexDirection: "row", height: "8%" }}>
+                <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
                     <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
                     <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
                 </View>
                 {!mode ? (
                     <View>
-                        <View style={{ width: "100%", alignItems: "center" }}>
-                            {space.photos ? (<Image source={{ uri: space.photos[0] }}
-                                style={{ width: 400, height: 400 }} />) : (null)}
 
-                        </View>
-                        <View >
-                            <TextoPrecio >{`$ ${space.price}`}</TextoPrecio>
-                            <TextoNegro >{`${space.title}.-${space.neighborhood}`}</TextoNegro>
-                            <TextoGrande >{`${space.size} mtr2 .-${space.type}`}</TextoGrande>
-                            <TextoComun >{space.description}</TextoComun>
+                        <Carousel images={space.photos || []} />
+                        <Container>
+                            <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
+                            <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
+                            <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
+                            <TextoComun>{space.description}</TextoComun>
                             <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
-                            <View style={styles.contenedorIconos}>
-                                <Image source={require("../../public/icons/ducha-ne.png")} style={styles.imagenInputs} />
-                                <Image source={require("../../public/icons/toiletes-ne.png")} style={styles.imagenInputs} />
-                                <Image source={require("../../public/icons/wifi-ne.png")} style={styles.imagenInputs} />
-                                <Image source={require("../../public/images/sobre-bl.png")} style={styles.imagenInputs} />
-                            </View>
+                            <ServicesWrapper>
+                                <Service source={require("../../public/icons/ducha-ne.png")} />
+                                <Service source={require("../../public/icons/toiletes-ne.png")} />
+                                <Service source={require("../../public/icons/wifi-ne.png")} />
+                            </ServicesWrapper>
                             <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
                             <MapView style={styles.mapStyle}
                                 initialRegion={{
@@ -63,49 +65,35 @@ export default ({ space }) => {
                                         {
                                             latitude: -34.5692138,
                                             longitude: -58.548445699999999,
+                                        }} />
 
-                                        }
-                                    }
+                            </MapView>
+                        </Container>
+                    </View>
+                ) : (<View>
+                    <MapView style={styles.mapAll}
+                        initialRegion={{
+                            latitude: -34.575764,
+                            longitude: -58.537145,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }}>
+                        {lugares.map((lugar, index) => {
+                            return (
+                                <Marker
+                                    key={index}
+                                    title={lugar.title}
+                                    description={lugar.description}
+                                    coordinate={
+                                        {
+                                            latitude: lugar.latitude,
+                                            longitude: lugar.longitude
+                                        }}
                                 />
-
-                            </MapView>
-
-                        </View>
-                    </View>) : (
-                        <View>
-                            <MapView style={styles.mapAll}
-                                initialRegion={{
-                                    latitude: -34.575764,
-                                    longitude: -58.537145,
-                                    latitudeDelta: 0.0922,
-                                    longitudeDelta: 0.0421,
-                                }}>
-                                {lugares.map((lugar) => {
-
-                                    return (
-                                        <Marker
-                                            title={lugar.title}
-                                            description={lugar.description}
-                                            coordinate={
-                                                {
-                                                    latitude: lugar.latitude,
-                                                    longitude: lugar.longitude
-
-                                                }
-                                            }
-                                        />
-
-                                    )
-
-
-
-                                })}
-
-
-                            </MapView>
-                        </View>)}
-
-
+                            )
+                        })}
+                    </MapView>
+                </View>)}
             </View >
         </ScrollView >
     )
@@ -209,4 +197,8 @@ const NoPhotos = styled.Text`
     font-weight: 500;
     text-align: center;
     margin-top: 30px;
+`
+const Span = styled.Text`
+    font-weight: 200;
+    font-size: 12px;
 `
