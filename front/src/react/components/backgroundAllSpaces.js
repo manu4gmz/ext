@@ -13,6 +13,7 @@ import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
 
+
 function indexes(index, total) {
     let indexes = [];
     let start = index-2 < 1 ? 1 : index-2;
@@ -20,6 +21,7 @@ function indexes(index, total) {
     for (let i = start; i < start+5 && i <= total; i++) indexes.push(i);
     return indexes;
 }
+
 
 function mapBadge(filter, remove) {
   const map = {
@@ -48,10 +50,10 @@ function mapBadge(filter, remove) {
 
 }
 
-export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, index, sendId, filter, removeFilter, loading }) => {
+export default ({ allSpaces, navigation, total, pages,user, setIndex, scrollView, index, sendId,favorites,favs, filter, removeFilter, loading }) => {
   const [mode, setMode] = useState(false);
 
-
+  console.log("favs",favs)
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -122,14 +124,16 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
                       </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>favorites(espacio.id,user.uid)}>
                       <Image
                         style={{ width: 30, height: 30, marginRight: 2 }}
-                        source={require("../../public/icons/corazon-ne.png")}
+                        
+                        source={favs.includes(espacio.id)? (require("../../public/icons/corazon-ro.png")):(require("../../public/icons/corazon-ne.png"))}
                       />
                     </TouchableOpacity>
                   </View>
-                  <View style={{ flexDirection: "row" }}>
+                  <View style={{ flexDirection: "row" }}
+                  >
                     <Precio>{`$${espacio.price}`}</Precio>
                     <Text style={{ alignSelf: 'center' }}>por hora</Text>
                   </View>
