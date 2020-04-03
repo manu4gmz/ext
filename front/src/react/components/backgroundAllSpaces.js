@@ -12,7 +12,7 @@ import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
 
 
-export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
+export default ({ sendId, toggleLike, allSpaces, showComments }) => {
   const [mode, setMode] = useState(false);
   return (
     <ScrollView>
@@ -104,10 +104,12 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
                       imageSize={15}
                       style={{ paddingVertical: 10 }}
                     />
-                    <Text
-                      style={{ color: "grey", fontWeight: "bold", padding: 10 }}
-                    >{`${(espacio.location || "").length || 0}  Ver comentarios`}
-                    </Text>
+                    <TouchableOpacity onPress={() => showComments(espacio.id)}>
+                      <Text
+                        style={{ color: "grey", fontWeight: "bold", padding: 10 }}
+                      >{`${(espacio.comments || "").length || 0}  Ver comentarios`}
+                      </Text>
+                    </TouchableOpacity>
                   </Comentarios>
                   <ContenedorIconos>
                     {(espacio.services || []).map((caracteristica, index) => (
@@ -183,13 +185,13 @@ export default ({ espacios, sendId, toggleLike, allSpaces, navigation }) => {
 };
 /*
     <Text style={{ textAlign: "center" }}>
-                          {`${
-  Hay que agregarla a la tabla cantidades                          caracteristica.cantidad
+          {`${
+            Hay que agregarla a la tabla cantidades                          caracteristica.cantidad
                               ? caracteristica.cantidad + " "
                               : ""
    Esto marca el tipo de category                         }${caracteristica}${
-                            caracteristica.cantidad > 1 ? "s" : ""
-                            }`}
+            caracteristica.cantidad > 1 ? "s" : ""
+          }`}
                         </Text>
 */
 

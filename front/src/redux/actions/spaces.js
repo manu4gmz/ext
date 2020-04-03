@@ -25,10 +25,10 @@ export const fetchSpace = (spaceId) => dispatch => {
 }
 
 export const fetchSpaces = (datosSpace) => dispatch => {
-    const queries = Object.keys(datosSpace).map(key => key+"="+datosSpace[key]).join("&");
+    const queries = Object.keys(datosSpace).map(key => key + "=" + datosSpace[key]).join("&");
 
-    console.log(`https://ext-api.web.app/api/properties/${queries ? "spaces?"+queries : "allSpaces"}`)
-    return axios.get(`https://ext-api.web.app/api/properties/${queries ? "spaces?"+queries : "allSpaces"}`)
+    console.log(`https://ext-api.web.app/api/properties/${queries ? "spaces?" + queries : "allSpaces"}`)
+    return axios.get(`https://ext-api.web.app/api/properties/${queries ? "spaces?" + queries : "allSpaces"}`)
         .then(res => dispatch(allSpaces(res.data)))
 }
 export const fetchId = (id) => dispatch => {
@@ -47,4 +47,11 @@ export const addPhotos = (id, body) => dispatch => {
         .put(`https://ext-api.web.app/api/properties/update/${id}`, body)
         .then(res => res.data)
         .catch(error => console.log(error))
+}
+
+export const writeComment = (id, comment, rating) => (dispatch, getState) => {
+    return axios
+        .put(`https://ext-api.web.app/api/properties/comments/${id}`, { comment, rating, userId: getState().user.logged.uid })
+
+    // console.log(id, body)
 }

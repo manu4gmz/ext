@@ -133,7 +133,7 @@ router.get('/comments/:id', (req, res, next) => {
       // })
 
       res.status(200)
-        .json({ comments, habilitado })
+        .json({ comentarios, habilitado })
     })
     .catch(next)
 })
@@ -147,9 +147,9 @@ router.put('/comments/:id', (req, res, next) => {
       let comentarios = data.data().comments;
 
       //que no se pueda pedir un put si un comment con ese userId existe
-      comentarios.forEach(elemento => {
-        if (elemento.userId === req.body.userId) res.sendStatus(400)
-      })
+      // comentarios.forEach(elemento => {
+      //   if (elemento.userId === req.body.userId) res.sendStatus(400)
+      // })
 
       let newComment = {
         "userId": req.body.userId,
@@ -157,6 +157,7 @@ router.put('/comments/:id', (req, res, next) => {
         "rating": req.body.rating,
         "habilitado": true
       }
+
       comentarios.push(newComment)
 
       db.collection('properties').doc(id).update({ comments: comentarios })
