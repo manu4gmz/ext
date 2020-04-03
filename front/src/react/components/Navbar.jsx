@@ -5,16 +5,21 @@ import { connect } from "react-redux";
 import Icon from "../ui/Icon";
 import { useNavigation } from "@react-navigation/native"
 
-const Navbar = ({ title, userInfo }) => {
+const Navbar = ({ title, userInfo, backRoute }) => {
   const navigation = useNavigation();
   return (
     <Background>
       <Wrapper>
-        {/* {
-          props.title ? <Back source={require('../../public/icons/back.png')} onPress={()=>props.navigation.pop()}/> :
-           <Icon source={require('../../public/icons/sidebar.png')}/>
-        } */}
-        <Icon onPress={() => navigation.toggleDrawer()} source={require('../../public/icons/sidebar.png')} />
+        {
+          title ? <Back 
+            source={require('../../public/icons/back.png')} 
+            onPress={backRoute? () => navigation.navigate(backRoute) : () => navigation.pop()}
+          /> :
+          <Icon 
+            onPress={() => navigation.toggleDrawer()} 
+            source={require('../../public/icons/sidebar.png')} 
+          />
+        }
         <Title>{title || `Hola ${((userInfo.firstName || ', Bienvenido!')) || ""}!`}</Title>
         <Icon source={require('../../public/images/isologotipo-only.png')} />
       </Wrapper>
