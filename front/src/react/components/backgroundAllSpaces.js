@@ -96,7 +96,7 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
                   borderTopRightRadius: 5,
                   overflow: "hidden"
                 }} >
-                  <Carousel images={espacio.photos} height={250}/>
+                  <Carousel images={espacio.photos || []} height={250}/>
                   {espacio.verified ? (<Verified style={{ position: "absolute", bottom: 5, right: 2, zIndex: 9 }}>
                     <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 40, height: 40 }} />
                   </Verified>) : null}
