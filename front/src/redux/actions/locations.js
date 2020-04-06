@@ -18,11 +18,12 @@ export const fetchLocalidades = (val, id) => dispatch => {
 
 
 
-export const fetchCoords = (dir, idSpace) => dispatch => {
-	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${dir.n},${dir.s} ${dir.sn},${dir.p}&`)
+export const fetchCoords = (dir, idSpace, region) => dispatch => {
+	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${dir.n},${dir.s} ${dir.sn},${dir.p}&key=`)
 		.then((res) => {
-			console.log("llegue a google")
 			const coordenadas = res.data.results[0].geometry.location
-			return axios.put(`http://localhost:5000/ext-api/us-central1/app/api/properties/coordenadas/${idSpace}`, coordenadas)
+			const arreglo = [coordenadas, region]
+			return axios.put(`https://ext-api.web.app/api/properties/coordenadas/${idSpace}`, arreglo)
 		})
 }
+

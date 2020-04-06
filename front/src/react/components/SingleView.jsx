@@ -23,7 +23,7 @@ const lugares = [{
     latitude: -34.569393,
     longitude: -58.542963
 }]
-export default ({ space, loading }) => {
+export default ({ space, loading, allSpaces }) => {
     const [mode, setMode] = useState(false)
 
     if (loading) return <Loading />;
@@ -53,8 +53,8 @@ export default ({ space, loading }) => {
                             <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
                             <MapView style={styles.mapStyle}
                                 initialRegion={{
-                                    latitude: -34.575764,
-                                    longitude: -58.537145,
+                                    latitude: space.location[1].lat,
+                                    longitude: space.location[1].lon,
                                     latitudeDelta: 0.0922,
                                     longitudeDelta: 0.0421,
                                 }}>
@@ -63,8 +63,8 @@ export default ({ space, loading }) => {
                                     description={space.description}
                                     coordinate={
                                         {
-                                            latitude: -34.5692138,
-                                            longitude: -58.548445699999999,
+                                            latitude: space.location[1].lat,
+                                            longitude: space.location[1].lon,
                                         }} />
 
                             </MapView>
@@ -73,12 +73,12 @@ export default ({ space, loading }) => {
                 ) : (<View>
                     <MapView style={styles.mapAll}
                         initialRegion={{
-                            latitude: -34.575764,
-                            longitude: -58.537145,
+                            latitude: space.location[0].lat,
+                            longitude: space.location[0].lng,
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
                         }}>
-                        {lugares.map((lugar, index) => {
+                        {allSpaces.map((lugar, index) => {
                             return (
                                 <Marker
                                     key={index}
@@ -86,8 +86,8 @@ export default ({ space, loading }) => {
                                     description={lugar.description}
                                     coordinate={
                                         {
-                                            latitude: lugar.latitude,
-                                            longitude: lugar.longitude
+                                            latitude: lugar.location[1].lat,
+                                            longitude: lugar.location[1].lon,
                                         }}
                                 />
                             )

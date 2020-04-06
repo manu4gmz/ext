@@ -11,7 +11,7 @@ import { fetchProvincias, fetchLocalidades, fetchCoords } from "../../redux/acti
 import { addSpace } from '../../redux/actions/spaces'
 import { connect } from 'react-redux'
 
-const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, fetchProvincias, fetchCoords, coordenadasCiudad }) => {
+const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, fetchProvincias, fetchCoords }) => {
   const Type = Picker(useState(false), useState(""));
   const Services = Picker(useState(false), useState([]));
   const Observation = TextPrompt(useState(false), useState(""));
@@ -70,7 +70,7 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
       description: (form["Descripcion"] || {}).value,
       userId: user,
       visible: false,
-      location: [region],
+      location: [],
       photos: ((form["Agregar fotos"] || {}).value || []),
       title: form['Titulo*'].value,
       services: form["Caracteristicas y servicios*"].value
@@ -85,7 +85,7 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
     }
     addSpace(datosSpace)
       .then((propertyId) => {
-        fetchCoords(coords, propertyId)
+        fetchCoords(coords, propertyId, region)
           .then((data) =>
             navigation.navigate("Payment", { space: datosSpace, propertyId })
           )
@@ -174,7 +174,6 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
 
 const mapStateToProps = (state, ownProps) => ({
   user: state.user.logged.uid,
-  coordenadasCiudad: state.spaces.coordenadas
 
 })
 
@@ -182,7 +181,7 @@ const mapDispatchToProps = (dispatch) => ({
   addSpace: (body) => dispatch(addSpace(body)),
   fetchProvincias: (val) => dispatch(fetchProvincias(val)),
   fetchLocalidades: (val, id) => dispatch(fetchLocalidades(val, id)),
-  fetchCoords: (coordenadas, id) => dispatch(fetchCoords(coordenadas, id)),
+  fetchCoords: (coordenadas, id, region) => dispatch(fetchCoords(coordenadas, id, region)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpaceForm);

@@ -1,5 +1,6 @@
 import { LOGGED } from "../constants"
 import firebase from "../firebase";
+import Axios from "axios";
 
 const auth = firebase.auth();
 const setLoggedUser = (logged) => ({
@@ -19,6 +20,13 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 		}
 	});
 }
+
+export const fetchFav = (userId)=>{
+	return Axios.get(`https://ext-api.web.app/api/users/favs/${userId}`)
+		.then((data)=> data)
+
+		
+  }
 
 export const logUser = (email, password) => dispatch => {
 	return auth.signInWithEmailAndPassword(email, password)

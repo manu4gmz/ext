@@ -122,22 +122,19 @@ router.put('/update/:id', (req, res, next) => {
 
   db.collection('properties').doc(id).update(update)
     .then(data => {
-      res.status(200).send({msg:"Editado correctamente"})
+      res.status(200).send({ msg: "Editado correctamente" })
     })
     .catch(next)
 })
 
 router.put('/coordenadas/:id', (req, res, next) => {
   const id = req.params.id
-  const body = req.body
+  const propiedad = req.body
   console.log(req.body, "Este es el req body antes de updatear")
   db.collection('properties').doc(id).get()
     .then((data) => {
 
-      const propiedad = data.data()
-      const resultado = propiedad.location.push(body)
-      console.log(resultado, "ste es el resultado de dos array ")
-      db.collection('properties').doc(id).update({ location: resultado })
+      db.collection('properties').doc(id).update({ location: propiedad })
         .then(data => {
           res.sendStatus(200)
         })
@@ -156,7 +153,7 @@ router.get("/:page", (req, res) => {
 
   const condicion = req.query
 
-  if (isNaN(req.params.page)) res.status(401).json({msg: "Page must be a number"})
+  if (isNaN(req.params.page)) res.status(401).json({ msg: "Page must be a number" })
 
   db.collection("properties").get()
     .then((data) => {
@@ -178,18 +175,18 @@ router.get("/:page", (req, res) => {
           && (!condicion.photos || (propiedad.photos || []).length > 0))
           && (propiedad.visible != false)
       })
+      return filtrado//.sort((a, b) => ((a.verified == true) && (b.verified == false)) ? -1 : 1)
 
-      return filtrado.sort((a,b)=> ((a.verified==true) && (b.verified==false)) ? -1 : 1);
     })
     .then(properties => {
-      const maxPage = Math.ceil(properties.length/pagesCount);
-      let page = ((req.params.page-1) % maxPage)+1;
+      const maxPage = Math.ceil(properties.length / pagesCount);
+      let page = ((req.params.page - 1) % maxPage) + 1;
       res.status(200).json({
-        properties: properties.slice(pagesCount*(page-1), pagesCount*(page-1) + pagesCount),
+        properties: properties.slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount),
         pages: maxPage,
         total: properties.length,
       })
-      
+
     })
 
     .catch(err => {
