@@ -13,9 +13,9 @@ const LoadingView = ({ navigation, route, uploadFiles, addPhotos }) => {
 
 		uploadFiles(images, propertyId, setProgress)
 			.then((files) => {
-				addPhotos(propertyId, { photos: files })
+				addPhotos(propertyId, { photos: files, visible: true })
 					.then(() => {
-						navigation.navigate('Root', { screen: "Payment" })
+						navigation.navigate("SingleView", { propertyId })
 					})
 			})
 			.catch(err => {

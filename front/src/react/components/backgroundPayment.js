@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, Image, View, ScrollView, Button } from 'react-native'
+import { StyleSheet, Text, Image, View, ScrollView, Button, TouchableOpacity } from 'react-native'
 import styled from "styled-components/native"
 import { connect } from 'react-redux'
 import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 
-const backgorunPayment = ({ navigation }) => {
+const backgorunPayment = ({ navigation, route }) => {
+
+  function freePayment () {
+    navigation.navigate("PreviewSpace", route.params)
+  }
+
   return (
    
       <View style={styles.fondo}>
         <ScrollView>
-          <View style={{padding: "20px"}}>
+          <View style={{padding: 20}}>
             <AddSpaceFormProgress state={2} title="Elegí un plan"/>
           </View>
           <View style={styles.box1}>
@@ -50,7 +55,9 @@ const backgorunPayment = ({ navigation }) => {
               <Text style={{color:"white"}}>Visibilidad estándard</Text>
               <Text style={{color:"white"}}>Plan Mensual</Text>
               <View style={styles.but3}>
-            <Text style={{color:"#4A94EA",lineHeight:30}}>Elegir</Text>
+            <TouchableOpacity onPress={freePayment}>
+              <Text style={{color:"#4A94EA",lineHeight:30}}>Elegir</Text>
+            </TouchableOpacity>
             </View>
           </View>
 

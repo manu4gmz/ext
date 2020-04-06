@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "./Navbar";
+import { connect } from "react-redux";
 //navigation
-
 import { createStackNavigator } from "@react-navigation/stack";
 import {
   createDrawerNavigator,
@@ -17,12 +17,14 @@ import PaymentPage from "../containers/PaymentPage";
 import SpaceForm from "../containers/SpaceForm";
 import OwnerForm from "../containers/OwnerForm";
 import SingleViewPage from "../containers/SingleViewPage";
+import PreviewSpace from "../containers/PreviewSpace";
 import AllSpaces from "../containers/AllSpaces";
 import LoginPage from "../containers/LoginPage";
 import { View, StyleSheet } from "react-native";
-import { Avatar, Title, Caption, Paragraph } from "react-native-paper";
+import { Avatar, Title, Caption } from "react-native-paper";
 import Camera from "../components/Camera";
 import UploadingFiles from "../containers/UploadingFiles";
+import Profile from "./Profile";
 import CommentsContainer from "../containers/CommentsContainer";
 
 //importando action creator
@@ -34,15 +36,25 @@ const Drawer = createDrawerNavigator();
 function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
-      {/* <DrawerItemList {...props} />  Esto hace que te traiga las rutas del Drawer.Screen  */}
       <View style={styles.userInfoSection}>
         <Avatar.Image
           style={styles.avatarImage}
           source={require("../../public/images/isologotipo-only.png")}
           size={68}
         />
-        <Title style={styles.title}>Nombre y Apellido</Title>
-        <Caption style={styles.caption}>nombre@apellido.com</Caption>
+        {props.userInfo.id ? (
+          <View>
+            <Title style={styles.title}>
+              {props.userInfo.firstName} {props.userInfo.lastName}
+            </Title>
+            <Caption style={styles.caption}>{props.userInfo.email}</Caption>
+          </View>
+        ) : (
+            <View>
+              <Title style={styles.title}>Bienvenido!</Title>
+              <Caption style={styles.caption}>Disfruta de EXT</Caption>
+            </View>
+          )}
       </View>
 
       <DrawerItem
@@ -52,28 +64,41 @@ function CustomDrawerContent(props) {
         }
       />
 
-      <DrawerItem
-        label="Register"
-        onPress={() =>
-          props.navigation.navigate("Root", { screen: "Register" }, props)
-        }
-      />
+      {props.userInfo.id ? (
+        <View>
+          <DrawerItem
+            label="Mi Perfil"
+            onPress={() =>
+              props.navigation.navigate("Root", { screen: "Profile" }, props)
+            }
+          />
 
-      <DrawerItem
-        label="Login"
-        onPress={() =>
-          props.navigation.navigate("Root", { screen: "Login" }, props)
-        }
-      />
+          <DrawerItem
+            label="Logout"
+            onPress={() =>
+              LogoutUser().then(() =>
+                props.navigation.navigate("Root", { screen: "Login" })
+              )
+            }
+          />
+        </View>
+      ) : (
+          <View>
+            <DrawerItem
+              label="Login"
+              onPress={() =>
+                props.navigation.navigate("Root", { screen: "Login" }, props)
+              }
+            />
 
-      <DrawerItem
-        label="Logout"
-        onPress={() =>
-          LogoutUser().then(() =>
-            props.navigation.navigate("Root", { screen: "Login" })
-          )
-        }
-      />
+            <DrawerItem
+              label="Register"
+              onPress={() =>
+                props.navigation.navigate("Root", { screen: "Register" }, props)
+              }
+            />
+          </View>
+        )}
     </DrawerContentScrollView>
   );
 }
@@ -100,8 +125,8 @@ const styles = StyleSheet.create({
 });
 
 function Root() {
-  const titulo = title => ({
-    header: props => <Navbar {...props} title={title} />,
+  const titulo = (title, backRoute) => ({
+    header: props => <Navbar {...props} title={title} backRoute={backRoute} />,
     headerStyle: {
       backgroundColor: "transparent"
     }
@@ -144,6 +169,11 @@ function Root() {
         options={({ header: () => null }, titulo("Ofrece tu espacio"))}
       />
       <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={({ header: () => null }, titulo("Mi Perfil"))}
+      />
+      <Stack.Screen
         name="SingleView"
         component={SingleViewPage}
         options={({ header: () => null }, titulo("Single view"))}
@@ -151,7 +181,7 @@ function Root() {
       <Stack.Screen
         name="AllSpaces"
         component={AllSpaces}
-        options={({ header: () => null }, titulo("Espacios"))}
+        options={({ header: () => null }, titulo("Espacios", "SerchSpace"))}
       />
       <Stack.Screen
         name="Camera"
@@ -164,24 +194,42 @@ function Root() {
         options={{ header: () => null }}
       />
       <Stack.Screen
+        name="PreviewSpace"
+        component={PreviewSpace}
+        options={({ header: () => null }, titulo("Vista previa"))}
+      />
+      <Stack.Screen
         name="Comments"
         component={CommentsContainer}
-        options={{ header: () => null }}
+        options={{ header: () => null }, titulo("Comments")}
       />
     </Stack.Navigator>
   );
 }
 
-export default () => {
+const DrawerComponenet = ({ userInfo, user }) => {
+  useEffect(() => { }, [user]);
+
   return (
     <Drawer.Navigator
       inicialRouteName="Login"
       hideStatusBar="true"
       drawerType="slide"
       drawerStyle={{ width: 200 }}
-      drawerContent={props => <CustomDrawerContent {...props} />}
+      drawerContent={props => (
+        <CustomDrawerContent {...props} userInfo={userInfo} user={user} />
+      )}
     >
       <Drawer.Screen name="Root" component={Root} />
     </Drawer.Navigator>
   );
 };
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    userInfo: state.profile.userInfo,
+    user: state.user.logged
+  };
+};
+
+export default connect(mapStateToProps, null)(DrawerComponenet);

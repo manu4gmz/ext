@@ -1,37 +1,73 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 
 import BackgroundAllSpaces from "../components/backgroundAllSpaces";
-import { fetchId } from "../../redux/actions/spaces"
+//import { fetchId } from "../../redux/actions/spaces"
+import { fetchSpaces } from "../../redux/actions/spaces"
 
 
-class AllSpaces extends React.Component {
-  constructor(props) {
-    super(props);
-    this.sendId = this.sendId.bind(this);
-    this.showComments = this.showComments.bind(this)
+// const AllSpaces = () => {
+function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
+
+  const scrollView = useRef(null);
+  const [loading, setLoading] = useState(true)
+  const [spaces, setSpaces] = useState({ properties: [], total: 0, pages: 0 });
+
+  //const [index, setIndex] = useState(1);
+
+  useEffect(() => {
+    fetchSpaces(route.params.query, route.params.index)
+      .then(data => {
+        setLoading(false);
+        setSpaces(data);
+      });
+  }, [])
+
+  function setIndex(i) {
+    console.log(i);
+    navigation.push("AllSpaces", { query: route.params.query, index: i })
   }
 
-  sendId(id) {
-    this.props.fetchId(id)
-    return this.props.navigation.navigate('Root', { screen: `SingleView` })
+  function sendId(id) {
+    //fetchId(id)
+    return navigation.navigate(`SingleView`, { propertyId: id })
   }
 
-  showComments(id) {
-    this.props.fetchId(id)
-    return this.props.navigation.navigate('Root', { screen: `Comments` })
+  function showComments(id) {
+    return navigation.navigate(`Comments`, { propertyId: id })
   }
 
-  render() {
-    return (
-      <BackgroundAllSpaces
-        allSpaces={this.props.allSpaces}
-        navigation={this.props.navigation}
-        sendId={this.sendId}
-        showComments={this.showComments}
-      />
-    );
+  function removeFilter(key) {
+    const { query } = route.params;
+    delete query[key]
+    console.log(key, route.params.query);
+
+    setLoading(true);
+    fetchSpaces(query, 1)
+      .then(data => {
+        setLoading(false);
+        setSpaces(data);
+      });
+
+
   }
+
+  return (
+    <BackgroundAllSpaces
+      allSpaces={spaces.properties}
+      total={spaces.total}
+      pages={spaces.pages}
+      navigation={navigation}
+      sendId={sendId}
+      setIndex={setIndex}
+      scrollView={scrollView}
+      index={route.params.index}
+      filter={route.params.query}
+      removeFilter={removeFilter}
+      loading={loading}
+      showComments={showComments}
+    />
+  );
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -43,7 +79,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchId: (id) => (dispatch(fetchId(id)))
+    fetchSpaces: (query, index) => (dispatch(fetchSpaces(query, index)))
   }
 }
 

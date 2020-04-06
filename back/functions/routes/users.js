@@ -44,9 +44,13 @@ router.get('/:mail', (req, res, next) => {
 
 //* agregar un user
 router.post('/register', (req, res, next) => {
-  const data = req.body.body
-  db.collection('users').add(data)
-    .then(() => res.sendStatus(201))
+  const data = req.body
+  db.collection('users').doc(data.id).set(data)
+    .then((data) =>
+      res
+        .status(201)
+        .json(data.id)
+    )
     .catch(next)
 })
 
@@ -66,5 +70,14 @@ router.delete('/delete/:id', (req, res, next) => {
     .catch(next)
 })
 
+//* traer un user por su id
+
+router.get('/info/:id', async (req, res, next) => {
+  const id = req.params.id
+  const data = await db.collection('users').doc(id).get()
+  res
+    .status(200)
+    .json(data.data())
+})
 
 module.exports = router

@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import Comments from "../components/Comments";
 import { fetchSpace, writeComment } from "../../redux/actions/spaces";
 
-const CommentsContainer = ({ space, fetchSpace, id, writeComment }) => {
+const CommentsContainer = ({ space, fetchSpace, id, writeComment, route }) => {
   useEffect(() => {
-    fetchSpace(id);
+    fetchSpace(route.params.propertyId);
   }, []);
 
   const [comment, setComment] = useState("");
@@ -19,7 +19,7 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment }) => {
     //hacer que las estrellas seteen el rating
     //conseguir el userId del que postea el comment
     let rating = 5;
-    writeComment(id, comment, rating);
+    writeComment(route.params.propertyId, comment, rating);
   }
 
   return (
