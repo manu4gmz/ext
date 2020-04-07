@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import styled from "styled-components/native";
 import { connect } from "react-redux";
 
-const Profile = ({ user, userInfo }) => {
+const Profile = ({ user, userInfo, navigation }) => {
   return (
     <ViewPrincipal>
       {user.uid
@@ -48,7 +48,12 @@ const Profile = ({ user, userInfo }) => {
           <Container>
             <Wrapper>
               <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
-              <TextLink>Publicaciones</TextLink>
+
+              <TextLink
+                onPress={() => navigation.navigate('Root', { screen: "UserProperties" })}
+              >Mis Propiedades
+              </TextLink>
+
             </Wrapper>
 
             <Wrapper>
