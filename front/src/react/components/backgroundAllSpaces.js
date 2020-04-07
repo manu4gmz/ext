@@ -4,14 +4,17 @@ import {
   Text,
   ScrollView,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Linking
 } from "react-native";
+
 import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
 import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
+
 
 function indexes(index, total) {
   let indexes = [];
@@ -20,6 +23,7 @@ function indexes(index, total) {
   for (let i = start; i < start + 5 && i <= total; i++) indexes.push(i);
   return indexes;
 }
+
 
 function mapBadge(filter, remove) {
   const map = {
@@ -48,10 +52,10 @@ function mapBadge(filter, remove) {
 
 }
 
-export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, index, sendId, filter, removeFilter, loading, showComments }) => {
+export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments }) => {
   const [mode, setMode] = useState(false);
 
-
+  console.log("favs", favs)
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -126,17 +130,17 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
                                 </Text>
                               </TouchableOpacity>
                             </View>
-
                           </TouchableOpacity>
 
-                          <TouchableOpacity>
+                          <TouchableOpacity onPress={() => favorites(espacio.id, user.uid)}>
                             <Image
                               style={{ width: 30, height: 30, marginRight: 2 }}
-                              source={require("../../public/icons/corazon-ne.png")}
+                              source={favs.includes(espacio.id) ? (require("../../public/icons/corazon-ro.png")) : (require("../../public/icons/corazon-ne.png"))}
                             />
                           </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: "row" }}>
+                        <View style={{ flexDirection: "row" }}
+                        >
                           <Precio>{`$${espacio.price}`}</Precio>
                           <Text style={{ alignSelf: 'center' }}>por hora</Text>
                         </View>
@@ -150,6 +154,7 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
                   </Boton>
 
                           <Boton
+                            onPress={() => Linking.openURL(`tel:${+541123561654}`)}
                             bg="#F77171"
                             color="#F7F7F7"
                             ml="5px"
@@ -292,7 +297,6 @@ const BadgeRemove = styled.Image`
   width: 16px;
   height: 16px;
 `
-
 const BadgeWrapper = styled.View`
   width: 100%;
   flex-direction: row;
@@ -300,6 +304,7 @@ const BadgeWrapper = styled.View`
   margin-bottom: 12px;
   margin-left: 12px;
   flex-wrap: wrap;
+<<<<<<< HEAD
 `
 
 

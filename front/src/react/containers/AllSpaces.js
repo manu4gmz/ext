@@ -4,15 +4,17 @@ import { connect } from "react-redux";
 import BackgroundAllSpaces from "../components/backgroundAllSpaces";
 //import { fetchId } from "../../redux/actions/spaces"
 import { fetchSpaces } from "../../redux/actions/spaces"
+import { fetchFav } from "../../redux/actions/user"
+import Axios from "axios";
 
 
 // const AllSpaces = () => {
-function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
+function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
 
   const scrollView = useRef(null);
   const [loading, setLoading] = useState(true)
   const [spaces, setSpaces] = useState({ properties: [], total: 0, pages: 0 });
-
+  const [favs, setFavs] = useState([])
   //const [index, setIndex] = useState(1);
 
   useEffect(() => {
@@ -21,7 +23,14 @@ function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
         setLoading(false);
         setSpaces(data);
       });
+    if (!user) return;
+    fetchFav(user.uid)
+      .then(data => {
+        setFavs(data.data.favoritos)
+      })
   }, [])
+
+
 
   function setIndex(i) {
     console.log(i);
@@ -37,6 +46,19 @@ function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
     return navigation.navigate(`Comments`, { propertyId: id })
   }
 
+  function favorites(id, userId) {
+    if (favs && favs.includes(id)) return;
+    setFavs(favs => [...(favs || []), id])
+
+    Axios
+      .put(`https://ext-api.web.app/api/users/fav/${userId}`, { id })
+      .then(res => res.data)
+      .catch(error => console.log(error))
+
+    // console.log(id,userId,"favorites")
+
+  }
+
   function removeFilter(key) {
     const { query } = route.params;
     delete query[key]
@@ -50,15 +72,22 @@ function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
       });
 
 
+
+
   }
+
+
 
   return (
     <BackgroundAllSpaces
       allSpaces={spaces.properties}
+      favs={favs || []}
+      user={user}
       total={spaces.total}
       pages={spaces.pages}
       navigation={navigation}
       sendId={sendId}
+      favorites={favorites}
       setIndex={setIndex}
       scrollView={scrollView}
       index={route.params.index}
@@ -70,10 +99,14 @@ function AllSpaces({ allSpaces, navigation, route, fetchSpaces }) {
   );
 }
 
+
+
 const mapStateToProps = (state, ownProps) => {
+  console.log(state)
   return {
 
-    allSpaces: state.spaces.allSpaces
+    allSpaces: state.spaces.allSpaces,
+    user: state.user.logged
   }
 }
 
