@@ -12,6 +12,7 @@ import RegisterPage from "../containers/RegisterPage"
 import PaymentPage from "../containers/PaymentPage"
 import SpaceForm from "../containers/SpaceForm"
 import OwnerForm from "../containers/OwnerForm"
+import EditSpace from "../containers/EditSpace"
 import SingleViewPage from "../containers/SingleViewPage"
 import PreviewSpace from "../containers/PreviewSpace"
 import AllSpaces from "../containers/AllSpaces"
@@ -129,6 +130,7 @@ function Root() {
       <Stack.Screen name="Camera" component={Camera} options={{ header: () => null }} />
       <Stack.Screen name="UploadingFiles" component={UploadingFiles} options={{ header: () => null }} />
       <Stack.Screen name="PreviewSpace" component={PreviewSpace} options={{ header: () => null }, titulo("Vista previa")} />
+      <Stack.Screen name="EditSpace" component={EditSpace} options={{ header: () => null }, titulo("Editar espacio")} />
     </Stack.Navigator>
   )
 }

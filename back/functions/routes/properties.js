@@ -109,22 +109,58 @@ router.put('/update/:id', (req, res, next) => {
   const update = {};
 
   const dataTypes = {
-    photos: "object",
     visible: "boolean",
-    title: "string",
+    neighborhood: "string",
+    province: "string",
+    type: "string",
+    street: "string",
+    streetNumber: "string",
+    size: "string",
+    capacity: "string",
+    price: "string",
+    cleanup: "string",
+    rules: "string",
+    observations: "string",
     description: "string",
+    title: "string",
+    floor: "string",
+    apt: "string",
   }
 
+  let error = "";
+
   Object.keys(dataTypes).forEach(key => {
-    if (dataTypes[key] == "boolean") update[key] = (body[key] == "true" || body[key] == true);
+    if (body[key] == undefined) return;
     else if (typeof body[key] == dataTypes[key]) update[key] = body[key];
+    else error = `Error: ${key} no corresponde al tipo de dato "${dataTypes[key]}"`;
   })
 
-  db.collection('properties').doc(id).update(update)
-    .then(data => {
-      res.status(200).send({msg:"Editado correctamente"})
+  if (error) return res.status(400).send({msg: error});
+  if (!body.uid) return res.status(401).send({msg: "Error: tenes que pasar el uid del usuario"});
+
+  db.collection('users').doc(body.uid).get()
+    .then(data => data.data())
+    .then(user => {
+      if (user && user.properties && user.properties.includes(req.params.id)) 
+        return db.collection('properties').doc(id).update(update)
+          .then(() => {
+            return body.photos ? db.collection('properties').doc(id).get()
+              .then(data => {
+                const space = data.data();
+                db.collection('properties').doc(id).update({photos: [...space.photos, ...body.photos]})
+              }) : null
+
+          })
+          .then(()=>{
+            res.status(200).send({msg:"Editado correctamente"})
+          })
+      return res.status(401).send({msg:"Error: flasheaste capo"});
+      
     })
+
     .catch(next)
+
+
 })
 
 

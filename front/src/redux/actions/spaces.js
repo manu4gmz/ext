@@ -53,3 +53,13 @@ export const addPhotos = (id, body) => dispatch => {
         .then(res => res.data)
         .catch(error => console.log(error))
 }
+
+export const editSpace = (propertyId, body) => (dispatch, getState) => {
+    return axios
+        .post(`https://ext-api.web.app/api/properties/update/${propertyId}`, {
+            ...body,
+            uid: getState().user.logged.uid
+        })
+        .then(res => res.data)
+        .catch(error => console.log(error))
+}

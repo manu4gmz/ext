@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView, Linking } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView, Linking, TouchableOpacity } from 'react-native'
 import styled from "styled-components/native";
 import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
 import Boton from './../ui/Button'
@@ -7,7 +7,7 @@ import qs from 'qs'
 import Carousel from "../components/Carousel";
 import Loading from "../components/Loading";
 
-export default ({ space, loading }) => {
+export default ({ space, loading, edit, handleEdit }) => {
     const [mode, setMode] = useState(false)
     if (loading) return <Loading/>;
   
@@ -48,7 +48,11 @@ export default ({ space, loading }) => {
             <Carousel images={space.photos || []}/>
 
             <Container>
-                <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
+                <TextoPrecio>${space.price} <Span>por hora</Span>{edit ? 
+                    <TouchableOpacity onPress={handleEdit}>
+                        <Text>Editar</Text>
+                    </TouchableOpacity> : null
+                }</TextoPrecio>
                 <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
                 <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
                 <TextoComun>{space.description}</TextoComun>
