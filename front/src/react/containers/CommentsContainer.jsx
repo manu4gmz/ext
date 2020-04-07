@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 import Comments from "../components/Comments";
 import { fetchSpace, writeComment } from "../../redux/actions/spaces";
 
-const CommentsContainer = ({ space, fetchSpace, id, writeComment, route }) => {
+const CommentsContainer = ({ space, fetchSpace, id, writeComment, route, user, navigation }) => {
   useEffect(() => {
     fetchSpace(route.params.propertyId);
-  }, []);
+  }, [space]);
 
   const [comment, setComment] = useState("");
 
@@ -15,11 +15,17 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment, route }) => {
   }
 
   function handleSubmit() {
-    // console.log(id, { comment, userId: "userIdTest1", rating: 5 });
-    //hacer que las estrellas seteen el rating
-    //conseguir el userId del que postea el comment
-    let rating = 5;
-    writeComment(route.params.propertyId, comment, rating);
+    //Le mando el nombre y apellido del usuario loggeado para guardarlo como info en el comment
+    writeComment(route.params.propertyId, comment, `${user.firstName} ${user.lastName}`)
+  }
+
+  function redirectToLogin() {
+    return navigation.navigate(`Login`)
+  }
+
+  function redirectToUser(id) {
+    //para ver info del que comento
+    console.log(`redirect to ${id}`)
   }
 
   return (
@@ -27,6 +33,9 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment, route }) => {
       space={space}
       handleCommentChange={handleCommentChange}
       handleSubmit={handleSubmit}
+      redirectToLogin={redirectToLogin}
+      redirectToUser={redirectToUser}
+      user={user}
     />
   );
 };
@@ -34,7 +43,8 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment, route }) => {
 const mapStateToProps = (state, ownProps) => {
   return {
     id: state.spaces.idSpace,
-    space: state.spaces.singleSpace
+    space: state.spaces.singleSpace,
+    user: state.profile.userInfo
   };
 };
 

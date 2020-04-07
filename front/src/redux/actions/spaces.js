@@ -54,7 +54,8 @@ export const addPhotos = (id, body) => dispatch => {
         .catch(error => console.log(error))
 }
 
-export const writeComment = (id, comment, rating) => (dispatch, getState) => {
+export const writeComment = (id, comment, nombre) => (dispatch, getState) => {
     return axios
-        .put(`https://ext-api.web.app/api/properties/comments/${id}`, { comment, rating, userId: getState().user.logged.uid })
+        .put(`https://ext-api.web.app/api/properties/comments/${id}`, { comment, userId: getState().user.logged.uid, nombre })
+    // console.log({ comment, userId: getState().user.logged.uid, nombre })
 }
