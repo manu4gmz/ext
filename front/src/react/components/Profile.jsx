@@ -47,28 +47,33 @@ const Profile = ({ user, userInfo, navigation }) => {
 
           <Container>
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/profile/icono_publi_az.png')} />
-
-              <TextLink
-                onPress={() => navigation.navigate('Root', { screen: "UserProperties" })}
-              >Mis Propiedades
+              <TouchableOpacity onPress={() => navigation.navigate('Root', { screen: "UserProperties" })}>
+                <IconPrincipal source={require('../../public/icons/profile/icono_publi_az.png')} />
+                <TextLink
+                >Mis Propiedades
               </TextLink>
-
+              </TouchableOpacity>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/profile/icono_mensa_az.png')} />
-              <TextLink>Mensajes</TextLink>
+              <TouchableOpacity>
+                <IconPrincipal source={require('../../public/icons/profile/icono_mensa_az.png')} />
+                <TextLink>Mensajes</TextLink>
+              </TouchableOpacity>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/profile/icono_pagos_az.png')} />
-              <TextLink>Pagos</TextLink>
+              <TouchableOpacity>
+                <IconPrincipal source={require('../../public/icons/profile/icono_pagos_az.png')} />
+                <TextLink>Pagos</TextLink>
+              </TouchableOpacity>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/profile/icono_favor_az.png')} />
-              <TextLink>Favoritos</TextLink>
+              <TouchableOpacity>
+                <IconPrincipal source={require('../../public/icons/profile/icono_favor_az.png')} />
+                <TextLink>Favoritos</TextLink>
+              </TouchableOpacity>
             </Wrapper>
           </Container>
 
@@ -76,23 +81,31 @@ const Profile = ({ user, userInfo, navigation }) => {
 
           <Container>
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/profile/icono_datos_be.png')} />
-              <TextLink>Mis Datos</TextLink>
+              <TouchableOpacity>
+                <IconPrincipal source={require('../../public/icons/profile/icono_datos_be.png')} />
+                <TextLink>Mis Datos</TextLink>
+              </TouchableOpacity>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/profile/icono_reput_be.png')} />
-              <TextLink>Reputacion</TextLink>
+              <TouchableOpacity>
+                <IconPrincipal source={require('../../public/icons/profile/icono_reput_be.png')} />
+                <TextLink>Reputacion</TextLink>
+              </TouchableOpacity>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/profile/icono_ajus_be.png')} />
-              <TextLink>Ajustes</TextLink>
+              <TouchableOpacity>
+                <IconPrincipal source={require('../../public/icons/profile/icono_ajus_be.png')} />
+                <TextLink>Ajustes</TextLink>
+              </TouchableOpacity>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/profile/icono_ayuda_be.png')} />
-              <TextLink>Ayuda</TextLink>
+              <TouchableOpacity>
+                <IconPrincipal source={require('../../public/icons/profile/icono_ayuda_be.png')} />
+                <TextLink>Ayuda</TextLink>
+              </TouchableOpacity>
             </Wrapper>
           </Container>
         </View>
@@ -178,4 +191,7 @@ const TextLink = styled.Text`
 color: #262626;
 font-size : 16px;
 padding-top : 10px;
+`
+const TouchableOpacity = styled.TouchableOpacity`
+flex-direction : row;
 `
