@@ -24,13 +24,9 @@ import { View, StyleSheet } from "react-native";
 import { Avatar, Title, Caption } from "react-native-paper";
 import Camera from "../components/Camera";
 import UploadingFiles from "../containers/UploadingFiles";
-<<<<<<< HEAD
-import Profile from "./Profile";
-import CommentsContainer from "../containers/CommentsContainer";
-=======
 import Profile from './Profile'
+import CommentsContainer from "../containers/CommentsContainer";
 import UserProperties from './UserPorperties'
->>>>>>> 9ba8865ae14491a1cee2bd713c55b522a3ab698a
 
 //importando action creator
 import { LogoutUser } from "../../redux/actions/user";
