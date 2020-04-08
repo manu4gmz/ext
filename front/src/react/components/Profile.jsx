@@ -9,18 +9,18 @@ const Profile = ({ user, userInfo, navigation }) => {
       {user.uid
         ? <View>
           <Wrapper>
-            <ImgProfile source={require('../../public/icons/profile.png')} />
+            <ImgProfile source={require('../../public/icons/profile/icono_foto.png')} />
             <InfoContainer>
 
               <Title>{`${userInfo.firstName} ${userInfo.lastName}`}</Title>
 
               <ViewText>
-                <IconText source={require('../../public/icons/celu.jpg')} />
+                <IconText source={require('../../public/icons/profile/icono_mail.png')} />
                 <Text>{`${userInfo.email}`}</Text>
               </ViewText>
 
               <ViewText>
-                <IconText source={require('../../public/icons/celu.jpg')} />
+                <IconText source={require('../../public/icons/profile/icono_telef.png')} />
                 {userInfo.phoneNumber
                   ? <Text>{`${userInfo.phoneNumber}`}</Text>
                   : <Text>No disponible</Text>
@@ -28,7 +28,7 @@ const Profile = ({ user, userInfo, navigation }) => {
               </ViewText>
 
               <ViewText>
-                <IconText source={require('../../public/icons/celu.jpg')} />
+                <IconText source={require('../../public/icons/profile/icono_user.png')} />
                 {userInfo.address
                   ? <Text>{`${userInfo.address}`}</Text>
                   : <Text>No disponible</Text>
@@ -47,7 +47,7 @@ const Profile = ({ user, userInfo, navigation }) => {
 
           <Container>
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
+              <IconPrincipal source={require('../../public/icons/profile/icono_publi_az.png')} />
 
               <TextLink
                 onPress={() => navigation.navigate('Root', { screen: "UserProperties" })}
@@ -57,17 +57,17 @@ const Profile = ({ user, userInfo, navigation }) => {
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
+              <IconPrincipal source={require('../../public/icons/profile/icono_mensa_az.png')} />
               <TextLink>Mensajes</TextLink>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
+              <IconPrincipal source={require('../../public/icons/profile/icono_pagos_az.png')} />
               <TextLink>Pagos</TextLink>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
+              <IconPrincipal source={require('../../public/icons/profile/icono_favor_az.png')} />
               <TextLink>Favoritos</TextLink>
             </Wrapper>
           </Container>
@@ -76,22 +76,22 @@ const Profile = ({ user, userInfo, navigation }) => {
 
           <Container>
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
+              <IconPrincipal source={require('../../public/icons/profile/icono_datos_be.png')} />
               <TextLink>Mis Datos</TextLink>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
+              <IconPrincipal source={require('../../public/icons/profile/icono_reput_be.png')} />
               <TextLink>Reputacion</TextLink>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
+              <IconPrincipal source={require('../../public/icons/profile/icono_ajus_be.png')} />
               <TextLink>Ajustes</TextLink>
             </Wrapper>
 
             <Wrapper>
-              <IconPrincipal source={require('../../public/icons/icon-prueba2.png')} />
+              <IconPrincipal source={require('../../public/icons/profile/icono_ayuda_be.png')} />
               <TextLink>Ayuda</TextLink>
             </Wrapper>
           </Container>
@@ -134,9 +134,9 @@ const Divider = styled.View`
   align-self: center;
 `
 const ImgProfile = styled.Image`
-width : 110px;
-height : 110px;
-margin: 0;
+width : 90px;
+height : 90px;
+margin-top: 10px;
 `
 const Title = styled.Text`
 font-weight: bold;
@@ -159,9 +159,10 @@ width: 20px;
 margin : 2px 10px 2px 0;
 `
 const IconPrincipal = styled.Image`
-height: 30px;
-width: 30px;
-margin : 5px 10px;
+height: 35px;
+margin: 6px;
+margin-top : 2px;
+width: 33px;
 `
 const Text = styled.Text`
 color: rgba(28, 28, 30, 0.68);
