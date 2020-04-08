@@ -1,44 +1,59 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView, Linking } from 'react-native'
 import styled from "styled-components/native";
 import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
+import Boton from './../ui/Button'
+import qs from 'qs'
 import Carousel from "../components/Carousel";
 import Loading from "../components/Loading";
-import MapView, { Marker } from 'react-native-maps';
-const lugares = [{
-    title: "Agustiniano",
-    description: "Un colegio de mierda",
-    latitude: -34.569735,
-    longitude: -58.544380
-},
-{
-    title: "Casa",
-    description: "san andres",
-    latitude: -34.569050,
-    longitude: -58.5484389,
-},
-{
-    title: "Taller",
-    description: "Escuela taller",
-    latitude: -34.569393,
-    longitude: -58.542963
-}]
-export default ({ space, loading, allSpaces }) => {
-    const [mode, setMode] = useState(false)
+import MapView, { Marker, Callout } from 'react-native-maps';
+import Map from "../components/map"
 
+export default ({ space, loading, allSpaces, navigation }) => {
+    const [mode, setMode] = useState(false)
     if (loading) return <Loading />;
+
+    async function sendEmail(to, subject, body, options = {}) {
+        const { cc, bcc } = options;
+
+        let url = `mailto:${to}`;
+
+        // Create email link query
+        const query = qs.stringify({
+            subject: subject,
+            body: body,
+            cc: cc,
+            bcc: bcc
+        });
+
+        if (query.length) {
+            url += `?${query}`;
+        }
+
+        // check if we can use this link
+        const canOpen = await Linking.canOpenURL(url);
+
+        if (!canOpen) {
+            throw new Error('Provided URL can not be handled');
+        }
+
+        return Linking.openURL(url);
+    }
+
+
 
     return (
         <ScrollView>
-            <View style={{ backgroundColor: "white" }} >
+            <View>
                 <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
                     <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
                     <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
                 </View>
                 {!mode ? (
                     <View>
-
                         <Carousel images={space.photos || []} />
+
+
                         <Container>
                             <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
                             <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
@@ -51,50 +66,69 @@ export default ({ space, loading, allSpaces }) => {
                                 <Service source={require("../../public/icons/wifi-ne.png")} />
                             </ServicesWrapper>
                             <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
+
+
                             <MapView style={styles.mapStyle}
                                 initialRegion={{
-                                    latitude: space.location[1].lat,
-                                    longitude: space.location[1].lon,
+                                    latitude: Number(space.location[1].lat),
+                                    longitude: Number(space.location[1].lon),
                                     latitudeDelta: 0.0922,
                                     longitudeDelta: 0.0421,
                                 }}>
+
                                 <Marker
-                                    title={space.title}
-                                    description={space.description}
                                     coordinate={
                                         {
-                                            latitude: space.location[1].lat,
-                                            longitude: space.location[1].lon,
-                                        }} />
+                                            latitude: Number(space.location[1].lat),
+                                            longitude: Number(space.location[1].lon),
+                                        }}>
+
+                                    <Callout>
+                                        <View style={styles.customCallOut}>
+                                            <Text>{space.title}</Text>
+                                            <Text>{`Precio por hs: ${space.price}$`}</Text>
+                                        </View>
+
+                                    </Callout>
+                                </Marker>
+
+
+
 
                             </MapView>
+                            <DoubleWraper>
+                                <Boton
+                                    onPress={() =>
+                                        sendEmail(
+                                            'robertovilla2102@gmail.com',
+                                            'Greeting!',
+                                            'I think you are fucked up how many letters you get.')
+                                            .then(() => {
+                                                console.log('Our email successful');
+                                            })}
+                                    bg="#4A94EA"
+                                    color="#F7F7F7"
+                                    mr="5px"
+                                >Email
+                  </Boton>
+
+                                <Boton
+                                    onPress={() => Linking.openURL(`tel:+54 9 ${'11 65342325'}`)}
+                                    bg="#F77171"
+                                    color="#F7F7F7"
+                                    ml="5px"
+                                >Llamar
+                  </Boton>
+                            </DoubleWraper>
+
                         </Container>
                     </View>
-                ) : (<View>
-                    <MapView style={styles.mapAll}
-                        initialRegion={{
-                            latitude: space.location[0].lat,
-                            longitude: space.location[0].lng,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        }}>
-                        {allSpaces.map((lugar, index) => {
-                            return (
-                                <Marker
-                                    key={index}
-                                    title={lugar.title}
-                                    description={lugar.description}
-                                    coordinate={
-                                        {
-                                            latitude: lugar.location[1].lat,
-                                            longitude: lugar.location[1].lon,
-                                        }}
-                                />
-                            )
-                        })}
-                    </MapView>
-                </View>)}
-            </View >
+                ) : (<Map navigation={navigation} allSpaces={allSpaces}></Map>)}
+
+
+            </View>
+
+
         </ScrollView >
     )
 }
@@ -139,7 +173,45 @@ const TextoCaracteristicas = styled.Text`
     font-size: 17px;
     margin-bottom: 20px;
     margin-top: 30px
+
+    `
+
+
+const ServicesWrapper = styled.View`
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
 `
+
+const Service = styled.Image`
+    height: 45px;
+    width: 45px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+`
+
+const Capitalize = styled.Text`
+    text-transform: capitalize;
+`
+
+const Container = styled.View`
+    margin: 10px 12px;
+`
+const NoPhotos = styled.Text`
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 30px;`
+const DoubleWraper = styled.View`
+flex-direction: row;
+justify-content: space-between;
+margin: 3% 0px;
+`
+const Span = styled.Text`
+    font-weight: 200;
+    font-size: 12px;
+`
+
 //<Text onPress=() => (setToogleMap(!toogleMap))} style={styles.lista}>Mapa</Text>
 const styles = StyleSheet.create({
     fondo: {
@@ -169,36 +241,12 @@ const styles = StyleSheet.create({
         marginTop: 2,
         maxWidth: 500,
         height: 800
+    },
+    customCallOut: {
+        height: 80,
+        width: 120,
+        backgroundColor: "#F7F7F7"
+
+
     }
 })
-
-const ServicesWrapper = styled.View`
-    flex-direction: row;
-    justify-content: center;
-    width: 100%;
-`
-
-const Service = styled.Image`
-    height: 45px;
-    width: 45px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-`
-
-const Capitalize = styled.Text`
-    text-transform: capitalize;
-`
-
-const Container = styled.View`
-    margin: 10px 12px;
-`
-const NoPhotos = styled.Text`
-    font-size: 15px;
-    font-weight: 500;
-    text-align: center;
-    margin-top: 30px;
-`
-const Span = styled.Text`
-    font-weight: 200;
-    font-size: 12px;
-`

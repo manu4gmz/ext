@@ -1,6 +1,6 @@
 import { LOGGED } from "../constants"
 import firebase from "../firebase";
-import Axios from "axios";
+import axios from 'axios'
 
 const auth = firebase.auth();
 const setLoggedUser = (logged) => ({
@@ -22,10 +22,8 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 }
 
 export const fetchFav = (userId)=>{
-	return Axios.get(`https://ext-api.web.app/api/users/favs/${userId}`)
+	return axios.get(`https://ext-api.web.app/api/users/favs/${userId}`)
 		.then((data)=> data)
-
-		
   }
 
 export const logUser = (email, password) => dispatch => {
@@ -60,8 +58,25 @@ export const getUserGoogle = () => dispatch => {
 	return firebase.auth().signInWithPopup(provider)
 		.then(function (result) {
 			const user = result.user;
+			const index = user.displayName.indexOf(' ')
+			const name = user.displayName.slice(0, index)
+			const apellido = user.displayName.slice(index + 1)
 			dispatch(setLoggedUser(user.email))
 			dispatch(getUser())
+
+			const bodyUpdate = {
+				id: user.uid,
+				email: user.email,
+				firstName: name,
+				lastName: apellido,
+				favoritos: '',
+				address: '',
+				phoneNumber: '',
+			}
+
+			axios
+				.post(`https://ext-api.web.app/api/users/register`, bodyUpdate)
+				.then(data => console.log(data))
 		})
 		.catch((error) => {
 			const errorCode = error.code;

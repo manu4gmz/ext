@@ -58,3 +58,4 @@ buck-out/
 .expo/
 .expo/settings.json
 web-build/
+.env/

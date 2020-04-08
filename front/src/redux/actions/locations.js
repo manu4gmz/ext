@@ -1,4 +1,5 @@
 import axios from "axios";
+import { DATA } from "react-native-dotenv"
 
 export const fetchProvincias = (val) => dispatch => {
 	return axios.get(`https://apis.datos.gob.ar/georef/api/provincias${val ? "?nombre=" + val : ""}`)
@@ -19,7 +20,7 @@ export const fetchLocalidades = (val, id) => dispatch => {
 
 
 export const fetchCoords = (dir, idSpace, region) => dispatch => {
-	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${dir.n},${dir.s} ${dir.sn},${dir.p}&key=`)
+	return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${dir.n},${dir.s} ${dir.sn},${dir.p}&key=${DATA}`)
 		.then((res) => {
 			const coordenadas = res.data.results[0].geometry.location
 			const arreglo = [coordenadas, region]

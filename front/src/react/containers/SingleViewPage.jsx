@@ -3,14 +3,14 @@ import { connect } from "react-redux";
 import { StyleSheet, Text, View, Image } from "react-native";
 import SingleView from "../components/SingleView";
 import { fetchSpace } from "../../redux/actions/spaces"
-const SingleViewPage = ({ space, fetchSpace, id, route, allSpaces }) => {
+const SingleViewPage = ({ space, fetchSpace, id, route, allSpaces, navigation }) => {
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         fetchSpace(route.params.propertyId)
             .then(() => setLoading(false));
 
     }, [])
-    return <SingleView space={space} loading={loading} />;
+    return <SingleView space={space} allSpaces={allSpaces} loading={loading} navigation={navigation} />;
 };
 
 const mapStateToProps = (state, ownProps) => {
