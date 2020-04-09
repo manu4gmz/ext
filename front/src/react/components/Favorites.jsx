@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Linking
-} from "react-native";
+import { View,Text,ScrollView,Image,TouchableOpacity,Linking } from "react-native";
 import { useNavigation } from "@react-navigation/native"
 import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
@@ -16,32 +9,53 @@ import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
 import { connect } from "react-redux";
 import { fetchFav } from "../../redux/actions/user";
+import Axios from "axios";
 
 
 function Favorites ({user,state}) {
-    console.log("state" ,state)
   const navigation = useNavigation();
 
   const [favs, setFavs] = useState([])
   const [loading, setLoading] = useState(true)
-  
+
+
 
   useEffect(() => {
     fetchFav(user.uid)
       .then(data => {
-        setFavs(data.data.favoritos)
-        setLoading(false)
-      })
-  }, [])
+      return Promise.all(data.data.favoritos.map((spaceId)=> {
+      return  Axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
+        .then((data)=> data.data)}))
+        
+      .then((data)=> setFavs(data))
+      .then(()=>setLoading(false))})}
+      
+      
+     , [])
 
-  setTimeout(function(){ setLoading(false); }, 3000);
+  function deleteFav(id, userId){
+    console.log("IdFav",id)
+    setFavs([])
+    Axios.put(`http://localhost:5001/ext-api/us-central1/app/api/users/favs/${userId}`, {id} )
+    .then((data)=> {
+      
+      data.data.favoritos.map((spaceId)=> {Axios.get(`http://localhost:5001/ext-api/us-central1/app/api/properties/singleSpace/${spaceId}`)
+      .then((data)=> data.data)
+      .then((data)=> setFavs(favs =>[...favs,data]))
+      .then(()=>setLoading(false))})})
+        
+    
+    
+  }
+
+
   console.log("faaaavs",favs)
   return (
    <ScrollView>    
     {
         !loading ?   
     <Wrapper>
-    {state.profile.userInfo.favoritos.map((espacio, index) => {
+    {favs.map((espacio, index) => {
       return (
         <FadeInView key={index} order={index}>
           <StyledView
@@ -88,10 +102,10 @@ function Favorites ({user,state}) {
                     </View>
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => favorites(espacio.id, user.uid)}>
+                  <TouchableOpacity onPress={() => deleteFav(espacio.id, user.uid)}>
                     <Image
                       style={{ width: 30, height: 30, marginRight: 2 }}
-                      source={favs.includes(espacio.id) ? (require("../../public/icons/corazon-ro.png")) : (require("../../public/icons/corazon-ne.png"))}
+                      source={(require("../../public/icons/corazon-ro.png"))}
                     />
                   </TouchableOpacity>
                 </View>
@@ -125,27 +139,6 @@ function Favorites ({user,state}) {
         </FadeInView>
       );
     })}
-    {/* <PaginationWrapper>
-      {
-        index > 1 ?
-          <TouchableOpacity onPress={() => setIndex(index - 1)}>
-            <PaginationText>Anterior</PaginationText>
-          </TouchableOpacity> : null
-      }
-      {
-        indexes(index, pages).map((i) => (
-          <TouchableOpacity key={i} onPress={() => setIndex(i)}>
-            <PaginationText bold={(index == i) + ""}>{i}</PaginationText>
-          </TouchableOpacity>
-        ))
-      }
-      {
-        index < pages ?
-          <TouchableOpacity onPress={() => setIndex(index + 1)}>
-            <PaginationText>Siguiente</PaginationText>
-          </TouchableOpacity> : null
-      }
-    </PaginationWrapper> */}
   </Wrapper>
   : <Loading />
       }
