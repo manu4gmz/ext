@@ -31,6 +31,7 @@ import UserProperties from './UserPorperties'
 
 //importando action creator
 import { LogoutUser } from "../../redux/actions/user";
+import Favorites from "./Favorites";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -214,6 +215,11 @@ function Root() {
         name="EditSpace" 
         component={EditSpace} 
         options={{ header: () => null }, titulo("Editar espacio")}
+      />
+      <Stack.Screen
+        name="Favorites"
+        component={Favorites}
+        options={{ header: () => null }, titulo("Favoritos")}
       />
     </Stack.Navigator>
   );
