@@ -94,7 +94,7 @@ router.put('/fav/:id', (req, res, next) => {
     
   })
   .then(() => {
-  res.status(201)
+  res.sendStatus(201)
   })
   .catch(next)
   })
@@ -107,5 +107,24 @@ router.get("/favs/:id",(req,res,next)=>{
     .then((data)=>res.status(201).send(data))
     .catch(next)
 })
+
+//*eliminar favoritos
+router.delete("/favs/:id",(req,res,next)=>{
+  console.log("soy delete fav")
+  const id = req.params.id
+  const fav = req.body.id
+  db.collection("users").doc(id).get()
+  .then((data)=>{
+    const newdata= data.data()
+    const index = newdata.favoritos.indexOf(fav);
+    newdata.favoritos.splice(index, 1)
+    const favfinal = [... new Set(newdata.favoritos)]
+    db.collection("users").doc(id).update({favoritos: favfinal})
+  })
+  .then(() => {
+  res.sendStatus(201)
+  })
+  .catch(next)
+  })
 
 module.exports = router
