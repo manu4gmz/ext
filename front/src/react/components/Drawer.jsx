@@ -30,6 +30,7 @@ import UserProperties from './UserPorperties'
 
 //importando action creator
 import { LogoutUser } from "../../redux/actions/user";
+import Favorites from "./Favorites";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -205,6 +206,11 @@ function Root() {
         options={{ header: () => null }, titulo("Comments")}
       />
       <Stack.Screen name="UserProperties" component={UserProperties} options={{ header: () => null }, titulo("Mis Propiedades")} />
+      <Stack.Screen
+        name="Favorites"
+        component={Favorites}
+        options={{ header: () => null }, titulo("Favoritos")}
+      />
     </Stack.Navigator>
   );
 }
