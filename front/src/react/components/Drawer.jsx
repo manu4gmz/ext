@@ -25,11 +25,13 @@ import { Avatar, Title, Caption } from "react-native-paper";
 import Camera from "../components/Camera";
 import UploadingFiles from "../containers/UploadingFiles";
 import Profile from "./Profile";
+import EditSpace from "../containers/EditSpace"
 import CommentsContainer from "../containers/CommentsContainer";
 import UserProperties from './UserPorperties'
 
 //importando action creator
 import { LogoutUser } from "../../redux/actions/user";
+import Favorites from "./Favorites";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -204,7 +206,21 @@ function Root() {
         component={CommentsContainer}
         options={{ header: () => null }, titulo("Comments")}
       />
-      <Stack.Screen name="UserProperties" component={UserProperties} options={{ header: () => null }, titulo("Mis Propiedades")} />
+      <Stack.Screen 
+        name="UserProperties" 
+        component={UserProperties} 
+        options={{ header: () => null }, titulo("Mis Propiedades")}
+      />
+      <Stack.Screen 
+        name="EditSpace" 
+        component={EditSpace} 
+        options={{ header: () => null }, titulo("Editar espacio")}
+      />
+      <Stack.Screen
+        name="Favorites"
+        component={Favorites}
+        options={{ header: () => null }, titulo("Favoritos")}
+      />
     </Stack.Navigator>
   );
 }

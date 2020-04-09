@@ -6,7 +6,7 @@ import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 import Picker from "../components/Picker";
 import TextPrompt from "../components/TextPrompt";
 import styled from "styled-components/native";
-import Typeahead from "../components/Typeahead";
+import Typeahead from "../components/GenericTypeahead";
 import { fetchProvincias, fetchLocalidades } from "../../redux/actions/locations";
 import { connect } from 'react-redux'
 import Form from '../components/Form';
@@ -16,13 +16,12 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     const Province = Picker(useState(false), useState(""));
     const Type = Picker(useState(false), useState(""));
     const Services = Picker(useState(false), useState([]));
-    const Observation = TextPrompt(useState(false), useState(""));
-    const Rules = TextPrompt(useState(false), useState(""));
+
     const [Verificado, setVerificado] = useState(false);
     const [ConFotos, setConFotos] = useState(false);
 
-    const [provincias, setProvincias] = useState([])
-    const [localidades, setLocalidades] = useState([])
+    //const [provincias, setProvincias] = useState([])
+    //const [localidades, setLocalidades] = useState([])
     const [province, setProvince] = useState({})
 
     const onSubmit = function (form) {
@@ -37,12 +36,11 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
 
 
 
-        navigation.navigate("AllSpaces", { query: filter, index:1 })
+        navigation.navigate("AllSpaces", { query: filter, index: 1 })
     }
 
     function getProvincias(val) {
-        fetchProvincias(val)
-            .then(data => setProvincias(data))
+        return fetchProvincias(val)
     }
 
     function getLocalidades(val) {
@@ -74,7 +72,6 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
             getOptions={getProvincias}
             handleSelect={handleSelectProvince}
             onChange={onChange}
-            options={provincias}
         />, 12],
         //[({ onChange }) => <Province.Input onChange={onChange} title={"Provincia*"} placeholder="Buenos Aires, Cordoba, San Luis.." />],
         [({ onChange }) => province.id ? <Typeahead
@@ -83,7 +80,6 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
             getOptions={getLocalidades}
             handleSelect={() => null}
             onChange={onChange}
-            options={localidades}
         /> : null, 11],
 
         //["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
@@ -94,11 +90,11 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         ],
         [({ onChange }) => <CheckBoxWrapper>
             <CheckBox onPress={() => (setVerificado(!Verificado))}>
-                <Check><Dot active={Verificado+""}/></Check>
+                <Check><Dot active={Verificado + ""} /></Check>
                 <CheckLabel>Verificados</CheckLabel>
             </CheckBox>
             <CheckBox onPress={() => (setConFotos(!ConFotos))}>
-                <Check><Dot active={ConFotos+""}/></Check>
+                <Check><Dot active={ConFotos + ""} /></Check>
                 <CheckLabel>Con fotos</CheckLabel>
             </CheckBox>
         </CheckBoxWrapper>
@@ -150,7 +146,7 @@ const Dot = styled.Text`
   height: 12px;
   width: 12px;
   align-self: center;
-  background-color: ${p=>p.active == "true" ? "#2cca31" : "#d9d5c8"};
+  background-color: ${p => p.active == "true" ? "#2cca31" : "#d9d5c8"};
   border-radius: 40px;
 `
 const CheckLabel = styled.Text`

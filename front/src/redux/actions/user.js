@@ -17,9 +17,13 @@ const userProperties = (properties) => ({
 export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	auth.onAuthStateChanged((user) => {
 		if (user) {
-			const userObj = { email: user.email, uid: user.uid };
-			dispatch(setLoggedUser(userObj))
-			if (ifLogged && typeof ifLogged == "function") ifLogged(userObj);
+			//const userObj = { email: user.email, uid: user.uid, properties: user.properties };
+			fetchUser(user.uid)
+			.then(userData => {
+				const loggedUser = {...userData, uid: user.uid};
+				dispatch(setLoggedUser(loggedUser))
+				if (ifLogged && typeof ifLogged == "function") ifLogged(loggedUser);
+			})
 		} else {
 			dispatch(setLoggedUser({}))
 			if (ifNotlogged && typeof ifNotlogged == "function") ifNotlogged();
@@ -36,6 +40,12 @@ export const fetchProperties = (userId) => dispatch => {
 	return axios.get(`https://ext-api.web.app/api/properties/userSpaces/${userId}`)
 		.then(res => dispatch(userProperties(res.data)))
 }
+
+export const fetchUser = (userId)=>{
+	return axios.get(`https://ext-api.web.app/api/users/info/${userId}`)
+		.then((data)=> data.data)
+  }
+
 
 export const logUser = (email, password) => dispatch => {
 	return auth.signInWithEmailAndPassword(email, password)

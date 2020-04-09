@@ -46,9 +46,12 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
   }
 
   function favorites(id, userId) {
-    if (favs && favs.includes(id)) return;
+    if (favs && favs.includes(id)) { Axios.delete(`https://ext-api.web.app/api/users/favs/${userId}`, { id })
+    .then(res => res.data)
+    .catch(error => console.log(error))};
+    
     setFavs(favs => [...(favs || []), id])
-
+    
     Axios
       .put(`https://ext-api.web.app/api/users/fav/${userId}`, { id })
       .then(res => res.data)

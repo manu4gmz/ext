@@ -70,10 +70,15 @@ const Profile = ({ user, userInfo, navigation }) => {
             </Wrapper>
 
             <Wrapper>
+
+              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
+              <TextLink onPress={() => navigation.navigate('Root', { screen: "Favorites" })} >Favoritos</TextLink>
+
               <TouchableOpacity>
                 <IconPrincipal source={require('../../public/icons/profile/icono_favor_az.png')} />
                 <TextLink>Favoritos</TextLink>
               </TouchableOpacity>
+
             </Wrapper>
           </Container>
 

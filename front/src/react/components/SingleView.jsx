@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView, Linking } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView, Linking, TouchableOpacity } from 'react-native'
 import styled from "styled-components/native";
 import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
 import Boton from './../ui/Button'
@@ -9,7 +9,7 @@ import Loading from "../components/Loading";
 import MapView, { Marker, Callout } from 'react-native-maps';
 import Map from "../components/map"
 
-export default ({ space, loading, allSpaces, navigation }) => {
+export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => {
     const [mode, setMode] = useState(false)
     if (loading) return <Loading />;
 
@@ -214,7 +214,6 @@ const Span = styled.Text`
     font-size: 12px;
 `
 
-//<Text onPress=() => (setToogleMap(!toogleMap))} style={styles.lista}>Mapa</Text>
 const styles = StyleSheet.create({
     fondo: {
     },
