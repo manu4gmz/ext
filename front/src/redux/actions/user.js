@@ -13,10 +13,10 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 		if (user) {
 			//const userObj = { email: user.email, uid: user.uid, properties: user.properties };
 			fetchUser(user.uid)
-			.then(user => {
-
-				dispatch(setLoggedUser({...user, uid: user.uid}))
-				if (ifLogged && typeof ifLogged == "function") ifLogged(user);
+			.then(userData => {
+				const loggedUser = {...userData, uid: user.uid};
+				dispatch(setLoggedUser(loggedUser))
+				if (ifLogged && typeof ifLogged == "function") ifLogged(loggedUser);
 			})
 		} else {
 			dispatch(setLoggedUser({}))

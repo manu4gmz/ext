@@ -55,7 +55,10 @@ export default ([modal, setModal],[value, setValue]) => {
               {value ?  value : (placeholder || "Selecciona aquí")}
             </StyledInput>
         </View>
-      }
+      },
+
+      setValue: (val) => setValue(val)
+
 
   }
 }

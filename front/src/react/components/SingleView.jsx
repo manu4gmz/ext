@@ -48,11 +48,12 @@ export default ({ space, loading, edit, handleEdit }) => {
             <Carousel images={space.photos || []}/>
 
             <Container>
-                <TextoPrecio>${space.price} <Span>por hora</Span>{edit ? 
+                <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
+                {edit ? 
                     <TouchableOpacity onPress={handleEdit}>
                         <Text>Editar</Text>
                     </TouchableOpacity> : null
-                }</TextoPrecio>
+                }
                 <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
                 <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
                 <TextoComun>{space.description}</TextoComun>
@@ -70,7 +71,7 @@ export default ({ space, loading, edit, handleEdit }) => {
                             sendEmail(
                                 'robertovilla2102@gmail.com',
                                 'Greeting!',
-                                'I think you are fucked up how many letters you get.')
+                                'I think you are <nice word> up how many letters you get.')
                                 .then(() => {
                                     console.log('Our email successful');
                                 })}

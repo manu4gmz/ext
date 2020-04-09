@@ -125,6 +125,8 @@ router.put('/update/:id', (req, res, next) => {
     title: "string",
     floor: "string",
     apt: "string",
+    services:"object",
+    photos: "object"
   }
 
   let error = "";
@@ -143,14 +145,6 @@ router.put('/update/:id', (req, res, next) => {
     .then(user => {
       if (user && user.properties && user.properties.includes(req.params.id)) 
         return db.collection('properties').doc(id).update(update)
-          .then(() => {
-            return body.photos ? db.collection('properties').doc(id).get()
-              .then(data => {
-                const space = data.data();
-                db.collection('properties').doc(id).update({photos: [...space.photos, ...body.photos]})
-              }) : null
-
-          })
           .then(()=>{
             res.status(200).send({msg:"Editado correctamente"})
           })
