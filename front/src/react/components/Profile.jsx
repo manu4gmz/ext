@@ -7,7 +7,7 @@ const Profile = ({ user, userInfo, navigation }) => {
   return (
     <ViewPrincipal>
       {user.uid
-        ? <View>
+        ? <View style={{ marginTop: '18px' }}>
           <Wrapper>
             <ImgProfile source={require('../../public/icons/profile/icono_foto.png')} />
             <InfoContainer>
@@ -70,15 +70,10 @@ const Profile = ({ user, userInfo, navigation }) => {
             </Wrapper>
 
             <Wrapper>
-
-              <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
-              <TextLink onPress={() => navigation.navigate('Root', { screen: "Favorites" })} >Favoritos</TextLink>
-
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate('Root', { screen: "Favorites" })}>
                 <IconPrincipal source={require('../../public/icons/profile/icono_favor_az.png')} />
                 <TextLink>Favoritos</TextLink>
               </TouchableOpacity>
-
             </Wrapper>
           </Container>
 
@@ -160,6 +155,7 @@ const Title = styled.Text`
 font-weight: bold;
 font-size : 18px;
 margin-bottom:5px;
+margin-left: 2px;
 `
 const InfoContainer = styled.View`
 justify-content : center;
