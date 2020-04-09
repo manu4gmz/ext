@@ -29,6 +29,10 @@ export default ({ images, height }) => {
     }).start();
   }, [index]);
 
+  useEffect(()=>{
+    setIndex(0);
+  }, [images]);
+
   function changeIndex(amount) {
     if (index + amount >= images.length) setIndex(0);
     else if (index + amount < 0) setIndex(images.length - 1);

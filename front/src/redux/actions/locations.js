@@ -1,11 +1,12 @@
 import axios from "axios";
 import { DATA } from "react-native-dotenv"
+import { SET_CENTROIDE } from "../constants";
 
 export const fetchProvincias = (val) => dispatch => {
 	return axios.get(`https://apis.datos.gob.ar/georef/api/provincias${val ? "?nombre=" + val : ""}`)
 		.then(response => response.data)
 		.then(data => {
-			return data.provincias.map(p => ({ label: p.nombre.toLowerCase(), id: p.id }));
+			return data.provincias.map(p => ({ label: p.nombre.toLowerCase(), id: p.id, coordenadas: p.centroide }));
 		})
 }
 
@@ -28,3 +29,7 @@ export const fetchCoords = (dir, idSpace, region) => dispatch => {
 		})
 }
 
+export const setCentroide = (centroide) => ({
+	type: SET_CENTROIDE,
+	centroide: centroide || {lat: -34.6144934119689, lon: -58.4458563545429}
+})
