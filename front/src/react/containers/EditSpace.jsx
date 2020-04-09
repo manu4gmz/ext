@@ -12,7 +12,7 @@ import { editSpace,fetchSpace } from '../../redux/actions/spaces'
 import { connect } from 'react-redux'
 
 
-const EditSpace = ({ navigation, uploadFiles, editSpace, user, fetchLocalidades, fetchProvincias, route, fetchSpace }) => {
+const EditSpace = ({ navigation, editSpace, fetchLocalidades, fetchProvincias, route, fetchSpace }) => {
   const Type = Picker(useState(false), useState(""));
   const Services = Picker(useState(false), useState([]));
   const Observation = TextPrompt(useState(false), useState(""));
@@ -113,7 +113,7 @@ const EditSpace = ({ navigation, uploadFiles, editSpace, user, fetchLocalidades,
       {title:"Depto", placeholder: "B", name:"apt"},
     ],
     { 
-      element: ({ onChange, value }) => <Type.Input onChange={onChange} title={"Tipo de Espacio"} placeholder="Selecciona el espacio que ofrece." value={value}/>,
+      element: ({ onChange, value }) => <Type.Input onChange={onChange} title={"Tipo de Espacio"} placeholder="Selecciona el espacio que ofrece." value={value} name="type"/>,
       name: "type"
     },
     [
@@ -122,15 +122,15 @@ const EditSpace = ({ navigation, uploadFiles, editSpace, user, fetchLocalidades,
     ],
 
     { 
-      element: ({ onChange, value }) => <Descripcion.Input onChange={onChange} title="Descripcion" placeholder="Breve descripcion del lugar..." value={value}/>,
+      element: ({ onChange, value }) => <Descripcion.Input onChange={onChange} title="Descripcion" name="description" placeholder="Breve descripcion del lugar..." value={value}/>,
       name: "description"
     },
     { 
-      element: ({ onChange, value }) => <Services.Input onChange={onChange} title={"Caracteristicas y servicios*"} placeholder="Wifi, Cafe, Snacks, TV, Aire Acond.." value={value}/>,
+      element: ({ onChange, value }) => <Services.Input onChange={onChange} title={"Caracteristicas y servicios*"} placeholder="Wifi, Cafe, Snacks, TV, Aire Acond.." value={value} name="services"/>,
       name: "services"
     },
     { 
-      element: ({ onChange, value }) => <Observation.Input onChange={onChange} title="Observaciones" placeholder="Horarios disponibles, particularidades, etc." value={value}/>,
+      element: ({ onChange, value }) => <Observation.Input onChange={onChange} title="Observaciones" name="observations" placeholder="Horarios disponibles, particularidades, etc." value={value}/>,
       name: "observations"
     },
 
@@ -140,7 +140,7 @@ const EditSpace = ({ navigation, uploadFiles, editSpace, user, fetchLocalidades,
     ],
 
     {
-      element: ({ onChange, value }) => <Rules.Input onChange={onChange} title="Reglas de Convivencia" placeholder="Aclaraciones, límites, reglas del lugar..." value={value}/>,
+      element: ({ onChange, value }) => <Rules.Input onChange={onChange} title="Reglas de Convivencia" name="rules" placeholder="Aclaraciones, límites, reglas del lugar..." value={value}/>,
       name:"rules"
     },
     {

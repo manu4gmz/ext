@@ -41,9 +41,9 @@ export default ([modal, setModal],[value, setValue]) => {
 
     },
 
-      Input: ({title, placeholder, onChange})=>{
+      Input: ({title, placeholder, onChange,name})=>{
         useEffect(()=>{
-          onChange(form => ({...form, [title]:{value, error:null}}))
+          onChange(form => ({...form, [name || title]:{value, error:null, edited:true}}))
         },[value])
 
         return <View>

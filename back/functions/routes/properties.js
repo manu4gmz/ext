@@ -140,10 +140,10 @@ router.put('/update/:id', (req, res, next) => {
   if (error) return res.status(400).send({msg: error});
   if (!body.uid) return res.status(401).send({msg: "Error: tenes que pasar el uid del usuario"});
 
-  db.collection('users').doc(body.uid).get()
+  db.collection("properties").doc(id).get()
     .then(data => data.data())
-    .then(user => {
-      if (user && user.properties && user.properties.includes(req.params.id)) 
+    .then(space => {
+      if (space && space.userId == body.uid) 
         return db.collection('properties').doc(id).update(update)
           .then(()=>{
             res.status(200).send({msg:"Editado correctamente"})
@@ -157,6 +157,62 @@ router.put('/update/:id', (req, res, next) => {
 
 })
 
+router.get('/comments/:id', (req, res, next) => {
+  const id = req.params.id
+  db.collection("properties").doc(id).get()
+    .then(data => {
+      let comentarios = data.data().comments;
+      let habilitado = true
+
+      //Si el user ya comento va a devolverle un se
+      comentarios.forEach(elemento => {
+        if (elemento.userId === req.body.userId) habilitado = false
+      })
+
+      // let habilitado = comments.forEach(elemento => {
+      //   let resultado = true;
+      //   if (elemento.userId === req.body.userId) {
+      //     resultado =  false
+      //   }
+      //   return resultado
+      // })
+
+      res.status(200)
+        .json({ comentarios, habilitado })
+    })
+    .catch(next)
+})
+
+router.put('/comments/:id', (req, res, next) => {
+
+  const id = req.params.id
+
+  db.collection("properties").doc(id).get()
+    .then(data => {
+      let comentarios = data.data().comments;
+
+      //que no se pueda pedir un put si un comment con ese userId existe
+      // comentarios.forEach(elemento => {
+      //   if (elemento.userId === req.body.userId) res.sendStatus(400)
+      // })
+
+      let newComment = {
+        "userId": req.body.userId,
+        "comment": req.body.comment,
+        "rating": req.body.rating,
+        "habilitado": true
+      }
+
+      comentarios.push(newComment)
+
+      db.collection('properties').doc(id).update({ comments: comentarios })
+        .then(data => {
+          res.sendStatus(201)
+        })
+    })
+    // .then(() => { db.collection('properties').doc(id).update({ comments: comments }) })
+    .catch(next)
+})
 
 
 router.get("/:page", (req, res) => {

@@ -40,7 +40,9 @@ function useInput({title, name, placeholder, validation, index, element}, form, 
           title: (title) => <StyledTitles>{title.split("#")[0]}{title.split("#")[1] ? <SmallText>{title.split("#")[1]}</SmallText> : null}{title.split("#")[2] || null}</StyledTitles>,
           value: (form[name] || "").value,
           onChange: name ? (value,error=null)=>{
-            setForm(typeof value == "function" ? value : form => ({...form, [name]:{value, error, edited: true }}))
+
+            if (typeof value == "function") setForm(value);
+            else setForm(form => ({...form, [name]:{value, error, edited: true }}));
           } : setForm,
           index
         })

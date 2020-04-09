@@ -17,11 +17,11 @@ import Loading from "../components/Loading";
 
 
 function indexes(index, total) {
-    let indexes = [];
-    let start = index-2 < 1 ? 1 : index-2;
-    if (total-4 >= 1 && start+3 >= total) start = total-4;
-    for (let i = start; i < start+5 && i <= total; i++) indexes.push(i);
-    return indexes;
+  let indexes = [];
+  let start = index - 2 < 1 ? 1 : index - 2;
+  if (total - 4 >= 1 && start + 3 >= total) start = total - 4;
+  for (let i = start; i < start + 5 && i <= total; i++) indexes.push(i);
+  return indexes;
 }
 
 
@@ -32,30 +32,30 @@ function mapBadge(filter, remove) {
     t: val => val,
     p: val => val == "ciudad autónoma de buenos aires" ? "capital federal" : val,
     n: val => val,
-    min: val => "Minimo $"+val,
-    max: val => "Máximo $"+val,
+    min: val => "Minimo $" + val,
+    max: val => "Máximo $" + val,
 
   }
 
-   return Object.keys(filter).map((key,i) => {
+  return Object.keys(filter).map((key, i) => {
     const text = map[key](filter[key])
 
     return (
       <Badge key={i}>
-        <TouchableOpacity onPress={()=>remove(key)}>
-          <BadgeRemove  source={require("../../public/icons/cross.png")}/>
+        <TouchableOpacity onPress={() => remove(key)}>
+          <BadgeRemove source={require("../../public/icons/cross.png")} />
         </TouchableOpacity>
         <BadgeText>{text}</BadgeText>
       </Badge>
     )
-   })
+  })
 
 }
 
-export default ({ allSpaces, navigation, total, pages,user, setIndex, scrollView, index, sendId,favorites,favs, filter, removeFilter, loading }) => {
+export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments }) => {
   const [mode, setMode] = useState(false);
 
-  console.log("favs",favs)
+  console.log("favs", favs)
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -69,124 +69,130 @@ export default ({ allSpaces, navigation, total, pages,user, setIndex, scrollView
         </ListaYMapa>
 
         <BadgeWrapper>
-        {
-          mapBadge(filter, removeFilter)
-        }
+          {
+            mapBadge(filter, removeFilter)
+          }
         </BadgeWrapper>
         {
-          !loading ? 
-          <TextoBusquedas>
-            {`${total} espacios encontrados`}
-          </TextoBusquedas> : null
+          !loading ?
+            <TextoBusquedas>
+              {`${total} espacios encontrados`}
+            </TextoBusquedas> : null
         }
       </View>
 
       {
-        !loading ? 
+        !loading ?
 
-      <Wrapper>
-        { allSpaces.map((espacio, index) => {
-          return (
+          <Wrapper>
+            {allSpaces.map((espacio, index) => {
+              return (
                 <FadeInView key={index} order={index}>
-            <StyledView
-              
-              style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
-            >
-              <View>
-                <View style={{
-                  width: '100%',
-                  height: (espacio.photos || []).length ? 250 : "auto",
-                  borderTopLeftRadius: 5,
-                  borderTopRightRadius: 5,
-                  overflow: "hidden"
-                }} >
-                  <Carousel images={espacio.photos || []} height={250}/>
-                  {espacio.verified ? (<Verified style={{ position: "absolute", bottom: 5, right: 2, zIndex: 9 }}>
-                    <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 40, height: 40 }} />
-                  </Verified>) : null}
-                </View>
-                <ViewInfo>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <TouchableOpacity
-                      style={{flex:1}}
-                      onPress={() => { return sendId(espacio.id) }}
-                    >
-                      <Titulo>{espacio.title}</Titulo>
-                      {espacio.province === 'ciudad autónoma de buenos aires'
-                        ? <Subtitulo>{`${espacio.neighborhood} - Capital Federal - ${espacio.size}mtr2`}</Subtitulo>
-                        : <Subtitulo>{`${espacio.neighborhood} - ${espacio.province} - ${espacio.size}mtr2`}</Subtitulo>
-                      }
-                      <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
-                        <Rating
-                          type='custom'
-                          ratingBackgroundColor='#c8c7c8'
-                          ratingCount={5}
-                          imageSize={15}
-                        />
-                      </View>
-                    </TouchableOpacity>
+                  <StyledView
 
-                    <TouchableOpacity onPress={()=>favorites(espacio.id,user.uid)}>
-                      <Image
-                        style={{ width: 30, height: 30, marginRight: 2 }}
-                        source={favs.includes(espacio.id)? (require("../../public/icons/corazon-ro.png")):(require("../../public/icons/corazon-ne.png"))}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={{ flexDirection: "row" }}
+                    style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
                   >
-                    <Precio>{`$${espacio.price}`}</Precio>
-                    <Text style={{ alignSelf: 'center' }}>por hora</Text>
-                  </View>
-                  <DoubleWraper>
-                    <Boton
-                      onPress={() => { return sendId(espacio.id) }}
-                      bg="#4A94EA"
-                      color="#F7F7F7"
-                      mr="5px"
-                    >Mas Info.
+                    <View>
+                      <View style={{
+                        width: '100%',
+                        height: (espacio.photos || []).length ? 250 : "auto",
+                        borderTopLeftRadius: 5,
+                        borderTopRightRadius: 5,
+                        overflow: "hidden"
+                      }} >
+                        <Carousel images={espacio.photos || []} height={250} />
+                        {espacio.verified ? (<Verified style={{ position: "absolute", bottom: 5, right: 2, zIndex: 9 }}>
+                          <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 40, height: 40 }} />
+                        </Verified>) : null}
+                      </View>
+                      <ViewInfo>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                          <TouchableOpacity
+                            style={{ flex: 1 }}
+                            onPress={() => { return sendId(espacio.id) }}
+                          >
+                            <Titulo>{espacio.title}</Titulo>
+                            {espacio.province === 'ciudad autónoma de buenos aires'
+                              ? <Subtitulo>{`${espacio.neighborhood} - Capital Federal - ${espacio.size}mtr2`}</Subtitulo>
+                              : <Subtitulo>{`${espacio.neighborhood} - ${espacio.province} - ${espacio.size}mtr2`}</Subtitulo>
+                            }
+                            <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
+                              <Rating
+                                type='custom'
+                                ratingBackgroundColor='#c8c7c8'
+                                ratingCount={5}
+                                imageSize={15}
+                              />
+                              <TouchableOpacity onPress={() => showComments(espacio.id)}>
+                                <Text
+                                  style={{ color: "grey", fontWeight: "bold", padding: 10 }}
+                                >{`${(espacio.comments || "").length || 0}  Ver comentarios`}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </TouchableOpacity>
+
+                          <TouchableOpacity onPress={() => favorites(espacio.id, user.uid)}>
+                            <Image
+                              style={{ width: 30, height: 30, marginRight: 2 }}
+                              source={favs.includes(espacio.id) ? (require("../../public/icons/corazon-ro.png")) : (require("../../public/icons/corazon-ne.png"))}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={{ flexDirection: "row" }}
+                        >
+                          <Precio>{`$${espacio.price}`}</Precio>
+                          <Text style={{ alignSelf: 'center' }}>por hora</Text>
+                        </View>
+                        <DoubleWraper>
+                          <Boton
+                            onPress={() => { return sendId(espacio.id) }}
+                            bg="#4A94EA"
+                            color="#F7F7F7"
+                            mr="5px"
+                          >Mas Info.
                   </Boton>
 
-                    <Boton
-                      onPress={() => Linking.openURL(`tel:${+541123561654}`)}
-                      bg="#F77171"
-                      color="#F7F7F7"
-                      ml="5px"
-                    >Contacto.
+                          <Boton
+                            onPress={() => Linking.openURL(`tel:${+541123561654}`)}
+                            bg="#F77171"
+                            color="#F7F7F7"
+                            ml="5px"
+                          >Contacto.
                   </Boton>
 
-                  </DoubleWraper>
-                </ViewInfo>
+                        </DoubleWraper>
+                      </ViewInfo>
 
-              </View>
-            </StyledView>
-            </FadeInView>
-          );
-        })}
-        <PaginationWrapper>
-          {
-            index > 1 ?
-            <TouchableOpacity onPress={()=>setIndex(index-1)}>
-              <PaginationText>Anterior</PaginationText>
-            </TouchableOpacity> : null
-          }
-          {
-            indexes(index,pages).map((i) => (
-              <TouchableOpacity key={i} onPress={()=>setIndex(i)}>
-                <PaginationText bold={(index==i)+""}>{i}</PaginationText>
-              </TouchableOpacity>
-            ))
-          }
-          {
-            index < pages ?
-            <TouchableOpacity onPress={()=>setIndex(index+1)}>
-              <PaginationText>Siguiente</PaginationText>
-            </TouchableOpacity> : null
-          }
-        </PaginationWrapper>
-      </Wrapper>
-      
-        : <Loading/>
+                    </View>
+                  </StyledView>
+                </FadeInView>
+              );
+            })}
+            <PaginationWrapper>
+              {
+                index > 1 ?
+                  <TouchableOpacity onPress={() => setIndex(index - 1)}>
+                    <PaginationText>Anterior</PaginationText>
+                  </TouchableOpacity> : null
+              }
+              {
+                indexes(index, pages).map((i) => (
+                  <TouchableOpacity key={i} onPress={() => setIndex(i)}>
+                    <PaginationText bold={(index == i) + ""}>{i}</PaginationText>
+                  </TouchableOpacity>
+                ))
+              }
+              {
+                index < pages ?
+                  <TouchableOpacity onPress={() => setIndex(index + 1)}>
+                    <PaginationText>Siguiente</PaginationText>
+                  </TouchableOpacity> : null
+              }
+            </PaginationWrapper>
+          </Wrapper>
+
+          : <Loading />
       }
     </ScrollView>
   );
@@ -210,8 +216,7 @@ const Wrapper = styled.View`
   padding: 0 8px;
   max-width: 500px;
 `
-const Thumbnail = styled.Image`
-`
+
 const ViewInfo = styled.View`
 padding: 18px;
 `
@@ -266,7 +271,7 @@ const PaginationText = styled.Text`
   font-size: 14px;
   color: #4082d1;
   padding: 10px;
-  font-weight: ${p=> p.bold=="true" ? 700 : 100};
+  font-weight: ${p => p.bold == "true" ? 700 : 100};
 `
 
 const Badge = styled.View`

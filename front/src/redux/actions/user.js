@@ -1,12 +1,18 @@
-import { LOGGED } from "../constants"
+import { LOGGED, USERPROPERTIES } from "../constants"
 import firebase from "../firebase";
 import axios from 'axios'
 
 const auth = firebase.auth();
+
 const setLoggedUser = (logged) => ({
 	type: LOGGED,
 	logged
 });
+
+const userProperties = (properties) => ({
+	type: USERPROPERTIES,
+	properties
+})
 
 export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	auth.onAuthStateChanged((user) => {
@@ -25,10 +31,15 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	});
 }
 
-export const fetchFav = (userId)=>{
+export const fetchFav = (userId) => {
 	return axios.get(`https://ext-api.web.app/api/users/favs/${userId}`)
-		.then((data)=> data)
-  }
+		.then((data) => data)
+}
+
+export const fetchProperties = (userId) => dispatch => {
+	return axios.get(`https://ext-api.web.app/api/properties/userSpaces/${userId}`)
+		.then(res => dispatch(userProperties(res.data)))
+}
 
 export const fetchUser = (userId)=>{
 	return axios.get(`https://ext-api.web.app/api/users/info/${userId}`)
