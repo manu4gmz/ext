@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ADD_PICTURE, REMOVE_PICTURE, SET_PICTURES } from "../constants"
+import { ADD_PICTURE, REMOVE_PICTURE } from "../constants"
 import firebase from "../firebase";
 import Bluebird from "bluebird";
 import { Alert } from "react-native";
@@ -20,7 +20,7 @@ export const uploadFiles = (files, propId = 1, progessCb) => (dispatch, getState
 			return fetch(file.uri)
 				.then(response => response.blob())
 				.then(blob => {
-					const ref = storage.ref(`/images/${uid}/${propId}/${(new Date()).getTime()}`);
+					const ref = storage.ref(`/images/${uid}/${propId}/photo_${i}`);
 					const uploadTask = ref.put(blob);
 
 					return new Promise((res, rej) => {
@@ -47,10 +47,6 @@ export const uploadFiles = (files, propId = 1, progessCb) => (dispatch, getState
 		})
 }
 
-export const setPictures = (pictures) => ({
-	type: SET_PICTURES,
-	pictures
-})
 
 export const addPicture = (picture) => ({
 	type: ADD_PICTURE,

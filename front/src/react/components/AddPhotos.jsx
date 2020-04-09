@@ -2,21 +2,17 @@ import React, { Component, useEffect, useState } from 'react';
 import { Text, Image, View, ScrollView, TouchableOpacity } from 'react-native'
 import styled from "styled-components/native";
 import { connect } from "react-redux";
-import { removePicture, addPicture, setPictures } from "../../redux/actions/files";
+import { removePicture, addPicture } from "../../redux/actions/files";
 
-const AddPhotos = ({ title, text, navigation, onChange, removePicture, addPicture, pictures, images, setPictures, name }) => {
+const AddPhotos = ({ title, text, navigation, onChange, removePicture, addPicture, pictures }) => {
 
 	useEffect(() => {
-		name ? onChange(pictures) : onChange((form) => ({ ...form, [text]: { value: pictures, error: null } }))
+		onChange((form) => ({ ...form, [text]: { value: pictures, error: null } }))
 	}, [pictures])
 
 	useEffect(() => {
-		console.log("PALABRAS QUE LE LEGAN AL ADDPHOTOS JEJE\n",images);
-		setPictures(images ? images.map(uri => ({uri})) : [])
-
-
-		window.addPhoto = (pic) => addPicture({uri:pic})
-	}, [images])
+		window.addPhoto = (pic) => addPicture(pic);
+	}, [])
 
 	return <View>
 		{title(text)}
@@ -47,7 +43,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-	setPictures: (...params) => dispatch(setPictures(...params)),
 	removePicture: (...params) => dispatch(removePicture(...params)),
 	addPicture: (...params) => dispatch(addPicture(...params))
 })

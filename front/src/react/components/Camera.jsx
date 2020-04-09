@@ -85,10 +85,8 @@ function CameraView({ route, navigation, addPicture, pictures }) {
           <PreviewRow horizontal={true} width={width} offset={widthOffset}>
             {
               pictures.map((pic, i) =>
-                <TouchableOpacity key={i} onPress={() => setPreview(a => a == 80 ? 240 : 80)} >
-                  <PicWrapper width={pic.width || 200} height={pic.height || 200} preview={preview}>
-                    <PreviewImage source={{ uri: pic.uri }} />
-                  </PicWrapper>
+                <TouchableOpacity onPress={() => setPreview(a => a == 80 ? 240 : 80)} >
+                  <PreviewImage key={i} source={{ uri: pic.uri }} width={pic.width} height={pic.height} preview={preview} />
                 </TouchableOpacity>
               )
             }
@@ -204,18 +202,13 @@ const PreviewRow = styled.ScrollView`
   margin-bottom: 10px;
 `
 
-const PicWrapper = styled.View`
+const PreviewImage = styled.Image`
   height: ${p => p.preview}px;
   width: ${p => p.preview * (p.width / p.height)}px;
   border: solid 2px white;
-  overflow: hidden;
   border-radius: 2px;
   margin-left: 5px;
 
-`
-
-const PreviewImage = styled.Image`
-  flex:1;
 `
 
 const Back = styled.TouchableOpacity`

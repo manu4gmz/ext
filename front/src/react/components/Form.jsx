@@ -67,8 +67,8 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
   )
 }
 
-const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, values }) => {
-  const [form, setForm] = useState(values || {});
+const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm }) => {
+  const [form, setForm] = useState({});
 
   const checkRequired = ([name, , val]) => {
     if (typeof name == "string" && name[name.length - 1] == "*") return name;
@@ -95,15 +95,12 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, value
   }
 
   useEffect(() => {
-      console.log(form)
+    saveForm(form)
   }, [form])
-/*
+
   useEffect(() => {
-    if (values) {
-      setForm(values)
-      console.log(form)
-    }
-  }, [])*/
+    setForm(initialForm)
+  }, [])
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>

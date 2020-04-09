@@ -41,9 +41,9 @@ export default ([modal, setModal],[value, setValue]) => {
 
     },
 
-      Input: ({title, placeholder, onChange,name})=>{
+      Input: ({title, placeholder, onChange})=>{
         useEffect(()=>{
-          onChange(form => ({...form, [name || title]:{value, error:null, edited:true}}))
+          onChange(form => ({...form, [title]:{value, error:null}}))
         },[value])
 
         return <View>
@@ -55,10 +55,7 @@ export default ([modal, setModal],[value, setValue]) => {
               {value ?  value : (placeholder || "Selecciona aquí")}
             </StyledInput>
         </View>
-      },
-
-      setValue: (val) => setValue(val)
-
+      }
 
   }
 }

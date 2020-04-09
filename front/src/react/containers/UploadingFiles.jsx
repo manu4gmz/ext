@@ -2,25 +2,23 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground, Alert } from 'react-native'
 import styled from "styled-components/native"
 import { uploadFiles } from "../../redux/actions/files";
-import { addPhotos, editSpace } from '../../redux/actions/spaces'
+import { addPhotos } from '../../redux/actions/spaces'
 import { connect } from "react-redux";
 
-const LoadingView = ({ navigation, route, uploadFiles, editSpace }) => {
+const LoadingView = ({ navigation, route, uploadFiles, addPhotos }) => {
 	const [progress, setProgress] = useState(0);
 
 	useEffect(() => {
-		const { images, propertyId, otherImages } = route.params;
+		const { images, propertyId } = route.params;
 
 		uploadFiles(images, propertyId, setProgress)
 			.then((files) => {
-				const totalImages = (otherImages || []).concat(files);
-				editSpace(propertyId, { photos: totalImages, visible: true })
+				addPhotos(propertyId, { photos: files, visible: true })
 					.then(() => {
 						navigation.navigate("SingleView", { propertyId })
 					})
 			})
 			.catch(err => {
-				console.log("ERRROR AL UPLODEAR IMAGEN \n ------------------------\n",err)
 				navigation.navigate("SpaceForm")
 			})
 
@@ -45,7 +43,7 @@ const LoadingView = ({ navigation, route, uploadFiles, editSpace }) => {
 
 const mapDispatchToProps = (dispatch) => ({
 	uploadFiles: (...params) => dispatch(uploadFiles(...params)),
-	editSpace: (id, body) => dispatch(editSpace(id, body))
+	addPhotos: (id, body) => dispatch(addPhotos(id, body))
 
 })
 

@@ -25,7 +25,6 @@ import { Avatar, Title, Caption } from "react-native-paper";
 import Camera from "../components/Camera";
 import UploadingFiles from "../containers/UploadingFiles";
 import Profile from "./Profile";
-import EditSpace from "../containers/EditSpace"
 import CommentsContainer from "../containers/CommentsContainer";
 import UserProperties from './UserPorperties'
 
@@ -206,16 +205,7 @@ function Root() {
         component={CommentsContainer}
         options={{ header: () => null }, titulo("Comments")}
       />
-      <Stack.Screen 
-        name="UserProperties" 
-        component={UserProperties} 
-        options={{ header: () => null }, titulo("Mis Propiedades")}
-      />
-      <Stack.Screen 
-        name="EditSpace" 
-        component={EditSpace} 
-        options={{ header: () => null }, titulo("Editar espacio")}
-      />
+      <Stack.Screen name="UserProperties" component={UserProperties} options={{ header: () => null }, titulo("Mis Propiedades")} />
       <Stack.Screen
         name="Favorites"
         component={Favorites}

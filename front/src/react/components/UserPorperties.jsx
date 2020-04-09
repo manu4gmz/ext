@@ -19,11 +19,7 @@ const UserProperties = ({ propiedades, fetchProperties, user, navigation }) => {
     fetchProperties(user.uid)
   }, [])
 
-  
-  
-
   const sendId = (id) => navigation.navigate(`SingleView`, { propertyId: id })
-  const editSpace = (id) => navigation.push("EditSpace", {propertyId: id})
 
   return (
     <ScrollView>
@@ -85,7 +81,6 @@ const UserProperties = ({ propiedades, fetchProperties, user, navigation }) => {
                   </Boton>
 
                     <Boton
-                      onPress={()=>editSpace(espacio.id)}
                       bg="#F77171"
                       color="#F7F7F7"
                       mr="5px"

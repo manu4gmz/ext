@@ -6,7 +6,7 @@ import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 import Picker from "../components/Picker";
 import TextPrompt from "../components/TextPrompt";
 import styled from "styled-components/native";
-import Typeahead from "../components/GenericTypeahead";
+import Typeahead from "../components/Typeahead";
 import { fetchProvincias, fetchLocalidades } from "../../redux/actions/locations";
 import { connect } from 'react-redux'
 import Form from '../components/Form';
@@ -16,12 +16,13 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     const Province = Picker(useState(false), useState(""));
     const Type = Picker(useState(false), useState(""));
     const Services = Picker(useState(false), useState([]));
-
+    const Observation = TextPrompt(useState(false), useState(""));
+    const Rules = TextPrompt(useState(false), useState(""));
     const [Verificado, setVerificado] = useState(false);
     const [ConFotos, setConFotos] = useState(false);
 
-    //const [provincias, setProvincias] = useState([])
-    //const [localidades, setLocalidades] = useState([])
+    const [provincias, setProvincias] = useState([])
+    const [localidades, setLocalidades] = useState([])
     const [province, setProvince] = useState({})
 
     const onSubmit = function (form) {
@@ -40,12 +41,15 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     }
 
     function getProvincias(val) {
-        return fetchProvincias(val)
+        fetchProvincias(val)
+            .then(data => setProvincias(data))
     }
 
     function getLocalidades(val) {
-        return fetchLocalidades(val, province.id)
-
+        fetchLocalidades(val, province.id)
+            .then(data => {
+                setLocalidades(data);
+            })
     }
 
     const handleSelectProvince = (val) => {
@@ -62,6 +66,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
             getOptions={getProvincias}
             handleSelect={handleSelectProvince}
             onChange={onChange}
+            options={provincias}
         />, 12],
         //[({ onChange }) => <Province.Input onChange={onChange} title={"Provincia*"} placeholder="Buenos Aires, Cordoba, San Luis.." />],
         [({ onChange }) => province.id ? <Typeahead
@@ -70,6 +75,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
             getOptions={getLocalidades}
             handleSelect={() => null}
             onChange={onChange}
+            options={localidades}
         /> : null, 11],
 
         //["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
