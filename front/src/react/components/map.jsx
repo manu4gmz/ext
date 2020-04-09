@@ -4,7 +4,6 @@ import MapView, { Marker, Callout } from 'react-native-maps';
 import { connect } from 'react-redux'
 
 const Mapa = ({ allSpaces, navigation }) => {
-    console.log(navigation, "ACA ESTA EL NAVIGATION")
     function sendId(id) {
         //fetchId(id)
         return navigation.navigate(`SingleView`, { propertyId: id })
@@ -13,8 +12,8 @@ const Mapa = ({ allSpaces, navigation }) => {
         <View>
             <MapView style={styles.mapAll}
                 initialRegion={{
-                    latitude: -34.574983,
-                    longitude: -58.428226,
+                    latitude: Number(allSpaces.properties[0].location[1].lat),
+                    longitude: Number(allSpaces.properties[0].location[1].lon),
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}>
@@ -26,9 +25,13 @@ const Mapa = ({ allSpaces, navigation }) => {
 
                             coordinate={
                                 {
-                                    latitude: Number(properties.location[1].lat),
-                                    longitude: Number(properties.location[1].lon),
+                                    latitude: Number(properties.location[0].lat),
+                                    longitude: Number(properties.location[0].lng),
                                 }} >
+                            <Image
+                                style={{ width: 40, height: 50 }}
+                                source={require("../../public/icons/icono_marker_az.png")}
+                            />
                             <Callout  >
                                 <View style={styles.customCallOut}>
 

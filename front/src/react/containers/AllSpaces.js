@@ -41,6 +41,10 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
     return navigation.navigate(`SingleView`, { propertyId: id })
   }
 
+  function showComments(id) {
+    return navigation.navigate(`Comments`, { propertyId: id })
+  }
+
   function favorites(id, userId) {
     if (favs && favs.includes(id)) return;
     setFavs(favs => [...(favs || []), id])
@@ -88,6 +92,7 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
       filter={route.params.query}
       removeFilter={removeFilter}
       loading={loading}
+      showComments={showComments}
     />
   );
 }

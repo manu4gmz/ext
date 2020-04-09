@@ -54,9 +54,10 @@ function mapBadge(filter, remove) {
 
 }
 
-export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading }) => {
+export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments }) => {
   const [mode, setMode] = useState(false);
 
+  console.log("favs", favs)
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -124,6 +125,12 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
                                 ratingCount={5}
                                 imageSize={15}
                               />
+                              <TouchableOpacity onPress={() => showComments(espacio.id)}>
+                                <Text
+                                  style={{ color: "grey", fontWeight: "bold", padding: 10 }}
+                                >{`${(espacio.comments || "").length || 0}  Ver comentarios`}
+                                </Text>
+                              </TouchableOpacity>
                             </View>
                           </TouchableOpacity>
 
@@ -211,8 +218,7 @@ const Wrapper = styled.View`
   padding: 0 8px;
   max-width: 500px;
 `
-const Thumbnail = styled.Image`
-`
+
 const ViewInfo = styled.View`
 padding: 18px;
 `

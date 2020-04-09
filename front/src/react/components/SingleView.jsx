@@ -70,23 +70,25 @@ export default ({ space, loading, allSpaces, navigation }) => {
 
                             <MapView style={styles.mapStyle}
                                 initialRegion={{
-                                    latitude: Number(space.location[1].lat),
-                                    longitude: Number(space.location[1].lon),
+                                    latitude: Number(space.location[0].lat),
+                                    longitude: Number(space.location[0].lng),
                                     latitudeDelta: 0.0922,
                                     longitudeDelta: 0.0421,
                                 }}>
-
                                 <Marker
                                     coordinate={
                                         {
-                                            latitude: Number(space.location[1].lat),
-                                            longitude: Number(space.location[1].lon),
+                                            latitude: Number(space.location[0].lat),
+                                            longitude: Number(space.location[0].lng),
                                         }}>
-
+                                    <Image
+                                        style={{ width: 40, height: 50 }}
+                                        source={require("../../public/icons/icono_marker_az.png")}
+                                    />
                                     <Callout>
                                         <View style={styles.customCallOut}>
-                                            <Text>{space.title}</Text>
-                                            <Text>{`Precio por hs: ${space.price}$`}</Text>
+                                            <Text style={styles.textoCallOut}>{space.title}</Text>
+                                            <Text style={{ padding: 2, color: "#FFF" }}>{space.description}</Text>
                                         </View>
 
                                     </Callout>
@@ -243,9 +245,16 @@ const styles = StyleSheet.create({
         height: 800
     },
     customCallOut: {
-        height: 80,
-        width: 120,
-        backgroundColor: "#F7F7F7"
+        width: 250,
+        backgroundColor: "#F77171",
+
+
+
+    },
+    textoCallOut: {
+        padding: 2,
+        textAlign: "center",
+        color: "#FFF"
 
 
     }
