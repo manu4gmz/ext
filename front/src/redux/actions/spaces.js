@@ -60,7 +60,7 @@ export const addPhotos = (id, body) => dispatch => {
 export const editSpace = (propertyId, body) => (dispatch, getState) => {
     console.log(getState().user.logged.uid)
     return axios
-        .put(`http://localhost:5000/ext-api/us-central1/app/api/properties/update/${propertyId}`, {
+        .put(`https://ext-api.web.app/api/properties/update/${propertyId}`, {
             ...body,
             uid: getState().user.logged.uid
         })
