@@ -68,7 +68,7 @@ const Profile = ({ user, userInfo, navigation }) => {
 
             <Wrapper>
               <IconPrincipal source={require('../../public/icons/icon-prueba.png')} />
-              <TextLink>Favoritos</TextLink>
+              <TextLink onPress={() => navigation.navigate('Root', { screen: "Favorites" })} >Favoritos</TextLink>
             </Wrapper>
           </Container>
 
