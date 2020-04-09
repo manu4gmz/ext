@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView, Linking } from 'react-native'
+import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollView, Linking, TouchableOpacity } from 'react-native'
 import styled from "styled-components/native";
 import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
 import Boton from './../ui/Button'
@@ -7,7 +7,7 @@ import qs from 'qs'
 import Carousel from "../components/Carousel";
 import Loading from "../components/Loading";
 
-export default ({ space, loading }) => {
+export default ({ space, loading, edit, handleEdit }) => {
     const [mode, setMode] = useState(false)
     if (loading) return <Loading/>;
   
@@ -49,6 +49,11 @@ export default ({ space, loading }) => {
 
             <Container>
                 <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
+                {edit ? 
+                    <TouchableOpacity onPress={handleEdit}>
+                        <Text>Editar</Text>
+                    </TouchableOpacity> : null
+                }
                 <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
                 <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
                 <TextoComun>{space.description}</TextoComun>
@@ -66,7 +71,7 @@ export default ({ space, loading }) => {
                             sendEmail(
                                 'robertovilla2102@gmail.com',
                                 'Greeting!',
-                                'I think you are fucked up how many letters you get.')
+                                'I think you are <nice word> up how many letters you get.')
                                 .then(() => {
                                     console.log('Our email successful');
                                 })}

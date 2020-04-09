@@ -49,8 +49,25 @@ export const addSpace = (body) => dispatch => {
 
 export const addPhotos = (id, body) => dispatch => {
     return axios
-        .put(`https://ext-api.web.app/api/properties/update/${id}`, body)
+        .put(`https://ext-api.web.app/api/properties/update/${id}`, {
+            ...body,
+            uid: getState().user.logged.uid
+        })
         .then(res => res.data)
+        .catch(error => console.log(error))
+}
+
+export const editSpace = (propertyId, body) => (dispatch, getState) => {
+    console.log(getState().user.logged.uid)
+    return axios
+        .put(`http://localhost:5000/ext-api/us-central1/app/api/properties/update/${propertyId}`, {
+            ...body,
+            uid: getState().user.logged.uid
+        })
+        .then(res => {
+            console.log("Todo bien al parecer...")
+            return propertyId
+        })
         .catch(error => console.log(error))
 }
 

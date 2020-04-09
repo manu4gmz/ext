@@ -26,20 +26,24 @@ const validate = debounce((value, name, validation, setForm) => {
   let error = null;
   if (typeof validation == "function") error = validation(value);
   if (name[name.length - 1] == "*") error = !value ? "Completa este campo" : error;
-  setForm((form) => ({ ...form, [name]: { value: form[name].value, error } }))
+  setForm((form) => ({ ...form, [name]: { value: form[name].value, error, edited: true } }))
 }, 1000);
 
-function useInput(name, placeholder, validation, form, setForm, index, inline = 1) {
+function useInput({title, name, placeholder, validation, index, element}, form, setForm, inline) {
 
   const field = form[name] || {};
 
-  if (typeof name == "function") return (
-    <View key={index} style={{ zIndex: placeholder || 1 }}>
+  if (typeof element == "function") return (
+    <View key={index} style={{ zIndex: 40-index }}>
       {
-        name({
-          title: (name) => <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>,
-          value: field.value || "",
-          onChange: setForm,
+        element({
+          title: (title) => <StyledTitles>{title.split("#")[0]}{title.split("#")[1] ? <SmallText>{title.split("#")[1]}</SmallText> : null}{title.split("#")[2] || null}</StyledTitles>,
+          value: (form[name] || "").value,
+          onChange: name ? (value,error=null)=>{
+
+            if (typeof value == "function") setForm(value);
+            else setForm(form => ({...form, [name]:{value, error, edited: true }}));
+          } : setForm,
           index
         })
       }
@@ -47,13 +51,13 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
   )
 
   const onChangeText = (val) => {
-    setForm((form) => ({ ...form, [name]: { value: val, error: field.error } }))
+    setForm((form) => ({ ...form, [name]: { value: val, error: field.error, edited: true } }))
     validate(val, name, validation, setForm);
   }
 
   return (
     <View key={index} style={{ width: (100 / inline - (inline == 1 ? 0 : 2)) + "%" }}>
-      <StyledTitles>{name.split("#")[0]}{name.split("#")[1] ? <SmallText>{name.split("#")[1]}</SmallText> : null}{name.split("#")[2] || null}</StyledTitles>
+      <StyledTitles>{title.split("#")[0]}{title.split("#")[1] ? <SmallText>{title.split("#")[1]}</SmallText> : null}{title.split("#")[2] || null}</StyledTitles>
       <StyledInput
         error={field.error ? "true" : "false"}
         value={field.value || ""}
@@ -68,11 +72,14 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
 }
 
 const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, values }) => {
-  const [form, setForm] = useState(values || {});
+  
+  const parsedInitialState = values ? Object.keys(values).reduce((acc, key) => ({...acc, [key]: { value: values[key], error:null }}),{}) : {};
+  
+  const [form, setForm] = useState(parsedInitialState);
 
-  const checkRequired = ([name, , val]) => {
-    if (typeof name == "string" && name[name.length - 1] == "*") return name;
-    else if (typeof val == "function" && !val("")) return name;
+  const checkRequired = ({title, name, validation}) => {
+    if (typeof title == "string" && title[title.length - 1] == "*") return name;
+    else if (typeof validation == "function" && !validation("")) return name;
     return false;
   }
 
@@ -83,27 +90,25 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, value
 
   function mapFields(fields, inline) {
     return fields.map((field, i) =>
-      typeof field[0] == "object" ?
+      field[0] ?
         <DoubleWraper key={i}>
           {
             mapFields(field, field.length)
           }
         </DoubleWraper>
         :
-        useInput(field[0], field[1], field[2], form, setForm, i, inline)
+        useInput({...field, index: i}, form, setForm, inline)
     )
   }
 
   useEffect(() => {
-      console.log(form)
+    console.log(form)
   }, [form])
-/*
-  useEffect(() => {
-    if (values) {
-      setForm(values)
-      console.log(form)
-    }
-  }, [])*/
+
+  function handleSubmit () {
+    const data = Object.keys(form).reduce((acc, key) => key && form[key].edited ? ({ ...acc, [key]:form[key].value }) : acc,{})
+    onSubmit(data);
+  }
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
@@ -134,7 +139,7 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, value
                   mt={"6px"} mb={"60px"} ml={"5px"} mr={"5px"}
                   bg="#4A94EA"
                   color="#F7F7F7"
-                  onPress={() => onSubmit(form)}
+                  onPress={handleSubmit}
                 >{sendText || "Enviar"}</Button>
                 :
                 <DisabledButton
