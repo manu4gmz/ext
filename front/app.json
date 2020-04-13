@@ -1,9 +1,9 @@
 {
-  "name": "front",
-  "displayName": "front",
+  "name": "Espacio por tiempo",
+  "displayName": "Espacio por tiempo",
   "expo": {
-    "name": "front",
-    "slug": "front",
+    "name": "Espacio por tiempo",
+    "slug": "espacio-por-tiempo",
     "privacy": "unlisted",
     "sdkVersion": "36.0.0",
     "version": "1.0.0",
