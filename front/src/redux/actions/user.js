@@ -19,11 +19,11 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 		if (user) {
 			//const userObj = { email: user.email, uid: user.uid, properties: user.properties };
 			fetchUser(user.uid)
-			.then(userData => {
-				const loggedUser = {...userData, uid: user.uid};
-				dispatch(setLoggedUser(loggedUser))
-				if (ifLogged && typeof ifLogged == "function") ifLogged(loggedUser);
-			})
+				.then(userData => {
+					const loggedUser = { ...userData, uid: user.uid };
+					dispatch(setLoggedUser(loggedUser))
+					if (ifLogged && typeof ifLogged == "function") ifLogged(loggedUser);
+				})
 		} else {
 			dispatch(setLoggedUser({}))
 			if (ifNotlogged && typeof ifNotlogged == "function") ifNotlogged();
@@ -41,10 +41,10 @@ export const fetchProperties = (userId) => dispatch => {
 		.then(res => dispatch(userProperties(res.data)))
 }
 
-export const fetchUser = (userId)=>{
+export const fetchUser = (userId) => {
 	return axios.get(`https://ext-api.web.app/api/users/info/${userId}`)
-		.then((data)=> data.data)
-  }
+		.then((data) => data.data)
+}
 
 
 export const logUser = (email, password) => dispatch => {
@@ -105,7 +105,7 @@ export const getUserGoogle = () => dispatch => {
 			const email = error.email;
 			const credential = error.credential;
 			console.log(errorCode, errorMessage, email, credential);
-		});
+		})
 }
 
 //desloguearse de cualquier forma
