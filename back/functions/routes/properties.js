@@ -199,6 +199,7 @@ router.put('/comments/:id', (req, res, next) => {
       let newComment = {
         "userId": req.body.userId,
         "comment": req.body.comment,
+        "nombre": req.body.nombre,
         "habilitado": true
       }
 
@@ -212,7 +213,6 @@ router.put('/comments/:id', (req, res, next) => {
     // .then(() => { db.collection('properties').doc(id).update({ comments: comments }) })
     .catch(next)
 })
-
 
 router.get("/:page", (req, res) => {
   const pagesCount = 10;
