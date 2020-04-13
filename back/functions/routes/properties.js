@@ -71,8 +71,11 @@ router.get("/singleSpace/:id", (req, res, next) => {
   const id = req.params.id
   db.collection("properties").doc(id).get()
     .then((data) => {
+      const final = data.data()
+      final.id = data.id
       res.status(200)
-        .json(data.data())
+      
+        .json(final)
     })
     .catch(next)
 })

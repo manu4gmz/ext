@@ -11,98 +11,107 @@ import styled from "styled-components/native";
 import Carousel from "../components/Carousel";
 import { Rating } from 'react-native-ratings';
 import Boton from './../ui/Button'
-
+import FadeInView from "../components/FadeInView";
+import Loading from "../components/Loading";
 import { fetchProperties } from '../../redux/actions/user'
 
 const UserProperties = ({ propiedades, fetchProperties, user, navigation }) => {
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     fetchProperties(user.uid)
+      .then(() => setLoading(false))
   }, [])
 
-  
-  
 
   const sendId = (id) => navigation.navigate(`SingleView`, { propertyId: id })
-  const editSpace = (id) => navigation.push("EditSpace", {propertyId: id})
+  const editSpace = (id) => navigation.push("EditSpace", { propertyId: id })
 
   return (
     <ScrollView>
-      <Wrapper>
-        {propiedades.map((espacio, index) => {
-          return (
-            <StyledView
-              key={index}
-              style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
-            >
-              <View>
-                <View style={{
-                  width: '100%',
-                  height: (espacio.photos || []).length ? 250 : "auto",
-                  borderTopLeftRadius: 5,
-                  borderTopRightRadius: 5,
-                  overflow: "hidden"
-                }} >
-                  <Carousel images={espacio.photos || []} height={250} />
-                  {espacio.verified ? (<Verified style={{ position: "absolute", bottom: 5, right: 2, zIndex: 9 }}>
-                    <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 40, height: 40 }} />
-                  </Verified>) : null}
-                </View>
-                <ViewInfo>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <TouchableOpacity
-                      style={{ flex: 1 }}
-                      onPress={() => { return sendId(espacio.id) }}
-                    >
-                      <Titulo>{espacio.title}</Titulo>
-                      {espacio.province === 'ciudad autónoma de buenos aires'
-                        ? <Subtitulo>{`${espacio.neighborhood} - Capital Federal - ${espacio.size}mtr2`}</Subtitulo>
-                        : <Subtitulo>{`${espacio.neighborhood} - ${espacio.province} - ${espacio.size}mtr2`}</Subtitulo>
-                      }
-                      <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
-                        <Rating
-                          type='custom'
-                          ratingBackgroundColor='#c8c7c8'
-                          ratingCount={5}
-                          imageSize={15}
-                        />
+      {!loading
+        ?
+        <Wrapper>
+          {propiedades.map((espacio, index) => {
+            return (
+              <FadeInView key={index} order={index}>
+                <StyledView
+                  key={index}
+                  style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
+                >
+                  <View>
+                    <View style={{
+                      width: '100%',
+                      height: (espacio.photos || []).length ? 250 : "auto",
+                      borderTopLeftRadius: 5,
+                      borderTopRightRadius: 5,
+                      overflow: "hidden"
+                    }} >
+                      <Carousel images={espacio.photos || []} height={250} />
+                      {espacio.verified ? (<Verified style={{ position: "absolute", bottom: 5, right: 2, zIndex: 9 }}>
+                        <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 40, height: 40 }} />
+                      </Verified>) : null}
+                    </View>
+                    <ViewInfo>
+                      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <TouchableOpacity
+                          style={{ flex: 1 }}
+                          onPress={() => { return sendId(espacio.id) }}
+                        >
+                          <Titulo>{espacio.title}</Titulo>
+                          {espacio.province === 'ciudad autónoma de buenos aires'
+                            ? <Subtitulo>{`${espacio.neighborhood} - Capital Federal - ${espacio.size}mtr2`}</Subtitulo>
+                            : <Subtitulo>{`${espacio.neighborhood} - ${espacio.province} - ${espacio.size}mtr2`}</Subtitulo>
+                          }
+                          <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
+                            <Rating
+                              type='custom'
+                              ratingBackgroundColor='#c8c7c8'
+                              ratingCount={5}
+                              imageSize={15}
+                            />
+                          </View>
+                        </TouchableOpacity>
+
                       </View>
-                    </TouchableOpacity>
+                      <View style={{ flexDirection: "row" }}
+                      >
+                        <Precio>{`$${espacio.price}`}</Precio>
+                        <Text style={{ alignSelf: 'center' }}>por hora</Text>
+                      </View>
 
-                  </View>
-                  <View style={{ flexDirection: "row" }}
-                  >
-                    <Precio>{`$${espacio.price}`}</Precio>
-                    <Text style={{ alignSelf: 'center' }}>por hora</Text>
-                  </View>
-
-                  <DoubleWraper>
-                    <Boton
-                      onPress={() => { return sendId(espacio.id) }}
-                      bg="#4A94EA"
-                      color="#F7F7F7"
-                      mr="5px"
-                    >Mas Info.
+                      <DoubleWraper>
+                        <Boton
+                          onPress={() => { return sendId(espacio.id) }}
+                          bg="#4A94EA"
+                          color="#F7F7F7"
+                          mr="5px"
+                        >Mas Info.
                   </Boton>
 
-                    <Boton
-                      onPress={()=>editSpace(espacio.id)}
-                      bg="#F77171"
-                      color="#F7F7F7"
-                      mr="5px"
-                    >Editar
+                        <Boton
+                          onPress={() => editSpace(espacio.id)}
+                          bg="#F77171"
+                          color="#F7F7F7"
+                          mr="5px"
+                        >Editar
                   </Boton>
-                  </DoubleWraper>
+                      </DoubleWraper>
 
-                </ViewInfo>
+                    </ViewInfo>
 
-              </View>
-            </StyledView>
-          );
-        })}
-      </Wrapper>
+                  </View>
+                </StyledView>
+              </FadeInView>
+            );
+          })}
+        </Wrapper>
+        : <Loading />
+      }
     </ScrollView>
   )
 }
+
 
 const mapStateToProps = (state, ownProps) => {
   return {
