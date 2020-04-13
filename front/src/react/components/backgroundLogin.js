@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground } from 'react-native'
 import styled from "styled-components/native"
 
-export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, error, OnsubmitGoogle, navigation }) => {
+export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, error, OnsubmitGoogle, OnsubmitFacebook, navigation }) => {
     return (
         <ImageBackground
             style={styles.fondo}
@@ -39,6 +39,9 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                     : <BotonIngresar bg="#000144" color="#E9E9E9" onPress={Onsubmit}>Ingresar</BotonIngresar>
                 }
                 <BotonGoogle title=" Inquilino" onPress={OnsubmitGoogle}>Ingresar con google</BotonGoogle>
+
+                <BotonGoogle title=" Inquilino" onPress={OnsubmitFacebook}>Ingresar con facebook</BotonGoogle>
+
                 <RememberPassword>¿Olvido su contraseña? </RememberPassword>
                 <BotonRegistrarse
                     title="Registrarse"
