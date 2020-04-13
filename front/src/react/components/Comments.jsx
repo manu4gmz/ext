@@ -72,13 +72,7 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser
           )
           :
           <View style={{ backgroundColor: "#D9D5C8", padding: 12 }}>
-            <Text> Para comentar esta publicacion
-              <TouchableOpacity onPress={() => redirectToLogin()}>
-                <span style={{ textDecoration: 'underline' }}>
-                  ingresá a tu cuenta
-                </span>
-              </TouchableOpacity>
-            </Text>
+            <Text>Para comentar esta publicacion <TouchableOpacity onPress={() => redirectToLogin()}><span style={{ textDecoration: 'underline' }}>ingresá a tu cuenta</span></TouchableOpacity></Text>
           </View>
         }
       </View>
