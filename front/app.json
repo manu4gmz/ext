@@ -1,10 +1,10 @@
 {
-  "name": "front",
-  "displayName": "front",
+  "name": "ext",
+  "displayName": "Espacio por hora",
   "expo": {
-    "name": "front",
-    "slug": "front",
-    "privacy": "unlisted",
+    "name": "ext",
+    "slug": "espacio por hora",
+    "privacy": "public",
     "sdkVersion": "36.0.0",
     "version": "1.0.0",
     "entryPoint": "node_modules/expo/AppEntry.js",
@@ -12,6 +12,10 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "web": { "barStyle": "black-translucent" },
+    "orientation": "portrait",
+    "icon": "./src/public/icons/logotipo-az.png"
   }
 }
+
