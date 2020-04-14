@@ -61,7 +61,7 @@ const OwnerForm = ({ navigation, user, offerUser }) => {
     setDireccion(e)
   }
 
-  const onSubmit = function (form) {
+  const onSubmit = function () {
     const data = {
       firstName: nombre,
       lastName: apellido,
@@ -70,9 +70,9 @@ const OwnerForm = ({ navigation, user, offerUser }) => {
       address: direccion
     }
     console.log(data)
-    /* offerUser(user.id, data)
-       .then((data) => (navigation.push("SpaceForm")
-       ))*/
+    offerUser(user.id, data)
+      .then((data) => (navigation.push("SpaceForm")
+      ))
   }
 
   return (
