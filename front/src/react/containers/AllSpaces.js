@@ -33,7 +33,6 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
 
 
   function setIndex(i) {
-    console.log(i);
     navigation.push("AllSpaces", { query: route.params.query, index: i })
   }
 
@@ -76,7 +75,6 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
 
 
 
-
   }
 
 
@@ -105,7 +103,6 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
 
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(state)
   return {
 
     allSpaces: state.spaces.allSpaces,

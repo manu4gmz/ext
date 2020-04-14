@@ -1,10 +1,10 @@
 {
-  "name": "ext",
-  "displayName": "Espacio por hora",
+  "name": "Espacio por tiempo",
+  "displayName": "Espacio por tiempo",
   "expo": {
-    "name": "ext",
-    "slug": "espacio por hora",
-    "privacy": "public",
+    "name": "Espacio por tiempo",
+    "slug": "espacio-por-tiempo",
+    "privacy": "unlisted",
     "sdkVersion": "36.0.0",
     "version": "1.0.0",
     "entryPoint": "node_modules/expo/AppEntry.js",

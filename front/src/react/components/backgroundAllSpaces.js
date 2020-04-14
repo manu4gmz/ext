@@ -14,6 +14,8 @@ import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
+import Map from "../components/map"
+
 
 
 function indexes(index, total) {
