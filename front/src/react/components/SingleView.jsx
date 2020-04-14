@@ -6,7 +6,7 @@ import Boton from './../ui/Button'
 import qs from 'qs'
 import Carousel from "../components/Carousel";
 import Loading from "../components/Loading";
-import MapView, { Marker, Callout } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import Map from "../components/map"
 
 export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => {
@@ -75,7 +75,7 @@ export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => 
                                     latitudeDelta: 0.0922,
                                     longitudeDelta: 0.0421,
                                 }}>
-                                <Marker
+                                <MapView.Marker
                                     coordinate={
                                         {
                                             latitude: Number(space.location[0].lat),
@@ -85,6 +85,8 @@ export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => 
                                         style={{ width: 40, height: 50 }}
                                         source={require("../../public/icons/icono_marker_az.png")}
                                     />
+                                    {/*
+
                                     <Callout>
                                         <View style={styles.customCallOut}>
                                             <Text style={styles.textoCallOut}>{space.title}</Text>
@@ -92,7 +94,10 @@ export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => 
                                         </View>
 
                                     </Callout>
-                                </Marker>
+
+*/}
+
+                                </MapView.Marker>
 
 
 

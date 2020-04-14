@@ -137,7 +137,14 @@ router.put("/favs/:id", (req, res, next) => {
 router.put("/ownerForm/:id", (req, res, next) => {
 
   const id = req.params.id
-  db.collection("users").doc(id).update(req.body)
+  db.collection("users").doc(id).update(
+    {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email,
+      address: req.body.address
+    })
     .then((data) => {
       res.sendStatus(201)
 
