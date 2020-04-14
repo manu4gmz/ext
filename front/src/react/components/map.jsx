@@ -11,10 +11,12 @@ import styled from 'styled-components/native';
 const Mapa = ({ allSpaces, navigation, centroide }) => {
     const [callout, setCallout] = useState(false);
     const [calloutSpace, setCalloutSpace] = useState({});
-    const mapRef = useRef(null);
 
+    
     const [fadeAnim] = useState(new Animated.Value(0))
-
+    
+    const markers = allSpaces.properties.filter(p => p.location && p.location[0] && p.location[0].lat);
+    
 	useEffect(()=>{
 		Animated.timing(fadeAnim,{
 			toValue: +callout,
@@ -48,9 +50,11 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
     function sendId(id) {
         //fetchId(id)
         return navigation.navigate(`SingleView`, { propertyId: id })
-      }
+    }
+
     return (
-        <View>
+        <View
+        style={{overflow:"hidden"}}>
             <MapView style={styles.mapAll}
                 initialRegion={{
                     latitude: centroide.lat || -34.579304,
@@ -60,14 +64,19 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
                 }}
                 onPress={handleMapPress}
             >
-                {allSpaces.properties.filter(p => p.location && p.location[0] && p.location[0].lat).map((property, index) => {
-                    console.log(property.location[0].lat, property.location[0].lng)
+                {markers.map((property, index) => {
                     return (
 
                         <MapView.Marker
+                            draggable
                             key={index}
-                            
-                            onPress={(e)=>handleMarkerPress(e, property)}
+                            identifier={property.id}
+                            onPress={(e)=>{
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleMarkerPress(e, property);
+
+                            }}
                             coordinate={
                                 {
                                     latitude: Number(property.location[0].lat),
@@ -155,8 +164,8 @@ const CalloutWrapper = styled.View`
     padding: 10px 20px;
 `
 
-const mapStateToProps = (state) => ({
-    centroide: state.spaces.centroide
+const mapStateToProps = (state, props) => ({
+    centroide: props.centroide || state.spaces.centroide
 })
 
 export default connect(mapStateToProps, null)(Mapa);
@@ -193,7 +202,10 @@ const styles = StyleSheet.create({
     mapAll: {
         marginTop: 2,
         maxWidth: 500,
-        height: 600
+        height: 600,
+        margin: "auto",
+        width: "100%",
+        overflow: "hidden",
     },
     callOutContainer: {
         height: 150,

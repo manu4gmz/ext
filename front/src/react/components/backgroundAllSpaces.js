@@ -14,7 +14,7 @@ import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
-import Map from "../components/map"
+import Map from "../components/map";
 
 
 
@@ -86,7 +86,7 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
       {
         !loading ?
 
-          <Wrapper>
+          !mode ? <Wrapper>
             {allSpaces.map((espacio, index) => {
               return (
                 <FadeInView key={index} order={index}>
@@ -193,6 +193,8 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
               }
             </PaginationWrapper>
           </Wrapper>
+          :
+          <Map navigation={navigation} allSpaces={{properties:allSpaces}}></Map>
 
           : <Loading />
       }

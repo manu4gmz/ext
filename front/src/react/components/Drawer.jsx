@@ -135,7 +135,7 @@ function Root() {
     }
   });
   return (
-    <Stack.Navigator inicialRouteName="Home">
+    <Stack.Navigator inicialRouteName="Home" screenOptions={{ gestureEnabled: false }}>
       <Stack.Screen
         name="Home"
         component={HomePage}

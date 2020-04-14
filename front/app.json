@@ -15,7 +15,7 @@
     ],
     "web": { "barStyle": "black-translucent" },
     "orientation": "portrait",
-    "icon": "./src/public/icons/logotipo-az.png"
+    "icon": "./src/public/images/logotipo-az.png"
   }
 }
 

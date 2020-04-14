@@ -130,7 +130,11 @@ export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => 
 
                         </Container>
                     </View>
-                ) : (<Map navigation={navigation} allSpaces={allSpaces}></Map>)}
+                ) 
+                : 
+                <Map navigation={navigation} allSpaces={allSpaces} centroide={space.location[0]}></Map>
+                
+                }
 
 
             </View>
@@ -149,6 +153,7 @@ const Lista = styled.Text`
     justify-content:center;
     text-align:center;
     padding-bottom: 5px;
+    color: ${props => (props.active == "true" ? "white" : "#000144")};
     border-color:${(props) => props.active == "true" ? "white" : "#4A94EA"};
     border-bottom-width:3px;
     width:50%;
@@ -240,7 +245,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     mapStyle: {
-        width: 500,
+        width: "100%",
+        overflow: "hidden",
         height: 350
     },
     mapAll: {
