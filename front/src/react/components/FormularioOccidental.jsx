@@ -1,46 +1,60 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { View } from 'react-native'
+import { View, Button } from 'react-native'
 
-export default ({ onSubmit, numberValidation, addressValidation, mailValidation, user }) => {
-  console.log(user);
-
+export default ({ onSubmit, user, handlerNombre, handlerApellido, handlerTel, handlerEmail, handlerDireccion, nombre, apellido, tel, direccion, email, submit
+}) => {
+  console.log(user, "Aca esta el usuario ")
   return (
     <View style={{ zIndex: 1 }}>
       <View>
         <StyledTitles>Nombre*</StyledTitles>
         <StyledInput
-          defaultValue={user.firstName}
+          value={nombre}
+          onChangeText={(nombre) => (handlerNombre(nombre))}
         />
       </View>
 
       <View>
         <StyledTitles>Apellido*</StyledTitles>
         <StyledInput
-          defaultValue={user.lastName}
+          value={apellido}
+          onChangeText={(apellido) => (handlerApellido(apellido))}
+
         />
+
       </View>
 
       <View>
         <StyledTitles>Teléfono Móvil de contacto*</StyledTitles>
         <StyledInput
+          value={tel}
           placeholder={"+549-11-5555-5555"}
+          onChangeText={(tel) => (handlerTel(tel))}
+
         />
       </View>
 
       <View>
         <StyledTitles>Mail*</StyledTitles>
         <StyledInput
+          value={email}
           defaultValue={user.email}
+          onChangeText={(email) => (handlerEmail(email))}
+
         />
       </View>
 
       <View>
         <StyledTitles>Dirección*</StyledTitles>
         <StyledInput
+          value={direccion}
           placeholder={"Av. Congreso 1332"}
+          onChangeText={(dir) => (handlerDireccion(dir))}
+
         />
       </View>
+      <Button onPress={submit} title="enviar" />
     </View>
   )
 }
