@@ -7,11 +7,11 @@ import Picker from "../components/Picker";
 import TextPrompt from "../components/TextPrompt";
 import styled from "styled-components/native";
 import Typeahead from "../components/GenericTypeahead";
-import { fetchProvincias, fetchLocalidades } from "../../redux/actions/locations";
+import { fetchProvincias, fetchLocalidades, setCentroide } from "../../redux/actions/locations";
 import { connect } from 'react-redux'
 import Form from '../components/Form';
 
-const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias }) => {
+const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias, setCentroide }) => {
 
     const Province = Picker(useState(false), useState(""));
     const Type = Picker(useState(false), useState(""));
@@ -23,6 +23,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     //const [provincias, setProvincias] = useState([])
     //const [localidades, setLocalidades] = useState([])
     const [province, setProvince] = useState({})
+    const [localidad, setLocalidad] = useState({})
 
     const onSubmit = function (form) {
         let filter = {};
@@ -34,9 +35,12 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         if (Verificado) filter.v = Verificado;
         if (ConFotos) filter.photos = ConFotos;
 
+        console.log(province, localidad)
+        if (localidad && localidad.coordenadas) setCentroide(localidad.coordenadas);
+        else if (province && province.coordenadas) setCentroide(province.coordenadas);
+        else setCentroide();
 
-
-        navigation.navigate("AllSpaces", { query: filter, index:1 })
+        navigation.navigate("AllSpaces", { query: filter, index: 1 })
     }
 
     function getProvincias(val) {
@@ -45,14 +49,26 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
 
     function getLocalidades(val) {
         return fetchLocalidades(val, province.id)
-
+        /*    .then(data => {
+                const body = data.map((elemento) => {
+                    return { label: elemento.label, id: elemento.id }
+                })
+                setLocalidades(body);
+            })*/
     }
 
+    //  function getLocalidades(val) {
+    //fetchLocalidades(val, province.id)
+    //.then(data => setLocalidades(data))}
+
     const handleSelectProvince = (val) => {
-        if (!val) {
-            return setProvince({})
-        }
+        if (!val) return setProvince({});
         setProvince(val);
+    }
+    
+    const handleSelectLocalidad = (val) => {
+        if (!val) return setLocalidad({});
+        setLocalidad(val);
     }
 
     const fields = [
@@ -68,7 +84,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
             title="Barrio"
             placeholder="Flores, Saavedra.."
             getOptions={getLocalidades}
-            handleSelect={() => null}
+            handleSelect={handleSelectLocalidad}
             onChange={onChange}
         /> : null, 11],
 
@@ -80,11 +96,11 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         ],
         [({ onChange }) => <CheckBoxWrapper>
             <CheckBox onPress={() => (setVerificado(!Verificado))}>
-                <Check><Dot active={Verificado+""}/></Check>
+                <Check><Dot active={Verificado + ""} /></Check>
                 <CheckLabel>Verificados</CheckLabel>
             </CheckBox>
             <CheckBox onPress={() => (setConFotos(!ConFotos))}>
-                <Check><Dot active={ConFotos+""}/></Check>
+                <Check><Dot active={ConFotos + ""} /></Check>
                 <CheckLabel>Con fotos</CheckLabel>
             </CheckBox>
         </CheckBoxWrapper>
@@ -115,6 +131,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
 const mapDispatchToProps = (dispatch, ownProps) => ({
     fetchProvincias: (val) => dispatch(fetchProvincias(val)),
     fetchLocalidades: (val, id) => dispatch(fetchLocalidades(val, id)),
+    setCentroide: (cen) => dispatch(setCentroide(cen))
 })
 export default connect(null, mapDispatchToProps)(SerchSpace)
 
@@ -136,7 +153,7 @@ const Dot = styled.Text`
   height: 12px;
   width: 12px;
   align-self: center;
-  background-color: ${p=>p.active == "true" ? "#2cca31" : "#d9d5c8"};
+  background-color: ${p => p.active == "true" ? "#2cca31" : "#d9d5c8"};
   border-radius: 40px;
 `
 const CheckLabel = styled.Text`

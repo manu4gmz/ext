@@ -6,11 +6,13 @@ import Boton from './../ui/Button'
 import qs from 'qs'
 import Carousel from "../components/Carousel";
 import Loading from "../components/Loading";
+import MapView from 'react-native-maps';
+import Map from "../components/map"
 
-export default ({ space, loading, edit, handleEdit }) => {
+export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => {
     const [mode, setMode] = useState(false)
-    if (loading) return <Loading/>;
-  
+    if (loading) return <Loading />;
+
     async function sendEmail(to, subject, body, options = {}) {
         const { cc, bcc } = options;
 
@@ -39,60 +41,106 @@ export default ({ space, loading, edit, handleEdit }) => {
     }
 
 
+
     return (
         <ScrollView>
-            <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
-                <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
-                <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
+            <View>
+                <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
+                    <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
+                    <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
+                </View>
+                {!mode ? (
+                    <View>
+                        <Carousel images={space.photos || []} />
+
+
+                        <Container>
+                            <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
+                            <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
+                            <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
+                            <TextoComun>{space.description}</TextoComun>
+                            <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
+                            <ServicesWrapper>
+                                <Service source={require("../../public/icons/ducha-ne.png")} />
+                                <Service source={require("../../public/icons/toiletes-ne.png")} />
+                                <Service source={require("../../public/icons/wifi-ne.png")} />
+                            </ServicesWrapper>
+                            <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
+
+
+                            <MapView style={styles.mapStyle}
+                                initialRegion={{
+                                    latitude: Number(space.location[0].lat),
+                                    longitude: Number(space.location[0].lng),
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421,
+                                }}>
+                                <MapView.Marker
+                                    coordinate={
+                                        {
+                                            latitude: Number(space.location[0].lat),
+                                            longitude: Number(space.location[0].lng),
+                                        }}>
+                                    <Image
+                                        style={{ width: 40, height: 50 }}
+                                        source={require("../../public/icons/icono_marker_az.png")}
+                                    />
+                                    {/*
+
+                                    <Callout>
+                                        <View style={styles.customCallOut}>
+                                            <Text style={styles.textoCallOut}>{space.title}</Text>
+                                            <Text style={{ padding: 2, color: "#FFF" }}>{space.description}</Text>
+                                        </View>
+
+                                    </Callout>
+
+*/}
+
+                                </MapView.Marker>
+
+
+
+
+                            </MapView>
+                            <DoubleWraper>
+                                <Boton
+                                    onPress={() =>
+                                        sendEmail(
+                                            'robertovilla2102@gmail.com',
+                                            'Greeting!',
+                                            'I think you are fucked up how many letters you get.')
+                                            .then(() => {
+                                                console.log('Our email successful');
+                                            })}
+                                    bg="#4A94EA"
+                                    color="#F7F7F7"
+                                    mr="5px"
+                                >Email
+                  </Boton>
+
+                                <Boton
+                                    onPress={() => Linking.openURL(`tel:+54 9 ${'11 65342325'}`)}
+                                    bg="#F77171"
+                                    color="#F7F7F7"
+                                    ml="5px"
+                                >Llamar
+                  </Boton>
+                            </DoubleWraper>
+
+                        </Container>
+                    </View>
+                ) : (<Map navigation={navigation} allSpaces={allSpaces}></Map>)}
+
+
             </View>
-            <Carousel images={space.photos || []}/>
 
-            <Container>
-                <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
-                {edit ? 
-                    <TouchableOpacity onPress={handleEdit}>
-                        <Text>Editar</Text>
-                    </TouchableOpacity> : null
-                }
-                <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
-                <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
-                <TextoComun>{space.description}</TextoComun>
-                <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
-                <ServicesWrapper>
-                    <Service source={require("../../public/icons/ducha-ne.png")} />
-                    <Service source={require("../../public/icons/toiletes-ne.png")} />
-                    <Service source={require("../../public/icons/wifi-ne.png")} />
-                </ServicesWrapper>
-                <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
 
-                <DoubleWraper>
-                    <Boton
-                        onPress={() =>
-                            sendEmail(
-                                'robertovilla2102@gmail.com',
-                                'Greeting!',
-                                'I think you are <nice word> up how many letters you get.')
-                                .then(() => {
-                                    console.log('Our email successful');
-                                })}
-                        bg="#4A94EA"
-                        color="#F7F7F7"
-                        mr="5px"
-                    >Email
-                  </Boton>
-
-                    <Boton
-                        onPress={() => Linking.openURL(`tel:+54 9 ${'11 65342325'}`)}
-                        bg="#F77171"
-                        color="#F7F7F7"
-                        ml="5px"
-                    >Llamar
-                  </Boton>
-                </DoubleWraper>
-            </Container>
-        </ScrollView>
+        </ScrollView >
     )
 }
+
+
 
 
 const Lista = styled.Text`
@@ -132,8 +180,9 @@ const TextoCaracteristicas = styled.Text`
     font-size: 17px;
     margin-bottom: 20px;
     margin-top: 30px
-`
-//<Text onPress=() => (setToogleMap(!toogleMap))} style={styles.lista}>Mapa</Text>
+
+    `
+
 
 const ServicesWrapper = styled.View`
     flex-direction: row;
@@ -155,6 +204,11 @@ const Capitalize = styled.Text`
 const Container = styled.View`
     margin: 10px 12px;
 `
+const NoPhotos = styled.Text`
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 30px;`
 const DoubleWraper = styled.View`
 flex-direction: row;
 justify-content: space-between;
@@ -164,3 +218,48 @@ const Span = styled.Text`
     font-weight: 200;
     font-size: 12px;
 `
+
+const styles = StyleSheet.create({
+    fondo: {
+    },
+    imagenInputs: {
+        height: 45,
+        width: 45,
+        marginRight: 20,
+        marginBottom: 20,
+    },
+    contenedorIconos: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        borderBottomColor: "black",
+        borderBottomWidth: 1,
+        width: "70%",
+        alignItems: "center",
+        alignSelf: "center",
+        backgroundColor: "#FFFFFF"
+    },
+    mapStyle: {
+        width: 500,
+        height: 350
+    },
+    mapAll: {
+        marginTop: 2,
+        maxWidth: 500,
+        height: 800
+    },
+    customCallOut: {
+        width: 250,
+        backgroundColor: "#F77171",
+
+
+
+    },
+    textoCallOut: {
+        padding: 2,
+        textAlign: "center",
+        color: "#FFF"
+
+
+    }
+})

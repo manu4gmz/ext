@@ -128,7 +128,7 @@ router.put('/update/:id', (req, res, next) => {
     title: "string",
     floor: "string",
     apt: "string",
-    services:"object",
+    services: "object",
     photos: "object"
   }
 
@@ -140,25 +140,44 @@ router.put('/update/:id', (req, res, next) => {
     else error = `Error: ${key} no corresponde al tipo de dato "${dataTypes[key]}"`;
   })
 
-  if (error) return res.status(400).send({msg: error});
-  if (!body.uid) return res.status(401).send({msg: "Error: tenes que pasar el uid del usuario"});
+  if (error) return res.status(400).send({ msg: error });
+  if (!body.uid) return res.status(401).send({ msg: "Error: tenes que pasar el uid del usuario" });
 
   db.collection("properties").doc(id).get()
     .then(data => data.data())
     .then(space => {
-      if (space && space.userId == body.uid) 
+      if (space && space.userId == body.uid)
         return db.collection('properties').doc(id).update(update)
-          .then(()=>{
-            res.status(200).send({msg:"Editado correctamente"})
+          .then(() => {
+            res.status(200).send({ msg: "Editado correctamente" })
           })
-      return res.status(401).send({msg:"Error: flasheaste capo"});
-      
+      return res.status(401).send({ msg: "Error: flasheaste capo" });
+
     })
 
     .catch(next)
 
 
 })
+
+router.put('/coordenadas/:id', (req, res, next) => {
+  const id = req.params.id
+  const propiedad = req.body
+  console.log(req.body, "Este es el req body antes de updatear")
+  db.collection('properties').doc(id).get()
+    .then((data) => {
+
+      db.collection('properties').doc(id).update({ location: propiedad })
+        .then(data => {
+          res.sendStatus(200)
+        })
+
+    })
+
+    .catch(next)
+})
+
+
 
 router.get('/comments/:id', (req, res, next) => {
   const id = req.params.id
@@ -223,7 +242,7 @@ router.get("/:page", (req, res) => {
 
   const condicion = req.query
 
-  if (isNaN(req.params.page)) res.status(401).json({msg: "Page must be a number"})
+  if (isNaN(req.params.page)) res.status(401).json({ msg: "Page must be a number" })
 
   db.collection("properties").get()
     .then((data) => {
@@ -245,18 +264,18 @@ router.get("/:page", (req, res) => {
           && (!condicion.photos || (propiedad.photos || []).length > 0))
           && (propiedad.visible != false)
       })
+      return filtrado//.sort((a, b) => ((a.verified == true) && (b.verified == false)) ? -1 : 1)
 
-      return filtrado.sort((a,b)=> ((a.verified==true) && (b.verified==false)) ? -1 : 1);
     })
     .then(properties => {
-      const maxPage = Math.ceil(properties.length/pagesCount);
-      let page = ((req.params.page-1) % maxPage)+1;
+      const maxPage = Math.ceil(properties.length / pagesCount);
+      let page = ((req.params.page - 1) % maxPage) + 1;
       res.status(200).json({
-        properties: properties.slice(pagesCount*(page-1), pagesCount*(page-1) + pagesCount),
+        properties: properties.slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount),
         pages: maxPage,
         total: properties.length,
       })
-      
+
     })
 
     .catch(err => {
