@@ -110,7 +110,7 @@ export const getUserGoogle = () => dispatch => {
 			const email = error.email;
 			const credential = error.credential;
 			console.log(errorCode, errorMessage, email, credential);
-		});
+		})
 }
 
 //desloguearse de cualquier forma
@@ -123,5 +123,3 @@ export const LogoutUser = () => {
 			console.log(error)
 		})
 }
-
-

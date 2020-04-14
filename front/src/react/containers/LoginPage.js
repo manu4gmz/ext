@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import BackgroundLogin from '../components/backgroundLogin'
 import { logUser, getUserGoogle, getUser } from "../../redux/actions/user";
+import { loginFacebook } from "../../redux/actions/facebookLogin"
 
-const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
+const LoginPage = ({ logUser, navigation, getUserGoogle, getUser, loginFacebook }) => {
     const [Username, setUsername] = useState("")
     const [Password, setPassword] = useState("")
     const [error, setError] = useState({})
@@ -36,6 +37,14 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
             })
     }
 
+    const OnsubmitFacebook = function () {
+        loginFacebook()
+        /*             .then(err => {
+                        if (err) return setError(err.target ? err : {});
+                        navigation.navigate('Root', { screen: "Home" })
+                    }) */
+    }
+
     return (
         <BackgroundLogin
             Username={Username}
@@ -46,6 +55,7 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
             error={error}
             navigation={navigation}
             OnsubmitGoogle={OnsubmitGoogle}
+            OnsubmitFacebook={OnsubmitFacebook}
         >
         </BackgroundLogin>
     )
@@ -54,7 +64,8 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser }) => {
 const mapDispatchToProps = (dispatch, ownProps) => ({
     logUser: (...params) => dispatch(logUser(...params)),
     getUserGoogle: () => dispatch(getUserGoogle()),
-    getUser: (...cbs) => dispatch(getUser(...cbs))
+    getUser: (...cbs) => dispatch(getUser(...cbs)),
+    loginFacebook: () => dispatch(loginFacebook())
 })
 
 
