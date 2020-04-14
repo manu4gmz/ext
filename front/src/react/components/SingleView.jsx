@@ -11,8 +11,18 @@ import Map from "../components/map"
 
 export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => {
     const [mode, setMode] = useState(false)
-    if (loading) return <Loading />;
 
+    const [description, setDescription] = useState(false)
+    const [rules, setRules] = useState(false)
+    const [ubication, setUbication] = useState(false)
+
+    const spaceDescription = <Text>{space.description}</Text>
+    const spaceRules = <Text>{space.rules}</Text>
+    const spaceUbication = <Text>{space.street} {space.streetNumber}</Text>
+
+    console.log(space);
+
+    if (loading) return <Loading />;
     async function sendEmail(to, subject, body, options = {}) {
         const { cc, bcc } = options;
 
@@ -50,86 +60,110 @@ export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => 
                     <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
                 </View>
                 {!mode ? (
-                    <View>
-                        <Carousel images={space.photos || []} />
+                    <Wrapper>
+                        <StyledView
+                            style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
+                        >
+                            <View style={{
+                                width: '100%',
+                                height: (space.photos || []).length ? 250 : "auto",
+                                borderTopLeftRadius: 10,
+                                borderTopRightRadius: 10,
+                                overflow: "hidden"
+                            }} >
+                                <Carousel images={space.photos || []} />
+                            </View>
+                            <Container>
+                                <Titulo>{space.title}</Titulo>
+                                {space.province === 'ciudad autónoma de buenos aires'
+                                    ? <Subtitulo>{`${space.neighborhood} - Capital Federal - ${space.size}mtr2`}</Subtitulo>
+                                    : <Subtitulo>{`${space.neighborhood} - ${space.province} - ${space.size}mtr2`}</Subtitulo>
+                                }
+                                <View style={{ flexDirection: "row" }}>
+                                    <Precio>{`$${space.price}`}</Precio>
+                                    <Text style={{ alignSelf: 'center' }}>por hora</Text>
+                                </View>
+                                <Divider />
 
+                                <TextoComun>{space.description}</TextoComun>
 
-                        <Container>
-                            <TextoPrecio>${space.price} <Span>por hora</Span></TextoPrecio>
-                            <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
-                            <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
-                            <TextoComun>{space.description}</TextoComun>
-                            <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
-                            <ServicesWrapper>
-                                <Service source={require("../../public/icons/ducha-ne.png")} />
-                                <Service source={require("../../public/icons/toiletes-ne.png")} />
-                                <Service source={require("../../public/icons/wifi-ne.png")} />
-                            </ServicesWrapper>
-                            <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
+                                <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
+                                <ServicesWrapper>
+                                    <Service source={require("../../public/icons/ducha-ne.png")} />
+                                    <Service source={require("../../public/icons/toiletes-ne.png")} />
+                                    <Service source={require("../../public/icons/wifi-ne.png")} />
+                                </ServicesWrapper>
 
+                                <View>
+                                    <Titulo onPress={() => setDescription(!description)}>Descripción</Titulo>
+                                    {description ? spaceDescription : null}
+                                </View>
 
-                            <MapView style={styles.mapStyle}
-                                initialRegion={{
-                                    latitude: Number(space.location[0].lat),
-                                    longitude: Number(space.location[0].lng),
-                                    latitudeDelta: 0.0922,
-                                    longitudeDelta: 0.0421,
-                                }}>
-                                <MapView.Marker
-                                    coordinate={
-                                        {
-                                            latitude: Number(space.location[0].lat),
-                                            longitude: Number(space.location[0].lng),
-                                        }}>
-                                    <Image
-                                        style={{ width: 40, height: 50 }}
-                                        source={require("../../public/icons/icono_marker_az.png")}
-                                    />
-                                    {/*
+                                <View>
+                                    <Titulo onPress={() => setRules(!rules)}>Reglas</Titulo>
+                                    {rules ? spaceRules : null}
+                                </View>
 
-                                    <Callout>
-                                        <View style={styles.customCallOut}>
-                                            <Text style={styles.textoCallOut}>{space.title}</Text>
-                                            <Text style={{ padding: 2, color: "#FFF" }}>{space.description}</Text>
-                                        </View>
+                                <View>
+                                    <Titulo onPress={() => setUbication(!ubication)}>Ubicacion</Titulo>
+                                    {ubication ? spaceUbication : null}
+                                </View>
 
-                                    </Callout>
+                                <DoubleWraper>
+                                    <Boton
+                                        onPress={() =>
+                                            sendEmail(
+                                                'robertovilla2102@gmail.com',
+                                                'Greeting!',
+                                                'I think you are fucked up how many letters you get.')
+                                                .then(() => {
+                                                    console.log('Our email successful');
+                                                })}
+                                        bg="#4A94EA"
+                                        color="#F7F7F7"
+                                        mr="5px"
+                                    >Email
+                                    </Boton>
 
-*/}
+                                    <Boton
+                                        onPress={() => Linking.openURL(`tel:+54 9 ${'11 65342325'}`)}
+                                        bg="#F77171"
+                                        color="#F7F7F7"
+                                        ml="5px"
+                                    >Llamar
+                                    </Boton>
+                                </DoubleWraper>
+                            </Container>
+                            <View style={{
+                                width: '100%',
+                                height: "auto",
+                                borderBottomLeftRadius: 10,
+                                borderBottomRightRadius: 10,
+                                overflow: "hidden"
+                            }} >
+                                <MapView style={styles.mapStyle}
+                                    initialRegion={{
+                                        latitude: Number(space.location[0].lat),
+                                        longitude: Number(space.location[0].lng),
+                                        latitudeDelta: 0.0922,
+                                        longitudeDelta: 0.0421,
+                                    }}>
+                                    <MapView.Marker
+                                        coordinate={
+                                            {
+                                                latitude: Number(space.location[0].lat),
+                                                longitude: Number(space.location[0].lng),
+                                            }}>
+                                        <Image
+                                            style={{ width: 40, height: 50 }}
+                                            source={require("../../public/icons/icono_marker_az.png")}
+                                        />
+                                    </MapView.Marker>
+                                </MapView>
+                            </View>
 
-                                </MapView.Marker>
-
-
-
-
-                            </MapView>
-                            <DoubleWraper>
-                                <Boton
-                                    onPress={() =>
-                                        sendEmail(
-                                            'robertovilla2102@gmail.com',
-                                            'Greeting!',
-                                            'I think you are fucked up how many letters you get.')
-                                            .then(() => {
-                                                console.log('Our email successful');
-                                            })}
-                                    bg="#4A94EA"
-                                    color="#F7F7F7"
-                                    mr="5px"
-                                >Email
-                  </Boton>
-
-                                <Boton
-                                    onPress={() => Linking.openURL(`tel:+54 9 ${'11 65342325'}`)}
-                                    bg="#F77171"
-                                    color="#F7F7F7"
-                                    ml="5px"
-                                >Llamar
-                  </Boton>
-                            </DoubleWraper>
-
-                        </Container>
-                    </View>
+                        </StyledView>
+                    </Wrapper>
                 ) : (<Map navigation={navigation} allSpaces={allSpaces}></Map>)}
 
 
@@ -141,48 +175,61 @@ export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => 
 }
 
 
+const StyledView = styled.View`
+  margin: 10px 5px;
+  background-color: #F7F7F7;
+  padding : 0;
+  border-radius: 10px;
+`
+const Wrapper = styled.View`
+  flex: 1;
+  margin: 0px auto;
+  width: 100%;
+  padding: 0 8px;
+  max-width: 500px;
+`
+const Titulo = styled.Text`
+font-size: 17px;
+text-transform: capitalize;
+margin: 3px 3px 0px 3px;
+`
+const Subtitulo = styled.Text`
+font-size: 15px;
+font-weight: 100;
+text-transform: capitalize;
+color: grey;
+margin: 0 3px 0 3px;
+`
+const Precio = styled.Text`
+  font-size: 20px;
+  margin: 3px;
+`
+const Divider = styled.View`
+  height: 1px;
+  background-color: #b2b2b2;
+  margin: 10px 8px;
 
+`
 
 const Lista = styled.Text`
-    align-self: center;
-    font-size: 18px;
-    justify-content:center;
-    text-align:center;
-    padding-bottom: 5px;
-    border-color:${(props) => props.active == "true" ? "white" : "#4A94EA"};
-    border-bottom-width:3px;
-    width:50%;
-`
-const TextoBusquedas = styled.Text`
-    text-align: center;
-    margin-bottom: 1%;
-    background-color: #D9D5C8
-`
-const TextoPrecio = styled.Text`
-    font-size: 30px;
-    font-weight: 600;
+align-self: center;
+font-size: 18px;
+justify-content:center;
+text-align:center;
+padding-bottom: 5px;
+border-color:${(props) => props.active == "true" ? "white" : "#4A94EA"};
+border-bottom-width:3px;
+width:50%;
 `
 const TextoComun = styled.Text`
-    margin-top: 1%;
+font-size: 13px;
+font-weight: 600;
+margin: 0 3px 3px 3px;
 `
-const TextoNegro = styled.Text`
-    margin-top: 1%;
-    font-weight: 700;
-    font-size: 17px
-`
-const TextoGrande = styled.Text`
-    margin-top: 2%;
-    font-size: 17px;
-    margin-bottom: 20px
-`
+
 const TextoCaracteristicas = styled.Text`
-    margin-top: 2%;
     font-size: 17px;
-    margin-bottom: 20px;
-    margin-top: 30px
-
     `
-
 
 const ServicesWrapper = styled.View`
     flex-direction: row;
@@ -204,11 +251,7 @@ const Capitalize = styled.Text`
 const Container = styled.View`
     margin: 10px 12px;
 `
-const NoPhotos = styled.Text`
-    font-size: 15px;
-    font-weight: 500;
-    text-align: center;
-    margin-top: 30px;`
+
 const DoubleWraper = styled.View`
 flex-direction: row;
 justify-content: space-between;
@@ -240,7 +283,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF"
     },
     mapStyle: {
-        width: 500,
+        width: '100%',
         height: 350
     },
     mapAll: {
