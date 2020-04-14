@@ -6,7 +6,8 @@ import Button from "../ui/Button";
 import HomeTabBar from "../components/HomeTabBar";
 import Navbar from './Navbar';
 
-const backgroundHome = ({ navigation, userInfo }) => {
+const backgroundHome = ({ navigation, userInfo, user }) => {
+  console.log(user);
 
   return (
     <ImageBackground
@@ -25,14 +26,29 @@ const backgroundHome = ({ navigation, userInfo }) => {
             >Buscar</Button>
           </StyledView>
 
-          <StyledView>
-            <StyledTitle>Ofrecé tu Espacio</StyledTitle>
-            <StyledText>Ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
-            <Button
-              onPress={() => navigation.push('OwnerForm')}
-              bg="#F77171">Ofrecer
-            </Button>
-          </StyledView>
+          {user.email
+            ? (
+              <StyledView>
+                <StyledTitle>Ofrecé tu Espacio</StyledTitle>
+                <StyledText>Ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
+                <Button
+                  onPress={() => navigation.push('OwnerForm')}
+                  bg="#F77171">Ofrecer
+                </Button>
+              </StyledView>
+            )
+            : (
+              <StyledView>
+                <StyledTitle>Logueate y Publica un Espacio</StyledTitle>
+                <StyledText>Logueate y ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
+                <Button
+                  onPress={() => navigation.navigate('Login')}
+                  bg="#F77171">Ingresar
+                </Button>
+              </StyledView>
+            )
+
+          }
 
           <DoubleWraper>
             <Button
