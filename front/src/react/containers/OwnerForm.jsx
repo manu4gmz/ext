@@ -71,8 +71,7 @@ const OwnerForm = ({ navigation, user, offerUser }) => {
     }
     console.log(data)
     offerUser(user.id, data)
-      .then((data) => (navigation.push("SpaceForm")
-      ))
+      .then((data) => (navigation.push("SpaceForm")))
   }
 
   return (
