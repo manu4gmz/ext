@@ -145,9 +145,10 @@ router.put("/ownerForm/:id", (req, res, next) => {
       email: req.body.email,
       address: req.body.address
     })
-    .then((data) => {
-      res.sendStatus(201)
-
+    .then(async (data) => {
+      const usuario = await db.collection('users').doc(id).get()
+      const user = usuario.data()
+      res.status(201).json(user)
     })
     .catch(next)
 

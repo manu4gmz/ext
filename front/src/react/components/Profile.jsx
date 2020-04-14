@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 const Profile = ({ user, userInfo, navigation }) => {
   return (
     <ViewPrincipal>
-      {user.uid
+      {user.id
         ? <View style={{ marginTop: '18px' }}>
           <Wrapper>
             <ImgProfile source={require('../../public/icons/profile/icono_foto.png')} />
