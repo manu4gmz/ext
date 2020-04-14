@@ -27,8 +27,6 @@ export const fetchSpace = (spaceId) => dispatch => {
 
 export const fetchSpaces = (datosSpace, page = 1) => dispatch => {
     const queries = Object.keys(datosSpace).map(key => key + "=" + datosSpace[key]).join("&");
-
-    console.log(`https://ext-api.web.app/api/properties/${queries ? "spaces?" + queries : "allSpaces"}`)
     return axios.get(`https://ext-api.web.app/api/properties/${page}${queries ? "?" + queries : ""}`)
         .then(res => res.data)
         .then(data => {

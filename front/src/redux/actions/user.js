@@ -19,11 +19,11 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 		if (user) {
 			//const userObj = { email: user.email, uid: user.uid, properties: user.properties };
 			fetchUser(user.uid)
-			.then(userData => {
-				const loggedUser = {...userData, uid: user.uid};
-				dispatch(setLoggedUser(loggedUser))
-				if (ifLogged && typeof ifLogged == "function") ifLogged(loggedUser);
-			})
+				.then(userData => {
+					const loggedUser = { ...userData, uid: user.uid };
+					dispatch(setLoggedUser(loggedUser))
+					if (ifLogged && typeof ifLogged == "function") ifLogged(loggedUser);
+				})
 		} else {
 			dispatch(setLoggedUser({}))
 			if (ifNotlogged && typeof ifNotlogged == "function") ifNotlogged();
@@ -41,12 +41,17 @@ export const fetchProperties = (userId) => dispatch => {
 		.then(res => dispatch(userProperties(res.data)))
 }
 
-export const fetchUser = (userId)=>{
+export const fetchUser = (userId) => {
 	return axios.get(`https://ext-api.web.app/api/users/info/${userId}`)
-		.then((data)=> data.data)
-  }
+		.then((data) => data.data)
+}
 
+//Completar los datos en el form de ofrecer espacio
 
+export const offerUser = (userId, data) => dispatch => {
+	return axios.put(`https://ext-api.web.app/api/users/ownerForm/${userId}`, data)
+		.then((data) => data.data)
+}
 export const logUser = (email, password) => dispatch => {
 	return auth.signInWithEmailAndPassword(email, password)
 		.then(() => dispatch(getUser()))
@@ -118,3 +123,5 @@ export const LogoutUser = () => {
 			console.log(error)
 		})
 }
+
+

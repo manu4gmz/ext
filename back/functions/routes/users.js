@@ -86,45 +86,63 @@ router.put('/fav/:id', (req, res, next) => {
   const id = req.params.id
   const dataaa = req.body.id
   db.collection('users').doc(id).get()
-  .then((data)=>{
-    const newdata= data.data()
-    newdata.favoritos.push(dataaa)
-    const favfinal = [... new Set(newdata.favoritos)]
-    db.collection("users").doc(id).update({favoritos: favfinal})
-    
-  })
-  .then(() => {
-  res.sendStatus(201)
-  })
-  .catch(next)
-  })
+    .then((data) => {
+      const newdata = data.data()
+      newdata.favoritos.push(dataaa)
+      const favfinal = [... new Set(newdata.favoritos)]
+      db.collection("users").doc(id).update({ favoritos: favfinal })
+
+    })
+    .then(() => {
+      res.sendStatus(201)
+    })
+    .catch(next)
+})
 
 //*buscar favoritos
-router.get("/favs/:id",(req,res,next)=>{
+router.get("/favs/:id", (req, res, next) => {
   const id = req.params.id
   db.collection("users").doc(id).get()
-    .then((data)=>data.data())
-    .then((data)=>res.status(201).send(data))
+    .then((data) => data.data())
+    .then((data) => res.status(201).send(data))
     .catch(next)
 })
 
 //*eliminar favoritos
-router.delete("/favs/:id",(req,res,next)=>{
-  console.log("soy delete fav")
+router.put("/favs/:id", (req, res, next) => {
+
   const id = req.params.id
   const fav = req.body.id
+  console.log("fav", fav)
   db.collection("users").doc(id).get()
-  .then((data)=>{
-    const newdata= data.data()
-    const index = newdata.favoritos.indexOf(fav);
-    newdata.favoritos.splice(index, 1)
-    const favfinal = [... new Set(newdata.favoritos)]
-    db.collection("users").doc(id).update({favoritos: favfinal})
-  })
-  .then(() => {
-  res.sendStatus(201)
-  })
-  .catch(next)
-  })
+    .then((data) => {
+      // const newdata= data.data().favoritos.filter((favorito)=>{
+      //   return favorito !==fav })
+      const newdata = data.data()
+      console.log("new data 1", newdata)
+      const index = newdata.favoritos.indexOf(fav);
+      newdata.favoritos.splice(index, 1)
+      console.log("index", index)
+      const favfinal = [... new Set(newdata.favoritos)]
+      console.log("new data 2", newdata)
+      console.log("soy delete favfinal", favfinal)
+      db.collection("users").doc(id).update({ favoritos: favfinal })
+        .then(() => db.collection("users").doc(id).get()
+          .then((data) => data.data())
+          .then((data) => res.status(201).send(data))
+          .catch(next))
+    })
+})
 
+router.put("/ownerForm/:id", (req, res, next) => {
+
+  const id = req.params.id
+  db.collection("users").doc(id).update(req.body)
+    .then((data) => {
+      res.sendStatus(201)
+
+    })
+    .catch(next)
+
+})
 module.exports = router
