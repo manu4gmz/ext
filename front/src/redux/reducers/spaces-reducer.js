@@ -1,4 +1,4 @@
-import { SPACE, ALLSPACES, IDSPACE } from "../constants"
+import { SPACE, ALLSPACES, IDSPACE, ALLCOMMENTS } from "../constants"
 
 const initialCartState = {
     allSpaces: {
@@ -7,7 +7,8 @@ const initialCartState = {
         pages: 0,
     },
     singleSpace: {},
-    idSpace: ""
+    idSpace: "",
+    comments: [],
 }
 export default function (state = initialCartState, action) {
     switch (action.type) {
@@ -17,6 +18,8 @@ export default function (state = initialCartState, action) {
             return { ...state, idSpace: action.idSpace }
         case ALLSPACES:
             return { ...state, allSpaces: action.allSpaces }
+        case ALLCOMMENTS:
+            return { ...state, comments: action.comments }
         default:
             return state;
     }
