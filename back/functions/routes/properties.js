@@ -74,7 +74,7 @@ router.get("/singleSpace/:id", (req, res, next) => {
       const final = data.data()
       final.id = data.id
       res.status(200)
-      
+
         .json(final)
     })
     .catch(next)
@@ -108,7 +108,6 @@ router.delete("/deleteSpace/:id", (req, res, next) => {
 router.put('/update/:id', (req, res, next) => {
   const id = req.params.id
   const body = req.body
-  console.log(body)
   const update = {};
 
   const dataTypes = {
@@ -163,7 +162,6 @@ router.put('/update/:id', (req, res, next) => {
 router.put('/coordenadas/:id', (req, res, next) => {
   const id = req.params.id
   const propiedad = req.body
-  console.log(req.body, "Este es el req body antes de updatear")
   db.collection('properties').doc(id).get()
     .then((data) => {
 

@@ -95,15 +95,7 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, value
   }
 
   useEffect(() => {
-      console.log(form)
   }, [form])
-/*
-  useEffect(() => {
-    if (values) {
-      setForm(values)
-      console.log(form)
-    }
-  }, [])*/
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
