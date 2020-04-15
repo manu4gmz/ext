@@ -63,8 +63,7 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
 
   function removeFilter(key) {
     const { query } = route.params;
-    delete query[key]
-    console.log(key, route.params.query);
+    delete query[key];
 
     setLoading(true);
     fetchSpaces(query, 1)
@@ -82,6 +81,7 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
   return (
     <BackgroundAllSpaces
       allSpaces={spaces.properties}
+      markers={spaces.markers}
       favs={favs || []}
       user={user}
       total={spaces.total}

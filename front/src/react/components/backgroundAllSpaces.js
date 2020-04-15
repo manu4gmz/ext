@@ -54,10 +54,8 @@ function mapBadge(filter, remove) {
 
 }
 
-export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments }) => {
+export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments, markers }) => {
   const [mode, setMode] = useState(false);
-
-  console.log("favs", favs)
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -70,13 +68,16 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
           </Lista>
         </ListaYMapa>
 
-        <BadgeWrapper>
-          {
-            mapBadge(filter, removeFilter)
-          }
-        </BadgeWrapper>
         {
-          !loading ?
+          !mode ?
+          <BadgeWrapper>
+            {
+              mapBadge(filter, removeFilter)
+            }
+          </BadgeWrapper> : null
+        }
+        {
+          !loading && !mode ?
             <TextoBusquedas>
               {`${total} espacios encontrados`}
             </TextoBusquedas> : null
@@ -194,7 +195,7 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
             </PaginationWrapper>
           </Wrapper>
           :
-          <Map navigation={navigation} allSpaces={{properties:allSpaces}}></Map>
+          <Map navigation={navigation} allSpaces={{properties:allSpaces, markers}}></Map>
 
           : <Loading />
       }

@@ -40,7 +40,7 @@ export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => 
         return Linking.openURL(url);
     }
 
-
+    console.log("Single View en update")
 
     return (
         <ScrollView>

@@ -5,6 +5,7 @@ const initialCartState = {
         properties: [],
         total: 0,
         pages: 0,
+        markers: []
     },
     singleSpace: {},
     idSpace: "",

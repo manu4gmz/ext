@@ -22,7 +22,10 @@ const captureId = (idSpace) => ({
 
 export const fetchSpace = (spaceId) => dispatch => {
     return axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
-        .then(res => dispatch(singleSpace(res.data)))
+        .then(res => {
+            dispatch(singleSpace(res.data));
+            return res.data;
+        })
 }
 
 export const fetchSpaces = (datosSpace, page = 1) => dispatch => {

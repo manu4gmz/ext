@@ -7,25 +7,23 @@ import Carousel from "../components/Carousel";
 import Button from "../ui/Button";
 import { Animated, Easing } from "react-native";
 import styled from 'styled-components/native';
+import { fetchSpace } from "../../redux/actions/spaces";
+        
 
-const Mapa = ({ allSpaces, navigation, centroide }) => {
+
+const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
     const [callout, setCallout] = useState(false);
     const [calloutSpace, setCalloutSpace] = useState({});
 
-    
     const [fadeAnim] = useState(new Animated.Value(0))
-    
-    const markers = allSpaces.properties.filter(p => p.location && p.location[0] && p.location[0].lat);
     
 	useEffect(()=>{
 		Animated.timing(fadeAnim,{
 			toValue: +callout,
 			duration: 300,
         }).start();
-        window.toggle = ()=> setCallout(p=>!p);
-        window.set = (i)=>  setCalloutSpace( allSpaces.properties[i] || allSpaces.properties[0] );
-        
-       
+        //window.toggle = ()=> setCallout(p=>!p);
+        //window.set = (i)=>  setCalloutSpace( allSpaces.properties[i] || allSpaces.properties[0] );
 	},[callout])
 
     function sendId(id) {
@@ -34,71 +32,58 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
     }
     
     function handleMapPress() {
-        console.log(centroide);
         setCallout(false);
-        console.log(callout);
     }
     
-    function handleMarkerPress(e,space) {
-        e.stopPropagation()
-        setCallout(true);
-        setCalloutSpace(space)
-        console.log(callout);
-
+    function handleMarkerPress(e,id) {
+        e.stopPropagation();
+        e.preventDefault();
+        setCallout(false);
+        fetchSpace(id)
+        .then(space=> {
+            setCalloutSpace(space);
+            setCallout(true);
+        })
     }
 
     function sendId(id) {
         //fetchId(id)
         return navigation.navigate(`SingleView`, { propertyId: id })
     }
-
+    console.log("update")
+    //const [vw, vh] = [100, 120];
+    const { width: vw, height: vh } = Dimensions.get("window");
     return (
         <View
-        style={{overflow:"hidden"}}>
+        style={{ overflow:"hidden", height: vh - 102 }}>
             <MapView style={styles.mapAll}
                 initialRegion={{
-                    latitude: centroide.lat || -34.579304,
-                    longitude: centroide.lon || -58.471115,
+                    latitude: Number(centroide.lat) || -34.579304,
+                    longitude: Number(centroide.lon) || -58.471115,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}
-                onPress={handleMapPress}
-            >
-                {markers.map((property, index) => {
+                onPress={handleMapPress}>
+                {(allSpaces.markers || []).map((property, index) => {
                     return (
 
                         <MapView.Marker
-                            draggable
                             key={index}
                             identifier={property.id}
                             onPress={(e)=>{
-                                e.preventDefault();
-                                e.stopPropagation();
-                                handleMarkerPress(e, property);
+
+                                handleMarkerPress(e, property.id);
 
                             }}
                             coordinate={
                                 {
-                                    latitude: Number(property.location[0].lat),
-                                    longitude: Number(property.location[0].lng),
+                                    latitude: Number(property.lat),
+                                    longitude: Number(property.lng),
                                 }} >
                             <Image
-                                style={{ width: 34, height: 42 }}
+                                style={{ width: 40, height: 40 }}
                                 source={require("../../public/icons/icono_marker_az.png")}
                             />
-                            {/*
-                            <Callout  >
-                                <View style={styles.customCallOut}>
-
-                                    <Text style={styles.textoCallOut}>{property.title}</Text>
-                                    <Text style={{
-                                        padding: 2, color: "#FFF"
-                                    }}>{property.description}</Text>
-                                </View>
-
-                            </Callout>*/}
-
-
                         </MapView.Marker>
 
                     )
@@ -117,7 +102,7 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
                 height: 300,
                 width:"100%"
 		    }}>
-                <Callout>
+                <Callout width={vw}>
                     <View style={{
                         width: '100%',
                         height: (calloutSpace.photos || []).length ? 100 : 60,
@@ -133,7 +118,7 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
                     <Text>{calloutSpace.size}mtr2 - {calloutSpace.type}</Text>
                     <DoubleWraper>
                           <Button
-                            onPress={() => sendId(espacio.id) }
+                            onPress={() => sendId(calloutSpace.id) }
                             bg="#4A94EA"
                             color="#F7F7F7"
                             mr="5px"
@@ -155,6 +140,23 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
     )
 
 }
+
+const mapStateToProps = (state, props) => ({
+    centroide: props.centroide || state.spaces.centroide
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    fetchSpace: (spaceId) => dispatch(fetchSpace(spaceId))
+})
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(Mapa);
+
+const DoubleWraper = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 12px;
+`
+
 const CalloutTitle = styled.Text`
     font-size: 18px;
     margin-bottom: 10px;
@@ -164,26 +166,12 @@ const CalloutWrapper = styled.View`
     padding: 10px 20px;
 `
 
-const mapStateToProps = (state, props) => ({
-    centroide: props.centroide || state.spaces.centroide
-})
-
-export default connect(mapStateToProps, null)(Mapa);
-
-const DoubleWraper = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 12px;
-`
-
-
 const Callout = styled.View`
     border-radius: 5px;
     position: absolute;
-    flex: 1;
-    margin: auto;
     height: 250px;
     background-color: white;
+    width: ${p=>p.width- 20}px;
     margin: 0 10px;
 `
 
@@ -201,18 +189,14 @@ const styles = StyleSheet.create({
     },
     mapAll: {
         marginTop: 2,
-        maxWidth: 500,
-        height: 600,
-        margin: "auto",
         width: "100%",
+        margin: "auto",
         overflow: "hidden",
+        height: "100%",
     },
     callOutContainer: {
         height: 150,
         width: "100%",
-
-
-
     },
     imagen: {
         height: "100%",
