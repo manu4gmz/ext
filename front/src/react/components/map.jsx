@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
@@ -15,40 +15,35 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
 
     const [fadeAnim] = useState(new Animated.Value(0))
 
-	useEffect(()=>{
-		Animated.timing(fadeAnim,{
-			toValue: +callout,
-			duration: 300,
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: +callout,
+            duration: 300,
         }).start();
-        window.toggle = ()=> setCallout(p=>!p);
-        window.set = (i)=>  setCalloutSpace( allSpaces.properties[i] || allSpaces.properties[0] );
-        
-       
-	},[callout])
+        window.toggle = () => setCallout(p => !p);
+        window.set = (i) => setCalloutSpace(allSpaces.properties[i] || allSpaces.properties[0]);
+
+
+    }, [callout])
 
     function sendId(id) {
         //fetchId(id)
         return navigation.navigate(`SingleView`, { propertyId: id })
     }
-    
+
     function handleMapPress() {
-        console.log(centroide);
         setCallout(false);
-        console.log(callout);
     }
-    
-    function handleMarkerPress(e,space) {
+
+    function handleMarkerPress(e, space) {
         e.stopPropagation()
         setCallout(true);
         setCalloutSpace(space)
-        console.log(callout);
-
     }
 
     function sendId(id) {
-        //fetchId(id)
         return navigation.navigate(`SingleView`, { propertyId: id })
-      }
+    }
     return (
         <View>
             <MapView style={styles.mapAll}
@@ -61,13 +56,11 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
                 onPress={handleMapPress}
             >
                 {allSpaces.properties.filter(p => p.location && p.location[0] && p.location[0].lat).map((property, index) => {
-                    console.log(property.location[0].lat, property.location[0].lng)
                     return (
-
                         <MapView.Marker
                             key={index}
-                            
-                            onPress={(e)=>handleMarkerPress(e, property)}
+
+                            onPress={(e) => handleMarkerPress(e, property)}
                             coordinate={
                                 {
                                     latitude: Number(property.location[0].lat),
@@ -100,14 +93,14 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
             <Animated.View style={{
                 opacity: fadeAnim, // Binds directly
                 transform: [{
-                translateY: fadeAnim.interpolate({
+                    translateY: fadeAnim.interpolate({
                         inputRange: [0, 1],
                         outputRange: [0, -250]  // 0 : 150, 0.5 : 75, 1 : 0
                     }),
                 }],
                 height: 300,
-                width:"100%"
-		    }}>
+                width: "100%"
+            }}>
                 <Callout>
                     <View style={{
                         width: '100%',
@@ -120,21 +113,21 @@ const Mapa = ({ allSpaces, navigation, centroide }) => {
                     </View>
                     <CalloutWrapper>
 
-                    <CalloutTitle>{calloutSpace.title}</CalloutTitle>
-                    <Text>{calloutSpace.size}mtr2 - {calloutSpace.type}</Text>
-                    <DoubleWraper>
-                          <Button
-                            onPress={() => sendId(espacio.id) }
-                            bg="#4A94EA"
-                            color="#F7F7F7"
-                            mr="5px"
+                        <CalloutTitle>{calloutSpace.title}</CalloutTitle>
+                        <Text>{calloutSpace.size}mtr2 - {calloutSpace.type}</Text>
+                        <DoubleWraper>
+                            <Button
+                                onPress={() => sendId(espacio.id)}
+                                bg="#4A94EA"
+                                color="#F7F7F7"
+                                mr="5px"
                             >Mas Info.
                           </Button>
 
-                          <Button
-                            bg="#F77171"
-                            color="#F7F7F7"
-                            ml="5px"
+                            <Button
+                                bg="#F77171"
+                                color="#F7F7F7"
+                                ml="5px"
                             >Contacto.
                             </Button>
 

@@ -57,7 +57,6 @@ function mapBadge(filter, remove) {
 export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments }) => {
   const [mode, setMode] = useState(false);
 
-  console.log("favs", favs)
   return (
     <ScrollView ref={scrollView}>
       <View>

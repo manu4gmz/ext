@@ -34,7 +34,6 @@ function Favorites({ user, state }) {
   }, [])
 
   function deleteFav(id, userId) {
-    console.log("IdFav", id)
     setFavs([])
     Axios.put(`https://ext-api.web.app/api/users/favs/${userId}`, { id })
       .then((data) => {
@@ -146,7 +145,6 @@ function Favorites({ user, state }) {
 
 
 const mapStateToProps = (state, ownProps) => {
-  // console.log(state)
   return {
     user: state.user.logged,
     state
