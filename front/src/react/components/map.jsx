@@ -14,7 +14,7 @@ import { fetchSpace } from "../../redux/actions/spaces";
 const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
     const [callout, setCallout] = useState(false);
     const [calloutSpace, setCalloutSpace] = useState({});
-
+    const [markerRefs, setMarkerRefs] = useState([]);
     const [fadeAnim] = useState(new Animated.Value(0))
     
 	useEffect(()=>{
@@ -36,8 +36,6 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
     }
     
     function handleMarkerPress(e,id) {
-        e.stopPropagation();
-        e.preventDefault();
         setCallout(false);
         fetchSpace(id)
         .then(space=> {
@@ -46,11 +44,12 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
         })
     }
 
+
     function sendId(id) {
         //fetchId(id)
         return navigation.navigate(`SingleView`, { propertyId: id })
     }
-    console.log("update")
+    console.log("update", centroide)
     //const [vw, vh] = [100, 120];
     const { width: vw, height: vh } = Dimensions.get("window");
     return (
@@ -59,33 +58,34 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
             <MapView style={styles.mapAll}
                 initialRegion={{
                     latitude: Number(centroide.lat) || -34.579304,
-                    longitude: Number(centroide.lon) || -58.471115,
+                    longitude: Number(centroide.lng || centroide.lon) || -58.471115,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}
                 onPress={handleMapPress}>
                 {(allSpaces.markers || []).map((property, index) => {
                     return (
-
                         <MapView.Marker
                             key={index}
                             identifier={property.id}
-                            onPress={(e)=>{
-
-                                handleMarkerPress(e, property.id);
-
+                            ref={marker => {
+                                console.log(marker)
+                                /*marker.addEventListener("click",()=>{
+                                    console.log("dou")
+                                })*/
                             }}
-                            coordinate={
-                                {
-                                    latitude: Number(property.lat),
-                                    longitude: Number(property.lng),
-                                }} >
+                            onClick={(e)=>handleMarkerPress(e, property.id)}
+                            onPress={(e)=>handleMarkerPress(e, property.id)}
+                            coordinate={{
+                                latitude: Number(property.lat),
+                                longitude: Number(property.lng),
+                            }}>
+
                             <Image
                                 style={{ width: 40, height: 40 }}
                                 source={require("../../public/icons/icono_marker_az.png")}
                             />
                         </MapView.Marker>
-
                     )
                 })
                 }

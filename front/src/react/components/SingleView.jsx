@@ -7,7 +7,19 @@ import qs from 'qs'
 import Carousel from "../components/Carousel";
 import Loading from "../components/Loading";
 import MapView from 'react-native-maps';
-import Map from "../components/map"
+import Map from "../components/map";
+
+const icons = {
+    "Aire Acondicionado":require("../../public/icons/services/airconditioner.png"),
+    "Wifi":require("../../public/icons/services/wifi.png"),
+    "LCD":require("../../public/icons/services/lcd.png"),
+    "Cafe/Infusiones":require("../../public/icons/services/coffee.png"),
+    "Snacks":require("../../public/icons/services/snacks.png"),
+    "Música":require("../../public/icons/services/music.png"),
+    "Vajilla":require("../../public/icons/services/dishes.png"),
+    "Baño":require("../../public/icons/services/toiletes.png"),
+    "Ducha":require("../../public/icons/services/ducha.png"),
+}
 
 export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => {
     const [mode, setMode] = useState(false)
@@ -40,7 +52,9 @@ export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => 
         return Linking.openURL(url);
     }
 
-    console.log("Single View en update")
+    console.log("Single View en update", space.location[0])
+
+    console.log(space.services)
 
     return (
         <ScrollView>
@@ -61,9 +75,13 @@ export default ({ space, loading, allSpaces, navigation, edit, handleEdit }) => 
                             <TextoComun>{space.description}</TextoComun>
                             <TextoCaracteristicas >Caracteristicas especiales</TextoCaracteristicas>
                             <ServicesWrapper>
-                                <Service source={require("../../public/icons/ducha-ne.png")} />
-                                <Service source={require("../../public/icons/toiletes-ne.png")} />
-                                <Service source={require("../../public/icons/wifi-ne.png")} />
+                                {
+                                    (space.services || []).map((service, i) => (
+                                        <Service key={i} source={icons[service]} />
+
+
+                                    ))
+                                }
                             </ServicesWrapper>
                             <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
 
@@ -193,13 +211,13 @@ const ServicesWrapper = styled.View`
     flex-direction: row;
     justify-content: center;
     width: 100%;
+    flex-wrap: wrap;
 `
 
 const Service = styled.Image`
-    height: 45px;
-    width: 45px;
-    margin-right: 20px;
-    margin-bottom: 20px;
+    height: 50px;
+    width: 50px;
+    margin: 0 10px 20px;
 `
 
 const Capitalize = styled.Text`
