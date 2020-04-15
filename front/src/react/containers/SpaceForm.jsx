@@ -7,21 +7,11 @@ import Typeahead from "../components/Typeahead";
 import AddPhotos from "../components/AddPhotos";
 import Form from "../components/Form";
 
-import {
-  fetchProvincias,
-  fetchLocalidades
-} from "../../redux/actions/locations";
-import { addSpace } from "../../redux/actions/spaces";
-import { connect } from "react-redux";
+import { fetchProvincias, fetchLocalidades, fetchCoords } from "../../redux/actions/locations";
+import { addSpace } from '../../redux/actions/spaces'
+import { connect } from 'react-redux'
 
-const SpaceForm = ({
-  navigation,
-  uploadFiles,
-  addSpace,
-  user,
-  fetchLocalidades,
-  fetchProvincias
-}) => {
+const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, fetchProvincias, fetchCoords }) => {
   const Type = Picker(useState(false), useState(""));
   const Services = Picker(useState(false), useState([]));
   const Observation = TextPrompt(useState(false), useState(""));
@@ -30,26 +20,38 @@ const SpaceForm = ({
 
   /****************  Geo normalization **************/
 
-  const [provincias, setProvincias] = useState([]);
-  const [localidades, setLocalidades] = useState([]);
-  const [province, setProvince] = useState({});
+  const [provincias, setProvincias] = useState([])
+  const [localidades, setLocalidades] = useState([])
+  const [province, setProvince] = useState({})
+  const [region, setRegion] = useState({})
 
   function getProvincias(val) {
-    fetchProvincias(val).then(data => setProvincias(data));
+    fetchProvincias(val)
+      .then(data => setProvincias(data))
   }
+
 
   function getLocalidades(val) {
-    fetchLocalidades(val, province.id).then(data => setLocalidades(data));
+    fetchLocalidades(val, province.id)
+      .then(data => {
+        const body = data.map((elemento) => {
+          return { label: elemento.label, id: elemento.id }
+        })
+        setLocalidades(body);
+        if (data[0].coordenadas) setRegion(data[0].coordenadas)
+      })
   }
 
-  const handleSelectProvince = val => {
+  const handleSelectProvince = (val) => {
     if (!val) return setProvince({});
     setProvince(val);
   };
 
   /**************************************************/
 
-  const onSubmit = function(form) {
+
+  const onSubmit = function (form) {
+    console.log(region)
     const datosSpace = {
       verificated: false,
       neighborhood: (form["Barrio*"] || {}).value,
@@ -57,8 +59,8 @@ const SpaceForm = ({
       type: (form["Tipo de Espacio*"] || {}).value,
       street: (form["Calle*"] || {}).value,
       streetNumber: (form["Número"] || {}).value,
-      floor: (form["Piso"] || {}).value,
-      apt: (form["Depto"] || {}).value,
+      floor: (form['Piso'] || {}).value,
+      apt: (form['Depto'] || {}).value,
       size: (form["Tamaño #(mtr2)#*"] || {}).value,
       capacity: (form["Capacidad*"] || {}).value,
       price: (form["Valor hora ($)"] || {}).value,
@@ -76,42 +78,42 @@ const SpaceForm = ({
     };
 
     //navigation.navigate("PreviewSpace", { space: datosSpace })
+    const coords = {
+      p: datosSpace.province,
+      n: datosSpace.neighborhood,
+      s: datosSpace.street,
+      sn: datosSpace.streetNumber
+    }
+    addSpace(datosSpace)
+      .then((propertyId) => {
+        fetchCoords(coords, propertyId, region)
+          .then((data) =>
+            navigation.navigate("Payment", { space: datosSpace, propertyId })
+          )
 
-    addSpace(datosSpace).then(propertyId =>
-      navigation.navigate("Payment", { space: datosSpace, propertyId })
-    );
-  };
+      })
+
+  }
 
   const fields = [
     ["Titulo*", "Excelente lugar para..."],
-    [
-      ({ onChange }) => (
-        <Typeahead
-          title="Provincia*"
-          placeholder="Buenos Aires, Cordoba, San Luis.."
-          getOptions={getProvincias}
-          handleSelect={handleSelectProvince}
-          onChange={onChange}
-          options={provincias}
-        />
-      ),
-      3
-    ],
+    [({ onChange }) => <Typeahead
+      title="Provincia*"
+      placeholder="Buenos Aires, Cordoba, San Luis.."
+      getOptions={getProvincias}
+      handleSelect={handleSelectProvince}
+      onChange={onChange}
+      options={provincias}
+    />, 3],
     //[({ onChange }) => <Province.Input onChange={onChange} title={"Provincia*"} placeholder="Buenos Aires, Cordoba, San Luis.." />],
-    [
-      ({ onChange }) =>
-        province.id ? (
-          <Typeahead
-            title="Barrio*"
-            placeholder="Flores, Saavedra.."
-            getOptions={getLocalidades}
-            handleSelect={() => null}
-            onChange={onChange}
-            options={localidades}
-          />
-        ) : null,
-      2
-    ],
+    [({ onChange }) => province.id ? <Typeahead
+      title="Barrio*"
+      placeholder="Flores, Saavedra.."
+      getOptions={getLocalidades}
+      handleSelect={() => null}
+      onChange={onChange}
+      options={localidades}
+    /> : null, 2],
     ["Calle*", "Av. Congreso, Castillo"],
     [
       ["Número", "1332"],
@@ -252,13 +254,15 @@ const SpaceForm = ({
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  user: state.user.logged.uid
-});
+  user: state.user.logged.uid,
 
-const mapDispatchToProps = dispatch => ({
-  addSpace: body => dispatch(addSpace(body)),
-  fetchProvincias: val => dispatch(fetchProvincias(val)),
-  fetchLocalidades: (val, id) => dispatch(fetchLocalidades(val, id))
-});
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  addSpace: (body) => dispatch(addSpace(body)),
+  fetchProvincias: (val) => dispatch(fetchProvincias(val)),
+  fetchLocalidades: (val, id) => dispatch(fetchLocalidades(val, id)),
+  fetchCoords: (coordenadas, id, region) => dispatch(fetchCoords(coordenadas, id, region)),
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(SpaceForm);

@@ -13,6 +13,8 @@ import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
+import Map from "../components/map"
+
 
 
 function indexes(index, total) {
@@ -54,7 +56,6 @@ function mapBadge(filter, remove) {
 export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments }) => {
   const [mode, setMode] = useState(false);
 
-  console.log("favs", favs)
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -88,15 +89,14 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
               return (
                 <FadeInView key={index} order={index}>
                   <StyledView
-
                     style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
                   >
                     <View>
                       <View style={{
                         width: '100%',
                         height: (espacio.photos || []).length ? 250 : "auto",
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
                         overflow: "hidden"
                       }} >
                         <Carousel images={espacio.photos || []} height={250} />
@@ -242,7 +242,7 @@ const Lista = styled.Text`
 `
 const TextoBusquedas = styled.Text`
   font-size: 18px;
-  margin-left: 12px;
+  text-align : center;
   color: black;
   font-weight: 600;
 `

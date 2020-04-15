@@ -1,29 +1,29 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components/native";
-import { View, TouchableOpacity, Text, Button, Keyboard, TouchableWithoutFeedback  } from "react-native";
+import { View, TouchableOpacity, Text, Button, Keyboard, TouchableWithoutFeedback } from "react-native";
 
 const DismissKeyboard = ({ children }) => (
-	<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
+	<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 		{children}
 	</TouchableWithoutFeedback>
 );
 
-export default ({onChange, title, getOptions, placeholder, handleSelect }) => {
+export default ({ onChange, title, getOptions, placeholder, handleSelect }) => {
 	const [input, setInput] = useState("");
 	const [error, setError] = useState(null);
-    const [show, setShow] = useState(false);
-    const [options, setOptions] = useState([]);
+	const [show, setShow] = useState(false);
+	const [options, setOptions] = useState([]);
 
-	useEffect(()=>{
-        getOptions(input)
-            .then(data =>{ 
-                if (data && data.length) {
-                    setOptions(data);
-                }
-            })
-	},[input])
+	useEffect(() => {
+		getOptions(input)
+			.then(data => {
+				if (data && data.length) {
+					setOptions(data);
+				}
+			})
+	}, [input])
 
-	useEffect(()=>{
+	useEffect(() => {
 		if (!show && input) {
 			const labels = (options || []).map(a => a.label);
 
@@ -31,17 +31,17 @@ export default ({onChange, title, getOptions, placeholder, handleSelect }) => {
 			else {
 				onChange(form => {
 					return {
-					...form,
-					[title]: {
-						value: input,
-						error: "El valor no coincide con ninguna opción."
+						...form,
+						[title]: {
+							value: input,
+							error: "El valor no coincide con ninguna opción."
+						}
 					}
-				}})
-				console.log("Le pifiaste brother")
+				})
 				setError("El valor no coincide con ninguna opción.")
 			}
 		}
-		else if (!show && !input){
+		else if (!show && !input) {
 			onChange(form => ({
 				...form,
 				[title]: {
@@ -53,7 +53,7 @@ export default ({onChange, title, getOptions, placeholder, handleSelect }) => {
 		}
 	}, [show])
 
-	function handleOptionSelect(elem){
+	function handleOptionSelect(elem) {
 		setInput(elem.label);
 		onChange(form => ({
 			...form,
@@ -66,7 +66,7 @@ export default ({onChange, title, getOptions, placeholder, handleSelect }) => {
 		setError(null);
 	}
 
-	function handleChange(val){
+	function handleChange(val) {
 		setInput(val);
 		onChange(form => ({
 			...form,
@@ -85,38 +85,38 @@ export default ({onChange, title, getOptions, placeholder, handleSelect }) => {
 	}
 
 	return <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-		<View style={{zIndex: 1}}>
-	    <StyledTitles>{title}</StyledTitles>
-		    <StyledInput 
-		      onChangeText={handleChange}
-		      onFocus={()=>setShow(true)}
-		      onBlur={()=>setShow(false)}
-		      value={input}
-		      placeholder={placeholder}
-		      error={(!!error)+""}
-		    />
-	    {
-	     	show && (options || []).length ?
-	     	<OptionsWrapper>
-     	     	{
-	     	     	options.slice(0,4).map((elem,i) => (
-     	     			<Option key={i} onPress={()=>handlePress(elem)}>
-     	     				<Label>{elem.label}</Label>
-     	     			</Option>
-     	     		))
-     	     	}
-     	     	{
-     	     		options.length > 4 ? 
-     	     		<TextOption>Y otras opciones más</TextOption>: null
-     	     	}
-     	     </OptionsWrapper> 
-     	     : false
-     	}
-	    {
-	    	error ? <Error>{error}</Error> : null
-	    }
-	</View>
-	    </TouchableWithoutFeedback>
+		<View style={{ zIndex: 1 }}>
+			<StyledTitles>{title}</StyledTitles>
+			<StyledInput
+				onChangeText={handleChange}
+				onFocus={() => setShow(true)}
+				onBlur={() => setShow(false)}
+				value={input}
+				placeholder={placeholder}
+				error={(!!error) + ""}
+			/>
+			{
+				show && (options || []).length ?
+					<OptionsWrapper>
+						{
+							options.slice(0, 4).map((elem, i) => (
+								<Option key={i} onPress={() => handlePress(elem)}>
+									<Label>{elem.label}</Label>
+								</Option>
+							))
+						}
+						{
+							options.length > 4 ?
+								<TextOption>Y otras opciones más</TextOption> : null
+						}
+					</OptionsWrapper>
+					: false
+			}
+			{
+				error ? <Error>{error}</Error> : null
+			}
+		</View>
+	</TouchableWithoutFeedback>
 
 }
 

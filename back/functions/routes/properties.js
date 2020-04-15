@@ -108,7 +108,6 @@ router.delete("/deleteSpace/:id", (req, res, next) => {
 router.put('/update/:id', (req, res, next) => {
   const id = req.params.id
   const body = req.body
-  console.log(body)
   const update = {};
 
   const dataTypes = {
@@ -159,6 +158,24 @@ router.put('/update/:id', (req, res, next) => {
 
 
 })
+
+router.put('/coordenadas/:id', (req, res, next) => {
+  const id = req.params.id
+  const propiedad = req.body
+  db.collection('properties').doc(id).get()
+    .then((data) => {
+
+      db.collection('properties').doc(id).update({ location: propiedad })
+        .then(data => {
+          res.sendStatus(200)
+        })
+
+    })
+
+    .catch(next)
+})
+
+
 
 router.get('/comments/:id', (req, res, next) => {
   const id = req.params.id
@@ -261,8 +278,8 @@ router.get("/:page", (req, res) => {
           && (!condicion.photos || (propiedad.photos || []).length > 0))
           && (propiedad.visible != false)
       })
+      return filtrado//.sort((a, b) => ((a.verified == true) && (b.verified == false)) ? -1 : 1)
 
-      return filtrado.sort((a, b) => ((a.verified == true) && (b.verified == false)) ? -1 : 1);
     })
     .then(properties => {
       const maxPage = Math.ceil(properties.length / pagesCount);

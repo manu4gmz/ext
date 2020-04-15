@@ -1,5 +1,5 @@
 import axios from "axios"
-import { SPACE, ALLSPACES, IDSPACE, PORPERTIESID, ALLCOMMENTS } from "../constants"
+import { SPACE, ALLSPACES, IDSPACE, PORPERTIESID, ALLCOMMENTS, PROPIETARIO } from "../constants"
 
 const propertiesId = (id) => ({
     type: PORPERTIESID,
@@ -18,7 +18,19 @@ const singleSpace = (space) => ({
 const captureId = (idSpace) => ({
     type: IDSPACE,
     idSpace
-});
+})
+
+const fetchPropietario = (propietarioId) => ({
+    type: PROPIETARIO,
+    propietarioId
+})
+
+export const fecthUserProp = (propId) => dispatch => {
+    return axios.get(`https://ext-api.web.app/api/users/info/${propId}`)
+        .then((data) => {
+            return dispatch(fetchPropietario(data.data))
+        })
+}
 
 const allComments = (comments) => ({
     type: ALLCOMMENTS,
@@ -27,7 +39,11 @@ const allComments = (comments) => ({
 
 export const fetchSpace = (spaceId) => dispatch => {
     return axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
-        .then(res => dispatch(singleSpace(res.data)))
+        .then(res => res.data)
+        .then(res => {
+            dispatch(singleSpace(res))
+            return res
+        })
 }
 
 export const fetchSpaces = (datosSpace, page = 1) => dispatch => {

@@ -1,21 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
+import Axios from "axios";
 import { connect } from "react-redux";
 
 import BackgroundAllSpaces from "../components/backgroundAllSpaces";
-//import { fetchId } from "../../redux/actions/spaces"
 import { fetchSpaces } from "../../redux/actions/spaces"
 import { fetchFav } from "../../redux/actions/user"
-import Axios from "axios";
 
 
-// const AllSpaces = () => {
-function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
-
+const AllSpaces = ({ allSpaces, user, navigation, route, fetchSpaces }) => {
   const scrollView = useRef(null);
   const [loading, setLoading] = useState(true)
   const [spaces, setSpaces] = useState({ properties: [], total: 0, pages: 0 });
   const [favs, setFavs] = useState([])
-  //const [index, setIndex] = useState(1);
 
   useEffect(() => {
     fetchSpaces(route.params.query, route.params.index)
@@ -30,15 +26,11 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
       })
   }, [])
 
-
-
   function setIndex(i) {
-    console.log(i);
     navigation.push("AllSpaces", { query: route.params.query, index: i })
   }
 
   function sendId(id) {
-    //fetchId(id)
     return navigation.navigate(`SingleView`, { propertyId: id })
   }
 
@@ -47,19 +39,18 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
   }
 
   function favorites(id, userId) {
-    if (favs && favs.includes(id)) { Axios.delete(`https://ext-api.web.app/api/users/favs/${userId}`, { id })
-    .then(res => res.data)
-    .catch(error => console.log(error))};
-    
+    if (favs && favs.includes(id)) {
+      Axios.delete(`https://ext-api.web.app/api/users/favs/${userId}`, { id })
+        .then(res => res.data)
+        .catch(error => console.log(error))
+    };
+
     setFavs(favs => [...(favs || []), id])
-    
+
     Axios
       .put(`https://ext-api.web.app/api/users/fav/${userId}`, { id })
       .then(res => res.data)
       .catch(error => console.log(error))
-
-    // console.log(id,userId,"favorites")
-
   }
 
   function removeFilter(key) {
@@ -72,14 +63,8 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
       .then(data => {
         setLoading(false);
         setSpaces(data);
-      });
-
-
-
-
+      })
   }
-
-
 
   return (
     <BackgroundAllSpaces
@@ -105,7 +90,6 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
 
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(state)
   return {
 
     allSpaces: state.spaces.allSpaces,
