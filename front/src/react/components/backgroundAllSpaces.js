@@ -9,7 +9,6 @@ import {
 } from "react-native";
 
 import styled from "styled-components/native";
-import { Rating } from 'react-native-ratings';
 import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
@@ -117,15 +116,9 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
                               : <Subtitulo>{`${espacio.neighborhood} - ${espacio.province} - ${espacio.size}mtr2`}</Subtitulo>
                             }
                             <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
-                              <Rating
-                                type='custom'
-                                ratingBackgroundColor='#c8c7c8'
-                                ratingCount={5}
-                                imageSize={15}
-                              />
                               <TouchableOpacity onPress={() => showComments(espacio.id)}>
                                 <Text
-                                  style={{ color: "grey", fontWeight: "bold", padding: 10 }}
+                                  style={{ color: "grey", fontWeight: "bold", paddingLeft: 0, paddingTop: 10, paddingBottom: 10 }}
                                 >{`${(espacio.comments || "").length || 0}  Ver comentarios`}
                                 </Text>
                               </TouchableOpacity>
