@@ -133,7 +133,6 @@ router.put("/ownerForm/:id", (req, res, next) => {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
       address: req.body.address
     })
     .then((data) => {
