@@ -68,7 +68,7 @@ const backgroundHome = ({ navigation, userInfo, user }) => {
             <Button
               bg="#4A94EA"
               color="#F7F7F7"
-              mb="3%"
+              mb="5px"
             >Invita amigos y gana!
             </Button>
           </View>

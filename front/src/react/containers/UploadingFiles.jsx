@@ -13,7 +13,10 @@ const LoadingView = ({ navigation, route, uploadFiles, editSpace }) => {
 
 		uploadFiles(images, propertyId, setProgress)
 			.then((files) => {
-				const totalImages = (otherImages || []).concat(files);
+				const totalImages = files.concat(otherImages || []);
+
+				//console.log("-------------------------------------\n\nPHOTOS QUE UPLOADEA\n\n",totalImages);
+				
 				editSpace(propertyId, { photos: totalImages, visible: true })
 					.then(() => {
 						navigation.replace("SingleView", { propertyId })
