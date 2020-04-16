@@ -122,7 +122,6 @@ router.put("/favs/:id", (req, res, next) => {
       console.log("new data 1", newdata)
       const index = newdata.favoritos.indexOf(fav);
       newdata.favoritos.splice(index, 1)
-      console.log("index", index)
       const favfinal = [... new Set(newdata.favoritos)]
       console.log("new data 2", newdata)
       console.log("soy delete favfinal", favfinal)
@@ -142,13 +141,12 @@ router.put("/ownerForm/:id", (req, res, next) => {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
       address: req.body.address
     })
-    .then(async (data) => {
-      const usuario = await db.collection('users').doc(id).get()
-      const user = usuario.data()
-      res.status(201).json(user)
+    .then((data) => {
+      db.collection('users').doc(id).get()
+        .then((usuario) => res.status(201).json(usuario.data()))
+
     })
     .catch(next)
 
