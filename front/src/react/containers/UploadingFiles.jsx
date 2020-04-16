@@ -16,12 +16,12 @@ const LoadingView = ({ navigation, route, uploadFiles, editSpace }) => {
 				const totalImages = (otherImages || []).concat(files);
 				editSpace(propertyId, { photos: totalImages, visible: true })
 					.then(() => {
-						navigation.navigate("SingleView", { propertyId })
+						navigation.replace("SingleView", { propertyId })
 					})
 			})
 			.catch(err => {
 				console.log("ERRROR AL UPLODEAR IMAGEN \n ------------------------\n",err)
-				navigation.navigate("SpaceForm")
+				navigation.replace("SpaceForm")
 			})
 
 	}, [])

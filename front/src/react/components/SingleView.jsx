@@ -23,7 +23,7 @@ const icons = {
     "Ducha":require("../../public/icons/services/ducha.png"),
 }
 
-export default ({ space, loading, allSpaces, navigation, propietario, edit, handleEdit }) => {
+export default ({ space, loading, allSpaces, navigation, propietario, edit, handleEdit, children, preview }) => {
   const [mode, setMode] = useState(false)
   const [services, setServices ] = useState(false);
 
@@ -53,10 +53,14 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
 
   return (
     <ScrollView>
-        <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
-          <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
-          <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
-        </View>
+        {
+          !preview ?
+            <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
+              <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
+              <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
+            </View>
+          : null
+        }
         
           {!mode ? (
              <Wrapper>
@@ -85,11 +89,11 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                   {
                     (space.services || []).length ?
                     <Collapsable title="Servicios" min={90} max={Math.ceil((space.services || []).length/4)*90}>
-                      <ServicesWrapper height={services}>
+                      <ServicesWrapper>
                           {
                             (space.services || []).map((service, i) => (
-                              <Service>
-                                <ServiceImage key={i} source={icons[service]} />
+                              <Service key={i}>
+                                <ServiceImage source={icons[service]} />
                                 <ServiceLabel>{service}</ServiceLabel>
                               </Service>
                             ))
@@ -107,7 +111,7 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                       <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
                       <Location>
                         <Image style={{width:25, height: 25}} source={require("../../public/icons/location.png")}/>
-                        <LocationText>{space.street} {space.streetNumber},  {space.neighborhood}, <Capitalize>{space.province === 'ciudad autónoma de buenos aires'
+                        <LocationText>{space.street} {space.streetNumber}, <Capitalize>{space.neighborhood}</Capitalize>, <Capitalize>{space.province === 'ciudad autónoma de buenos aires'
                     ? "capital federal" : space.province}</Capitalize></LocationText>
                       </Location>
                       <MapView style={styles.mapStyle}
@@ -132,32 +136,39 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                     </View>
                     : null
                   }
-                  <DoubleWraper>
+                  {
+                    !preview ?
+                    <DoubleWraper>
                       <Boton
-                          onPress={() =>
-                              sendEmail(
-                                  'robertovilla2102@gmail.com',
-                                  'Greeting!',
+                          onPress={() => 
+                            sendEmail(
+                              'robertovilla2102@gmail.com',
+                              'Greeting!',
                                   'I think you are fucked up how many letters you get.')
                                   .then(() => {
-                                      console.log('Our email successful');
+                                    console.log('Our email successful');
                                   })}
-                          bg="#4A94EA"
-                          color="#F7F7F7"
-                          mr="5px"
-                      >Email
+                                  bg="#4A94EA"
+                                  color="#F7F7F7"
+                                  mr="5px"
+                                  >Email
                       </Boton>
                       <Boton
                           onPress={() => Linking.openURL(`tel:+54 9 ${'11 65342325'}`)}
                           bg="#F77171"
                           color="#F7F7F7"
                           ml="5px"
-                      >Llamar
+                          >Llamar
                       </Boton>
                   </DoubleWraper>
+                  : null
+                  }
+                  {
+                    preview ? children : null
+                  }
                 </Container>
-           </StyledView>
-              </Wrapper>
+              </StyledView>
+            </Wrapper>
           ) 
           : 
           <Map navigation={navigation} allSpaces={allSpaces} centroide={space.location && space.location[0]}></Map>
@@ -285,47 +296,9 @@ const LocationText = styled.Text`
 `
 
 const styles = StyleSheet.create({
-  fondo: {
-  },
-  imagenInputs: {
-    height: 45,
-    width: 45,
-    marginRight: 20,
-    marginBottom: 20,
-  },
-  contenedorIconos: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
-    width: "70%",
-    alignItems: "center",
-    alignSelf: "center",
-    backgroundColor: "#FFFFFF"
-  },
   mapStyle: {
     width: "100%",
     overflow: "hidden",
     height: 350
-},
-  mapAll: {
-    marginTop: 2,
-    maxWidth: 500,
-    height: 800
   },
-  customCallOut: {
-    width: 250,
-    backgroundColor: "#F77171",
-
-
-
-  },
-  textoCallOut: {
-    padding: 2,
-    textAlign: "center",
-    color: "#FFF"
-
-
-  }
 })
