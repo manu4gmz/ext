@@ -38,7 +38,6 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
           return { label: elemento.label, id: elemento.id }
         })
         setLocalidades(body);
-        if (data[0].coordenadas) setRegion(data[0].coordenadas)
       })
   }
 

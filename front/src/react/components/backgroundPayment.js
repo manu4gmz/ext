@@ -7,7 +7,7 @@ import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 const backgorunPayment = ({ navigation, route }) => {
 
   function freePayment () {
-    navigation.navigate("PreviewSpace", route.params)
+    navigation.replace("PreviewSpace", route.params)
   }
 
   return (
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
 
    but3:{
     
-    marginTop: 77,  
+    marginTop: 50,  
     alignItems: "center",
     alignSelf: "center",
     width: "85%",
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
 })
 
 const PaymentMethodWrapper = styled.View`
-  margin-top: 35;
+  margin-top: 35px;
   margin: 35px 20px;
   flex-direction: row;
   justify-content: center;
