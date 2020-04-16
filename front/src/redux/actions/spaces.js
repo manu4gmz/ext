@@ -1,5 +1,5 @@
 import axios from "axios"
-import { SPACE, ALLSPACES, IDSPACE, PORPERTIESID } from "../constants"
+import { SPACE, ALLSPACES, IDSPACE, PORPERTIESID, ALLCOMMENTS, PROPIETARIO } from "../constants"
 
 const propertiesId = (id) => ({
     type: PORPERTIESID,
@@ -18,13 +18,31 @@ const singleSpace = (space) => ({
 const captureId = (idSpace) => ({
     type: IDSPACE,
     idSpace
-});
+})
+
+const fetchPropietario = (propietarioId) => ({
+    type: PROPIETARIO,
+    propietarioId
+})
+
+export const fecthUserProp = (propId) => dispatch => {
+    return axios.get(`https://ext-api.web.app/api/users/info/${propId}`)
+        .then((data) => {
+            return dispatch(fetchPropietario(data.data))
+        })
+}
+
+const allComments = (comments) => ({
+    type: ALLCOMMENTS,
+    comments
+})
 
 export const fetchSpace = (spaceId) => dispatch => {
     return axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
+        .then(res => res.data)
         .then(res => {
-            dispatch(singleSpace(res.data));
-            return res.data;
+            dispatch(singleSpace(res))
+            return res
         })
 }
 
@@ -72,8 +90,24 @@ export const editSpace = (propertyId, body) => (dispatch, getState) => {
         .catch(error => console.log(error))
 }
 
+export const fetchComments = id => (dispatch) => {
+    return axios
+        .get(`http://localhost:5000/ext-api/us-central1/app/api/properties/comments/${id}`)
+        .then(res => res.data)
+        .then(data => dispatch(allComments(data)))
+}
+
 export const writeComment = (id, comment, nombre) => (dispatch, getState) => {
     return axios
         .put(`https://ext-api.web.app/api/properties/comments/${id}`, { comment, userId: getState().user.logged.uid, nombre })
+        // .put(`http://localhost:5000/ext-api/us-central1/app/api/properties/comments/${id}`, { comment, userId: getState().user.logged.uid, nombre })
+        .then(res => dispatch(allComments(res.data)))
     // console.log({ comment, userId: getState().user.logged.uid, nombre })
 }
+
+export const writeResponse = (propertyId, commentIndex, response) => dispatch => {
+    return axios
+        .put(`https://ext-api.web.app/api/properties/response?propertyId=${propertyId}&commentIndex=${commentIndex}`, { response })
+        // .put(`http://localhost:5000/ext-api/us-central1/app/api/properties/response?propertyId=${propertyId}&commentIndex=${commentIndex}`, { response })
+        .then(res => dispatch(allComments(res.data)))
+}       

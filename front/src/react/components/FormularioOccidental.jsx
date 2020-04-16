@@ -4,7 +4,6 @@ import { View, Button } from 'react-native'
 
 export default ({ onSubmit, user, handlerNombre, handlerApellido, handlerTel, handlerEmail, handlerDireccion, nombre, apellido, tel, direccion, email, submit
 }) => {
-  console.log(user, "Aca esta el usuario ")
   return (
     <View style={{ zIndex: 1 }}>
       <View>

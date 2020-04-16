@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
@@ -30,7 +30,7 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
         //fetchId(id)
         return navigation.navigate(`SingleView`, { propertyId: id })
     }
-    
+
     function handleMapPress() {
         setCallout(false);
     }
@@ -46,7 +46,6 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
 
 
     function sendId(id) {
-        //fetchId(id)
         return navigation.navigate(`SingleView`, { propertyId: id })
     }
     console.log("update", centroide)
@@ -94,7 +93,7 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
             <Animated.View style={{
                 opacity: fadeAnim, // Binds directly
                 transform: [{
-                translateY: fadeAnim.interpolate({
+                    translateY: fadeAnim.interpolate({
                         inputRange: [0, 1],
                         outputRange: [0, -250]  // 0 : 150, 0.5 : 75, 1 : 0
                     }),
@@ -125,10 +124,10 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
                             >Mas Info.
                           </Button>
 
-                          <Button
-                            bg="#F77171"
-                            color="#F7F7F7"
-                            ml="5px"
+                            <Button
+                                bg="#F77171"
+                                color="#F7F7F7"
+                                ml="5px"
                             >Contacto.
                             </Button>
 

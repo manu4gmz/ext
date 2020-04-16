@@ -206,14 +206,14 @@ function Root() {
         component={CommentsContainer}
         options={{ header: () => null }, titulo("Comments")}
       />
-      <Stack.Screen 
-        name="UserProperties" 
-        component={UserProperties} 
+      <Stack.Screen
+        name="UserProperties"
+        component={UserProperties}
         options={{ header: () => null }, titulo("Mis Propiedades")}
       />
-      <Stack.Screen 
-        name="EditSpace" 
-        component={EditSpace} 
+      <Stack.Screen
+        name="EditSpace"
+        component={EditSpace}
         options={{ header: () => null }, titulo("Editar espacio")}
       />
       <Stack.Screen

@@ -9,7 +9,6 @@ import {
 } from "react-native";
 
 import styled from "styled-components/native";
-import { Rating } from 'react-native-ratings';
 import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
@@ -92,15 +91,14 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
               return (
                 <FadeInView key={index} order={index}>
                   <StyledView
-
                     style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
                   >
                     <View>
                       <View style={{
                         width: '100%',
                         height: (espacio.photos || []).length ? 250 : "auto",
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
                         overflow: "hidden"
                       }} >
                         <Carousel images={espacio.photos || []} height={250} />
@@ -120,15 +118,9 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
                               : <Subtitulo>{`${espacio.neighborhood} - ${espacio.province} - ${espacio.size}mtr2`}</Subtitulo>
                             }
                             <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
-                              <Rating
-                                type='custom'
-                                ratingBackgroundColor='#c8c7c8'
-                                ratingCount={5}
-                                imageSize={15}
-                              />
                               <TouchableOpacity onPress={() => showComments(espacio.id)}>
                                 <Text
-                                  style={{ color: "grey", fontWeight: "bold", padding: 10 }}
+                                  style={{ color: "grey", fontWeight: "bold", paddingLeft: 0, paddingTop: 10, paddingBottom: 10 }}
                                 >{`${(espacio.comments || "").length || 0}  Ver comentarios`}
                                 </Text>
                               </TouchableOpacity>
@@ -254,7 +246,7 @@ const Lista = styled.Text`
 `
 const TextoBusquedas = styled.Text`
   font-size: 18px;
-  margin-left: 12px;
+  text-align : center;
   color: black;
   font-weight: 600;
 `

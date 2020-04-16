@@ -10,5 +10,7 @@ export const PORPERTIESID = 'PORPERTIES_ID';
 export const SET_FORM = 'SET_FORM';
 export const USERINFO = 'USERINFO';
 export const SET_PICTURES = "SET_PICTURES";
+export const ALLCOMMENTS = "ALLCOMMENTS"
 export const USERPROPERTIES = 'USERPROPERTIES';
 export const SET_CENTROIDE = "SET_CENTROIDE";
+export const PROPIETARIO = 'PROPIETARIO'
