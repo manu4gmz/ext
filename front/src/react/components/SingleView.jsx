@@ -84,13 +84,16 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                   <TextoComun>{space.description}</TextoComun>
                   {
                     (space.services || []).length ?
-                    <Collapsable title="Servicios" min={70} max={Math.ceil((space.services || []).length/4)*70}>
+                    <Collapsable title="Servicios" min={90} max={Math.ceil((space.services || []).length/4)*90}>
                       <ServicesWrapper height={services}>
                           {
                             (space.services || []).map((service, i) => (
-                              <Service key={i} source={icons[service]} />
-                              ))
-                            }
+                              <Service>
+                                <ServiceImage key={i} source={icons[service]} />
+                                <ServiceLabel>{service}</ServiceLabel>
+                              </Service>
+                            ))
+                          }
                       </ServicesWrapper>
                     </Collapsable>
                     : null
@@ -165,15 +168,15 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
   )
 }
 const Lista = styled.Text`
-    align-self: center;
-    font-size: 18px;
-    justify-content:center;
-    text-align:center;
-    padding-bottom: 5px;
-    color: ${props => (props.active == "true" ? "white" : "#000144")};
-    border-color:${(props) => props.active == "true" ? "white" : "#4A94EA"};
-    border-bottom-width:3px;
-    width:50%;
+  align-self: center;
+  font-size: 18px;
+  justify-content:center;
+  text-align:center;
+  padding-bottom: 5px;
+  color: ${props => (props.active == "true" ? "white" : "#000144")};
+  border-color:${(props) => props.active == "true" ? "white" : "#4A94EA"};
+  border-bottom-width:3px;
+  width:50%;
 `
 const StyledView = styled.View`
   margin: 10px 5px;
@@ -231,10 +234,24 @@ const ServicesWrapper = styled.View`
     overflow: hidden;
 `
 
-const Service = styled.Image`
+const Service = styled.View`
+    margin: 0 10px 5px;
+    height: 90px;
+`
+
+const ServiceImage = styled.Image`
     height: 50px;
     width: 50px;
-    margin: 0 10px 20px;
+    margin-bottom: 3px;
+`
+
+const ServiceLabel = styled.Text`
+    width: 50px;
+    font-size: 12px;
+    line-height: 12px;
+    text-transform: capitalize;
+    color: #333;
+    text-align: center;
 `
 
 const Capitalize = styled.Text`
