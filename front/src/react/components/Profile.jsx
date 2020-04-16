@@ -4,10 +4,11 @@ import styled from "styled-components/native";
 import { connect } from "react-redux";
 
 const Profile = ({ user, userInfo, navigation }) => {
+
   return (
     <ViewPrincipal>
       {user.id
-        ? <View style={{ marginTop: '18px' }}>
+        ? <View style={{ marginTop: 18 }}>
           <Wrapper>
             <ImgProfile source={require('../../public/icons/profile/icono_foto.png')} />
             <InfoContainer>
@@ -38,8 +39,8 @@ const Profile = ({ user, userInfo, navigation }) => {
             </InfoContainer>
 
             <Icon
-              margen={'20px'}
-              margenLeft={'2%'}
+              margen={20}
+              margenLeft={22}
               source={require('../../public/icons/edit.png')}
             />
           </Wrapper>
@@ -49,9 +50,7 @@ const Profile = ({ user, userInfo, navigation }) => {
             <Wrapper>
               <TouchableOpacity onPress={() => navigation.navigate('Root', { screen: "UserProperties" })}>
                 <IconPrincipal source={require('../../public/icons/profile/icono_publi_az.png')} />
-                <TextLink
-                >Mis Propiedades
-              </TextLink>
+                <TextLink>Mis Propiedades</TextLink>
               </TouchableOpacity>
             </Wrapper>
 
@@ -164,8 +163,8 @@ margin : 0 5px;
 const Icon = styled.Image`
 height: 20px;
 width: 20px;
-margin : ${props => props.margen}
-margin-left : ${props => props.margenLeft}
+margin: ${props => props.margen}px;
+margin-left: ${props => props.margenLeft}px;
 `
 const IconText = styled.Image`
 height: 15px;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import saveForm from "../../redux/actions/forms";
 import { connect } from 'react-redux'
 
-import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard } from 'react-native'
 import styled from "styled-components/native";
 import Button from "../ui/Button";
 
@@ -98,7 +98,7 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, value
   }, [form])
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
+    <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={{ height: "100%" }} enableOnAndroid={true}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 
         <ScrollView keyboardShouldPersistTaps='handled'>
@@ -193,8 +193,9 @@ const StyledInput = styled.TextInput`
 color : ${props => props.error == "true" ? "red" : "#262626"};
 padding-left : 12px;
 height: 35px;
-line-height: 35px;
+line-height: 25px;
 border-radius : 5px;
+padding: 5px 12px;
   flex:1;
 margin : 5px 0;
 background-color: white;
@@ -214,7 +215,6 @@ const View = styled.View`
 const DisabledButton = styled(Button)`
   background-color: transparent;
   color: #b2b2b2;
-  line-height: 30px;
   flex:1;
   flex:1;
   border: solid 1px #b2b2b2;

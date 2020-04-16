@@ -272,7 +272,7 @@ const PaginationText = styled.Text`
 `
 
 const Badge = styled.View`
-  height: 24px;
+  height: 28px;
   background-color: #F77171;
   padding: 4px;
   border-radius: 6px;
@@ -283,15 +283,14 @@ const Badge = styled.View`
 const BadgeText = styled.Text`
   font-size: 12px;
   color:white;
-  line-height: 16px;
-  flex: 1;
+  line-height: 20px;
   text-transform: capitalize;
   margin-right: 4px;
 `
 const BadgeRemove = styled.Image`
   margin-right: 4px;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
 `
 const BadgeWrapper = styled.View`
   width: 100%;
