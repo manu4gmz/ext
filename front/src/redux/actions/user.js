@@ -1,4 +1,4 @@
-import { LOGGED, USERPROPERTIES } from "../constants"
+import { LOGGED, USERPROPERTIES, USERFAVS, DELFAV, DELFAVS, ADDFAVORITE } from "../constants"
 import firebase from "../firebase";
 import axios from 'axios'
 
@@ -12,6 +12,25 @@ const setLoggedUser = (logged) => ({
 const userProperties = (properties) => ({
 	type: USERPROPERTIES,
 	properties
+});
+
+const addFavorite = (id) => ({
+	type: ADDFAVORITE,
+	id
+})
+const userFavorites = (favs) => ({
+	type: USERFAVS,
+	favs
+})
+
+const deleteFavorites = () => ({
+	type: DELFAVS,
+	
+})
+
+const deleteFavorite = (fav) => ({
+	type: DELFAV,
+	fav
 })
 
 export const getUser = (ifLogged, ifNotlogged) => dispatch => {
@@ -31,9 +50,37 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	});
 }
 
+//Agrega el favorito seleccionado
+export const addFav = (newFavs,userId,id) => dispatch => {
+	return axios.put(`https://ext-api.web.app/api/users/fav/${userId}`, { id })
+		.then(() => dispatch(addFavorite(newFavs)))
+		
+}
+//Te trae todos los ids de los espacios marcados como favoritos por el user
 export const fetchFav = (userId) => {
 	return axios.get(`https://ext-api.web.app/api/users/favs/${userId}`)
 		.then((data) => data)
+
+}
+//Te trae todos los espacios (completos) marcados como favortios por el user
+export const fetchFavs = (favoritos) => dispatch => {
+        return Promise.all(favoritos.map((spaceId) => {
+           axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
+            .then(res => dispatch(userFavorites(res.data)))
+		}))
+}
+//Elimina todos los favoritos del store
+export const deleteFavs = () => dispatch => {
+	return dispatch(deleteFavorites())
+}
+
+//Elimina el favorito seleccionado
+export const deleteFav = (favorites,id,userId) => dispatch => {
+	axios.put(`https://ext-api.web.app/api/users/favs/${userId}`, { id })
+      .then((data) => {
+		dispatch(deleteFavorite(favorites))
+      })
+	
 }
 
 export const fetchProperties = (userId) => dispatch => {

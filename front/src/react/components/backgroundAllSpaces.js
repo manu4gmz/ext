@@ -55,6 +55,8 @@ function mapBadge(filter, remove) {
 
 export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments, markers }) => {
   const [mode, setMode] = useState(false);
+
+  // console.log("favs", favs)
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -127,10 +129,10 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
                             </View>
                           </TouchableOpacity>
 
-                          <TouchableOpacity onPress={() => favorites(espacio.id, user.uid)}>
+                          <TouchableOpacity onPress={() => favorites(user.uid,espacio.id,espacio)}>
                             <Image
                               style={{ width: 30, height: 30, marginRight: 2 }}
-                              source={favs.includes(espacio.id) ? (require("../../public/icons/corazon-ro.png")) : (require("../../public/icons/corazon-ne.png"))}
+                              source={favs.some(fav=> fav.id == espacio.id) ? (require("../../public/icons/corazon-ro.png")) : (require("../../public/icons/corazon-ne.png"))}
                             />
                           </TouchableOpacity>
                         </View>
@@ -272,7 +274,7 @@ const PaginationText = styled.Text`
 `
 
 const Badge = styled.View`
-  height: 28px;
+  height: 24px;
   background-color: #F77171;
   padding: 4px;
   border-radius: 6px;
@@ -283,14 +285,15 @@ const Badge = styled.View`
 const BadgeText = styled.Text`
   font-size: 12px;
   color:white;
-  line-height: 20px;
+  line-height: 16px;
+  flex: 1;
   text-transform: capitalize;
   margin-right: 4px;
 `
 const BadgeRemove = styled.Image`
   margin-right: 4px;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 `
 const BadgeWrapper = styled.View`
   width: 100%;
