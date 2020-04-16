@@ -129,8 +129,8 @@ const TextoPrincipal = styled.Text`
     color:#E9E9E9;
     margin: 0 auto;
     padding-bottom:120px;
-    padding-top:30px
-    font-size:23px
+    padding-top:30px;
+    font-size:23px;
 `
 
 
@@ -145,7 +145,7 @@ border-radius: 30px;
 background-color: ${props => props.bg || "transparent"};
 padding-top:10px;
 margin:10px auto;
-text-align:center
+text-align:center;
 `
 const BotonGoogle = styled.Text`
     background-color: white;
