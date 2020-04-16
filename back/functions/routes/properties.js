@@ -288,6 +288,7 @@ router.get("/:page", (req, res) => {
         properties: properties.slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount),
         pages: maxPage,
         total: properties.length,
+        markers: properties.filter(a => a.location && a.location[0]).map(a => ({...a.location[0], id: a.id})),
       })
 
     })

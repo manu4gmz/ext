@@ -48,9 +48,7 @@ const PreviewSpace = ({route, navigation, addSpace}) => {
                 <TextoComun>{space.description}</TextoComun>
                 <TextoCaracteristicas>Caracteristicas especiales</TextoCaracteristicas>
                 <ServicesWrapper>
-                    <Service source={require("../../public/icons/ducha-ne.png")}/>
-                    <Service source={require("../../public/icons/toiletes-ne.png")}/>
-                    <Service source={require("../../public/icons/wifi-ne.png")}/>
+                    <Service source={require("../../public/icons/services/ducha.png")}/>
                 </ServicesWrapper>
                 <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
                 <Button mb="12px" bg="#2cca31" onPress={onSubmit}>Publicar espacio</Button>

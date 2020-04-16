@@ -13,7 +13,7 @@ import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
-import Map from "../components/map"
+import Map from "../components/map";
 
 
 
@@ -53,9 +53,8 @@ function mapBadge(filter, remove) {
 
 }
 
-export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments }) => {
+export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments, markers }) => {
   const [mode, setMode] = useState(false);
-
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -68,13 +67,16 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
           </Lista>
         </ListaYMapa>
 
-        <BadgeWrapper>
-          {
-            mapBadge(filter, removeFilter)
-          }
-        </BadgeWrapper>
         {
-          !loading ?
+          !mode ?
+          <BadgeWrapper>
+            {
+              mapBadge(filter, removeFilter)
+            }
+          </BadgeWrapper> : null
+        }
+        {
+          !loading && !mode ?
             <TextoBusquedas>
               {`${total} espacios encontrados`}
             </TextoBusquedas> : null
@@ -84,7 +86,7 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
       {
         !loading ?
 
-          <Wrapper>
+          !mode ? <Wrapper>
             {allSpaces.map((espacio, index) => {
               return (
                 <FadeInView key={index} order={index}>
@@ -184,6 +186,8 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
               }
             </PaginationWrapper>
           </Wrapper>
+          :
+          <Map navigation={navigation} allSpaces={{properties:allSpaces, markers}}></Map>
 
           : <Loading />
       }
