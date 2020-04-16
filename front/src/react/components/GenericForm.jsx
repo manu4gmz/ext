@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import saveForm from "../../redux/actions/forms";
 import { connect } from 'react-redux'
 
-import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native'
 import styled from "styled-components/native";
 import Button from "../ui/Button";
 
@@ -110,7 +110,7 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, value
   }
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
+    <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={{ height: "100%" }} enableOnAndroid={true}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 
         <ScrollView keyboardShouldPersistTaps='handled'>
@@ -183,34 +183,35 @@ const StyledView = styled.View`
 `
 
 const StyledTitles = styled.Text`
-color : #000144;
-text-transform: uppercase;
-padding-left : 12px;
-font-weight: 700;
-font-size: 12px;
+  color : #000144;
+  text-transform: uppercase;
+  padding-left : 12px;
+  font-weight: 700;
+  font-size: 12px;
 `
 
 const StyledText = styled.Text`
-color : #262626;
-padding-left : 3%;
+  color : #262626;
+  padding-left : 3%;
 `
 
 const SmallText = styled.Text`
-color : #262626;
-font-size : 12px;
-text-transform: lowercase;
+  color : #262626;
+  font-size : 12px;
+  text-transform: lowercase;
 `
 
 const StyledInput = styled.TextInput`
-color : ${props => props.error == "true" ? "red" : "#262626"};
-padding-left : 12px;
-height: 35px;
-line-height: 35px;
-border-radius : 5px;
+  color : ${props => props.error == "true" ? "red" : "#262626"};
+  padding-left : 12px;
+  height: 35px;
+  line-height: 25px;
+  border-radius : 5px;
+  padding: 5px 12px;
   flex:1;
-margin : 5px 0;
-background-color: white;
-border: solid 1px ${props => props.error == "true" ? "red" : "#bfbfbf"};
+  margin : 5px 0;
+  background-color: white;
+  border: solid 1px ${props => props.error == "true" ? "red" : "#bfbfbf"};
 `
 
 const DoubleWraper = styled.View`

@@ -49,13 +49,13 @@ const EditSpace = ({ navigation, editSpace, fetchLocalidades, fetchProvincias, r
 
   useEffect(()=>{
     fetchSpace(route.params.propertyId)
-    .then(({space}) => {
-      delete space["comments"];
-      delete space["userId"];
-      delete space["visible"];
-      delete space["verified"];
-      setValues(space);
+    .then((space) => {
       console.log(space)
+      if (space.comments) delete space.comments;
+      if (space.userId) delete space.userId;
+      delete space.visible;
+      delete space.verified;
+      setValues(space);
 
       Type.setValue(space.type)
       Services.setValue(space.services)
@@ -63,7 +63,6 @@ const EditSpace = ({ navigation, editSpace, fetchLocalidades, fetchProvincias, r
       Rules.setValue(space.rules)
       Descripcion.setValue(space.description)
 
-      //console.log(space.photos)
       setSpacePhotos(space.photos);
     })
   },[])
