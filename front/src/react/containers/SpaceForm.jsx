@@ -211,7 +211,9 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
           "Cafe/Infusiones",
           "Snacks",
           "Música",
-          "Vajilla"
+          "Vajilla",
+          "Baño",
+          "Ducha"
         ]}
       />
 

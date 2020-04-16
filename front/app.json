@@ -12,6 +12,10 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "web": { "barStyle": "black-translucent" },
+    "orientation": "portrait",
+    "icon": "./src/public/icons/icono_marker_az.png"
   }
 }
+

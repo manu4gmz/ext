@@ -9,7 +9,6 @@ import {
 } from 'react-native'
 import styled from "styled-components/native";
 import Carousel from "../components/Carousel";
-import { Rating } from 'react-native-ratings';
 import Boton from './../ui/Button'
 import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
@@ -64,15 +63,17 @@ const UserProperties = ({ propiedades, fetchProperties, user, navigation }) => {
                             : <Subtitulo>{`${espacio.neighborhood} - ${espacio.province} - ${espacio.size}mtr2`}</Subtitulo>
                           }
                           <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
-                            <Rating
-                              type='custom'
-                              ratingBackgroundColor='#c8c7c8'
-                              ratingCount={5}
-                              imageSize={15}
-                            />
                           </View>
                         </TouchableOpacity>
 
+                      </View>
+                      <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
+                        <TouchableOpacity onPress={() => navigation.navigate(`Comments`, { propertyId: espacio.id })}>
+                          <Text
+                            style={{ color: "grey", fontWeight: "bold", paddingLeft: 0, paddingTop: 10, paddingBottom: 10 }}
+                          >{`${(espacio.comments || "").length || 0}  Ver comentarios`}
+                          </Text>
+                        </TouchableOpacity>
                       </View>
                       <View style={{ flexDirection: "row" }}
                       >

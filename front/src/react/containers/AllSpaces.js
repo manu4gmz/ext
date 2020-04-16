@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import Axios from "axios";
 import { connect } from "react-redux";
 import BackgroundAllSpaces from "../components/backgroundAllSpaces";
 import { fetchSpaces } from "../../redux/actions/spaces"
@@ -53,8 +54,7 @@ function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, r
 
   function removeFilter(key) {
     const { query } = route.params;
-    delete query[key]
-    console.log(key, route.params.query);
+    delete query[key];
 
     setLoading(true);
     fetchSpaces(query, 1)

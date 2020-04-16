@@ -7,8 +7,6 @@ import HomeTabBar from "../components/HomeTabBar";
 import Navbar from './Navbar';
 
 const backgroundHome = ({ navigation, userInfo, user }) => {
-  console.log(user);
-
   return (
     <ImageBackground
       source={require('../../public/images/imagen_fondo1.jpg')}
