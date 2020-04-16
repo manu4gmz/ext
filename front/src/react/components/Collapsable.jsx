@@ -16,7 +16,7 @@ export default function Collpasable ({title, content, children, max, min}) {
     if (!content && !children) return null;
 
     return (
-        <View>
+        <View style={{overflow:"hidden"}}>
             <TitleRow>
                 <Titulo onPress={() => setToggle(!toggle)}>{title}</Titulo>
                 {

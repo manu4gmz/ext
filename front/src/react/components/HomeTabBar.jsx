@@ -11,25 +11,23 @@ export default ({ navigation }) => {
       <Tab>
         <TabIcon
           source={require('../../public/icons/settings.png')}
-          onPress={() => navigation.push("Settings")}
         />
       </Tab>
       <Tab>
         <TabIcon
           source={require('../../public/icons/history.png')}
-          onPress={() => navigation.push("History")}
         />
       </Tab>
       <Tab>
         <TabIcon
           source={require('../../public/icons/search.png')}
-          onPress={() => navigation.push("Search")}
+          onPress={() => navigation.push("SerchSpace")}
         />
       </Tab>
       <Tab>
         <TabIcon
           source={require('../../public/icons/user.png')}
-          onPress={() => navigation.push("Login")}
+          onPress={() => navigation.push("Profile")}
         />
       </Tab>
     </Footer>
