@@ -57,7 +57,7 @@ function mapBadge(filter, remove) {
 export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments }) => {
   const [mode, setMode] = useState(false);
 
-  console.log("favs", favs)
+  // console.log("favs", favs)
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -134,10 +134,10 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
                             </View>
                           </TouchableOpacity>
 
-                          <TouchableOpacity onPress={() => favorites(espacio.id, user.uid)}>
+                          <TouchableOpacity onPress={() => favorites(user.uid,espacio.id,espacio)}>
                             <Image
                               style={{ width: 30, height: 30, marginRight: 2 }}
-                              source={favs.includes(espacio.id) ? (require("../../public/icons/corazon-ro.png")) : (require("../../public/icons/corazon-ne.png"))}
+                              source={favs.some(fav=> fav.id == espacio.id) ? (require("../../public/icons/corazon-ro.png")) : (require("../../public/icons/corazon-ne.png"))}
                             />
                           </TouchableOpacity>
                         </View>

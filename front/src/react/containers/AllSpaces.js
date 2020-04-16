@@ -1,43 +1,35 @@
 import React, { useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
-
 import BackgroundAllSpaces from "../components/backgroundAllSpaces";
-//import { fetchId } from "../../redux/actions/spaces"
 import { fetchSpaces } from "../../redux/actions/spaces"
-import { fetchFav } from "../../redux/actions/user"
+import { fetchFav, fetchFavs,deleteFav, deleteFavs, addFav  } from "../../redux/actions/user"
 import Axios from "axios";
 
-
-// const AllSpaces = () => {
-function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
+function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, route, fetchSpaces,state,fetchFavs }) {
 
   const scrollView = useRef(null);
   const [loading, setLoading] = useState(true)
   const [spaces, setSpaces] = useState({ properties: [], total: 0, pages: 0 });
-  const [favs, setFavs] = useState([])
-  //const [index, setIndex] = useState(1);
 
   useEffect(() => {
+    if (!user) return;
+    deleteFavs()
+    fetchFav(user.uid)
+      .then((res) => {
+        fetchFavs(res.data.favoritos)
+      })
     fetchSpaces(route.params.query, route.params.index)
       .then(data => {
-        setLoading(false);
         setSpaces(data);
+        setLoading(false);
       });
-    if (!user) return;
-    fetchFav(user.uid)
-      .then(data => {
-        setFavs(data.data.favoritos)
-      })
   }, [])
-
-
 
   function setIndex(i) {
     navigation.push("AllSpaces", { query: route.params.query, index: i })
   }
 
   function sendId(id) {
-    //fetchId(id)
     return navigation.navigate(`SingleView`, { propertyId: id })
   }
 
@@ -45,20 +37,18 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
     return navigation.navigate(`Comments`, { propertyId: id })
   }
 
-  function favorites(id, userId) {
-    if (favs && favs.includes(id)) { Axios.delete(`https://ext-api.web.app/api/users/favs/${userId}`, { id })
-    .then(res => res.data)
-    .catch(error => console.log(error))};
-    
-    setFavs(favs => [...(favs || []), id])
-    
-    Axios
-      .put(`https://ext-api.web.app/api/users/fav/${userId}`, { id })
-      .then(res => res.data)
-      .catch(error => console.log(error))
-
-    // console.log(id,userId,"favorites")
-
+  function favorites (userId, id, espacio) {
+    let favoritos = state.user.favorites
+      if(favoritos.length && favoritos.some(fav=> fav.id == id)){
+        let newFavs =  favoritos.filter(fav => fav.id !== id)
+        deleteFavs()
+        deleteFav(newFavs, id, userId)
+        
+    } else {
+      let newFavs = [...favoritos, espacio]
+      addFav(newFavs,userId,id)      
+    }
+  
   }
 
   function removeFilter(key) {
@@ -73,16 +63,12 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
         setSpaces(data);
       });
 
-
-
   }
-
-
 
   return (
     <BackgroundAllSpaces
       allSpaces={spaces.properties}
-      favs={favs || []}
+      favs={state.user.favorites}
       user={user}
       total={spaces.total}
       pages={spaces.pages}
@@ -98,21 +84,25 @@ function AllSpaces({ allSpaces, user, navigation, route, fetchSpaces }) {
       showComments={showComments}
     />
   );
-}
+}  
 
 
 
 const mapStateToProps = (state, ownProps) => {
   return {
-
     allSpaces: state.spaces.allSpaces,
-    user: state.user.logged
+    user: state.user.logged,
+    state
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchSpaces: (query, index) => (dispatch(fetchSpaces(query, index)))
+    fetchFavs: (favoritos) => (dispatch(fetchFavs(favoritos))),
+    fetchSpaces: (query, index) => (dispatch(fetchSpaces(query, index))),
+    deleteFavs: () => (dispatch(deleteFavs())),
+    deleteFav: (favorites, id, userId) => (dispatch(deleteFav(favorites, id, userId))),
+    addFav: (newFavs,userId,id) => (dispatch(addFav(newFavs,userId,id)))
   }
 }
 

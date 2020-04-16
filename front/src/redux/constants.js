@@ -12,3 +12,7 @@ export const USERINFO = 'USERINFO';
 export const SET_PICTURES = "SET_PICTURES";
 export const USERPROPERTIES = 'USERPROPERTIES';
 export const SET_CENTROIDE = "SET_CENTROIDE";
+export const USERFAVS = "USERFAVS";
+export const DELFAV = "DELFAV"
+export const DELFAVS = "DELFAVS"
+export const ADDFAVORITE = "ADDFAVORITE"

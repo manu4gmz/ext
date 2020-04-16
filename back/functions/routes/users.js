@@ -116,16 +116,12 @@ router.put("/favs/:id", (req, res, next) => {
   console.log("fav", fav)
   db.collection("users").doc(id).get()
     .then((data) => {
-      // const newdata= data.data().favoritos.filter((favorito)=>{
-      //   return favorito !==fav })
-      const newdata = data.data()
-      console.log("new data 1", newdata)
-      const index = newdata.favoritos.indexOf(fav);
-      newdata.favoritos.splice(index, 1)
-      console.log("index", index)
-      const favfinal = [... new Set(newdata.favoritos)]
-      console.log("new data 2", newdata)
-      console.log("soy delete favfinal", favfinal)
+      const newdata= data.data().favoritos.filter((favorito)=>{
+        return favorito !==fav })
+      // const newdata = data.data()
+      // const index = newdata.favoritos.indexOf(fav);
+      // newdata.favoritos.splice(index, 1)
+      const favfinal = [... new Set(newdata)]
       db.collection("users").doc(id).update({ favoritos: favfinal })
         .then(() => db.collection("users").doc(id).get()
           .then((data) => data.data())
