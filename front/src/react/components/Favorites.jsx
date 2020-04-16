@@ -7,53 +7,44 @@ import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
+import { fetchFavs, deleteFav, deleteFavs, fetchFav } from "../../redux/actions/user"
 import { connect } from "react-redux";
-import { fetchFav } from "../../redux/actions/user";
 import Axios from "axios";
 
 
-function Favorites({ user, state }) {
-  const navigation = useNavigation();
 
-  const [favs, setFavs] = useState([])
+function Favorites({ user,fetchFavs, deleteFavs, deleteFav,state }) {
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(true)
 
-
-
   useEffect(() => {
+    deleteFavs()
     fetchFav(user.uid)
-      .then(data => {
-        return Promise.all(data.data.favoritos.map((spaceId) => {
-          return Axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
-            .then((data) => data.data)
-        }))
-
-          .then((data) => setFavs(data))
-          .then(() => setLoading(false))
+      .then((res) => {
+        fetchFavs(res.data.favoritos)
+        .then(()=>{
+          setTimeout(function(){ setLoading(false); }, 1500)
+          })
       })
   }, [])
 
-  function deleteFav(id, userId) {
-    console.log("IdFav", id)
-    setFavs([])
-    Axios.put(`https://ext-api.web.app/api/users/favs/${userId}`, { id })
-      .then((data) => {
-
-        data.data.favoritos.map((spaceId) => {
-          Axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
-            .then((data) => data.data)
-            .then((data) => setFavs(favs => [...favs, data]))
-            .then(() => setLoading(false))
-        })
-      })
+  function delFav(id, userId) { 
+    setLoading(true)
+    let newFavs =  state.user.favorites.filter(fav => fav.id !== id)
+    deleteFavs()
+    deleteFav(newFavs, id, userId)
+    setTimeout(function(){ setLoading(false); }, 2000)
+   
   }
 
   return (
+    
     <ScrollView>
-      {
+      {!loading && state.user.favorites.length ? (
+        
         !loading ?
           <Wrapper>
-            {favs.map((espacio, index) => {
+            {state.user.favorites.map((espacio, index) => {
               return (
                 <FadeInView key={index} order={index}>
                   <StyledView
@@ -100,7 +91,8 @@ function Favorites({ user, state }) {
                             </View>
                           </TouchableOpacity>
 
-                          <TouchableOpacity onPress={() => deleteFav(espacio.id, user.uid)}>
+                          <TouchableOpacity 
+                          onPress={() => delFav(espacio.id, user.uid)}>
                             <Image
                               style={{ width: 30, height: 30, marginRight: 2 }}
                               source={(require("../../public/icons/corazon-ro.png"))}
@@ -139,25 +131,15 @@ function Favorites({ user, state }) {
             })}
           </Wrapper>
           : <Loading />
-      }
+      ):(
+        !loading ? ( <Centered><Tit>Todavia no tenes favoritos!</Tit></Centered>):(<Loading />)
+       
+      )}
+      
     </ScrollView>
   )
 }
 
-
-const mapStateToProps = (state, ownProps) => {
-  // console.log(state)
-  return {
-    user: state.user.logged,
-    state
-  }
-}
-
-const ListaYMapa = styled.View`
-  background-color: #4a94ea;
-  flex-direction: row;
-  box-shadow: 0px 1px 20px grey;
-`
 const StyledView = styled.View`
   margin: 10px 5px;
   background-color: #F7F7F7;
@@ -170,8 +152,6 @@ const Wrapper = styled.View`
   width: 100%;
   padding: 0 8px;
   max-width: 500px;
-`
-const Thumbnail = styled.Image`
 `
 const ViewInfo = styled.View`
 padding: 18px;
@@ -192,23 +172,6 @@ const Subtitulo = styled.Text`
   color: grey;
   margin: 0 3px 3px 3px;
 `
-const Lista = styled.Text`
-  color: ${props => (props.active == "true" ? "white" : "#000144")};
-  align-self: center;
-  font-size: 18px;
-  justify-content: center;
-  text-align: center;
-  padding-bottom: 5px;
-  border-color: ${props => (props.active == "true" ? "white" : "#4A94EA")};
-  border-bottom-width: 3px;
-  width: 50%;
-`
-const TextoBusquedas = styled.Text`
-  font-size: 18px;
-  margin-left: 12px;
-  color: black;
-  font-weight: 600;
-`
 const Verified = styled.View`
 `
 const DoubleWraper = styled.View`
@@ -216,51 +179,31 @@ const DoubleWraper = styled.View`
   justify-content: space-between;
   margin-top: 12px;
 `
-
-const PaginationWrapper = styled.View`
+const Centered = styled.View`
   flex-direction: row;
   justify-content: center;
-  margin-bottom: 24px;
-`
-
-const PaginationText = styled.Text`
-  font-size: 14px;
-  color: #4082d1;
-  padding: 10px;
-  font-weight: ${p => p.bold == "true" ? 700 : 100};
-`
-
-const Badge = styled.View`
-  height: 24px;
-  background-color: #F77171;
-  padding: 4px;
-  border-radius: 6px;
-  flex-direction: row;
-  margin-bottom: 6px;
-  margin-right: 6px;
-`
-const BadgeText = styled.Text`
-  font-size: 12px;
-  color:white;
-  line-height: 16px;
-  flex: 1;
-  text-transform: capitalize;
-  margin-right: 4px;
-`
-const BadgeRemove = styled.Image`
-  margin-right: 4px;
-  width: 16px;
-  height: 16px;
-`
-const BadgeWrapper = styled.View`
   width: 100%;
-  flex-direction: row;
-  margin-top: 12px;
-  margin-bottom: 12px;
-  margin-left: 12px;
-  flex-wrap: wrap;
-<<<<<<< HEAD
+  align-items: center;
 `
+const Tit = styled.Text`
+  font-size: 20px;
+  font-weight: 100;
+  color: grey;
+  margin-top: 80px;
+`
+const mapStateToProps = (state, ownProps) => {
+  return {
+    user: state.user.logged,
+    state
+  }
+}
 
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    fetchFavs: (favoritos) => (dispatch(fetchFavs(favoritos))),
+    deleteFavs: () => (dispatch(deleteFavs())),
+    deleteFav: (favorites, id, userId) => (dispatch(deleteFav(favorites, id, userId)))
+  }
+}
 
-export default connect(mapStateToProps, null)(Favorites);
+export default connect(mapStateToProps, mapDispatchToProps)(Favorites);

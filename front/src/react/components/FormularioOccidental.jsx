@@ -6,7 +6,6 @@ import Boton from '../ui/Button'
 
 export default ({ alerta, user, handlerNombre, handlerApellido, handlerTel, handlerDireccion, nombre, apellido, tel, direccion, submit
 }) => {
-  console.log(user, "Aca esta el usuario ")
   return (
     <Wrapper >
       <StyledView

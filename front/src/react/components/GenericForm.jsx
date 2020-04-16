@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import saveForm from "../../redux/actions/forms";
 import { connect } from 'react-redux'
 
-import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native'
 import styled from "styled-components/native";
 import Button from "../ui/Button";
 
@@ -29,20 +29,20 @@ const validate = debounce((value, name, validation, setForm) => {
   setForm((form) => ({ ...form, [name]: { value: form[name].value, error, edited: true } }))
 }, 1000);
 
-function useInput({title, name, placeholder, validation, index, element}, form, setForm, inline) {
+function useInput({ title, name, placeholder, validation, index, element }, form, setForm, inline) {
 
   const field = form[name] || {};
 
   if (typeof element == "function") return (
-    <View key={index} style={{ zIndex: 40-index }}>
+    <View key={index} style={{ zIndex: 40 - index }}>
       {
         element({
           title: (title) => <StyledTitles>{title.split("#")[0]}{title.split("#")[1] ? <SmallText>{title.split("#")[1]}</SmallText> : null}{title.split("#")[2] || null}</StyledTitles>,
           value: (form[name] || "").value,
-          onChange: name ? (value,error=null)=>{
+          onChange: name ? (value, error = null) => {
 
             if (typeof value == "function") setForm(value);
-            else setForm(form => ({...form, [name]:{value, error, edited: true }}));
+            else setForm(form => ({ ...form, [name]: { value, error, edited: true } }));
           } : setForm,
           index
         })
@@ -72,12 +72,12 @@ function useInput({title, name, placeholder, validation, index, element}, form, 
 }
 
 const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, values }) => {
-  
-  const parsedInitialState = values ? Object.keys(values).reduce((acc, key) => ({...acc, [key]: { value: values[key], error:null }}),{}) : {};
-  
+
+  const parsedInitialState = values ? Object.keys(values).reduce((acc, key) => ({ ...acc, [key]: { value: values[key], error: null } }), {}) : {};
+
   const [form, setForm] = useState(parsedInitialState);
 
-  const checkRequired = ({title, name, validation}) => {
+  const checkRequired = ({ title, name, validation }) => {
     if (typeof title == "string" && title[title.length - 1] == "*") return name;
     else if (typeof validation == "function" && !validation("")) return name;
     return false;
@@ -97,21 +97,20 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, value
           }
         </DoubleWraper>
         :
-        useInput({...field, index: i}, form, setForm, inline)
+        useInput({ ...field, index: i }, form, setForm, inline)
     )
   }
 
   useEffect(() => {
-    console.log(form)
   }, [form])
 
-  function handleSubmit () {
-    const data = Object.keys(form).reduce((acc, key) => key && form[key].edited ? ({ ...acc, [key]:form[key].value }) : acc,{})
+  function handleSubmit() {
+    const data = Object.keys(form).reduce((acc, key) => key && form[key].edited ? ({ ...acc, [key]: form[key].value }) : acc, {})
     onSubmit(data);
   }
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ height: "100%" }} enableOnAndroid={true}>
+    <KeyboardAvoidingView behavior={Platform.OS == "ios" ? "padding" : "height"} style={{ height: "100%" }} enableOnAndroid={true}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 
         <ScrollView keyboardShouldPersistTaps='handled'>
@@ -184,34 +183,35 @@ const StyledView = styled.View`
 `
 
 const StyledTitles = styled.Text`
-color : #000144;
-text-transform: uppercase;
-padding-left : 12px;
-font-weight: 700;
-font-size: 12px;
+  color : #000144;
+  text-transform: uppercase;
+  padding-left : 12px;
+  font-weight: 700;
+  font-size: 12px;
 `
 
 const StyledText = styled.Text`
-color : #262626;
-padding-left : 3%;
+  color : #262626;
+  padding-left : 3%;
 `
 
 const SmallText = styled.Text`
-color : #262626;
-font-size : 12px;
-text-transform: lowercase;
+  color : #262626;
+  font-size : 12px;
+  text-transform: lowercase;
 `
 
 const StyledInput = styled.TextInput`
-color : ${props => props.error == "true" ? "red" : "#262626"};
-padding-left : 12px;
-height: 35px;
-line-height: 35px;
-border-radius : 5px;
+  color : ${props => props.error == "true" ? "red" : "#262626"};
+  padding-left : 12px;
+  height: 35px;
+  line-height: 25px;
+  border-radius : 5px;
+  padding: 5px 12px;
   flex:1;
-margin : 5px 0;
-background-color: white;
-border: solid 1px ${props => props.error == "true" ? "red" : "#bfbfbf"};
+  margin : 5px 0;
+  background-color: white;
+  border: solid 1px ${props => props.error == "true" ? "red" : "#bfbfbf"};
 `
 
 const DoubleWraper = styled.View`

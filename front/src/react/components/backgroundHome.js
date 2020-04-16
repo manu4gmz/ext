@@ -7,8 +7,6 @@ import HomeTabBar from "../components/HomeTabBar";
 import Navbar from './Navbar';
 
 const backgroundHome = ({ navigation, userInfo, user }) => {
-  console.log(user);
-
   return (
     <ImageBackground
       source={require('../../public/images/imagen_fondo1.jpg')}
@@ -70,7 +68,7 @@ const backgroundHome = ({ navigation, userInfo, user }) => {
             <Button
               bg="#4A94EA"
               color="#F7F7F7"
-              mb="3%"
+              mb="5px"
             >Invita amigos y gana!
             </Button>
           </View>

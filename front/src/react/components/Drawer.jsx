@@ -135,7 +135,7 @@ function Root() {
     }
   });
   return (
-    <Stack.Navigator inicialRouteName="Home">
+    <Stack.Navigator inicialRouteName="Home" screenOptions={{ gestureEnabled: false }}>
       <Stack.Screen
         name="Home"
         component={HomePage}
@@ -179,7 +179,7 @@ function Root() {
       <Stack.Screen
         name="SingleView"
         component={SingleViewPage}
-        options={({ header: () => null }, titulo("Single view"))}
+        options={({ header: () => null }, titulo("Detalles de espacio"))}
       />
       <Stack.Screen
         name="AllSpaces"
@@ -206,14 +206,14 @@ function Root() {
         component={CommentsContainer}
         options={{ header: () => null }, titulo("Comments")}
       />
-      <Stack.Screen 
-        name="UserProperties" 
-        component={UserProperties} 
+      <Stack.Screen
+        name="UserProperties"
+        component={UserProperties}
         options={{ header: () => null }, titulo("Mis Propiedades")}
       />
-      <Stack.Screen 
-        name="EditSpace" 
-        component={EditSpace} 
+      <Stack.Screen
+        name="EditSpace"
+        component={EditSpace}
         options={{ header: () => null }, titulo("Editar espacio")}
       />
       <Stack.Screen

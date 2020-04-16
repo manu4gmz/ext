@@ -4,6 +4,8 @@ import styled from "styled-components/native"
 import Button from "../ui/Button";
 import { addSpace } from '../../redux/actions/spaces'
 import { connect } from 'react-redux'
+import SingleView from "../components/SingleView";
+
 
 /*
     const space = {
@@ -18,44 +20,22 @@ import { connect } from 'react-redux'
 */
 
 const PreviewSpace = ({route, navigation, addSpace}) => {
-    const [mode, setMode] = useState(false)
-    const [form, setForm] = useState(space)
-
+    
     const { space, propertyId } = route.params;
 
     function onSubmit () {
-        navigation.navigate("UploadingFiles", { images: space.photos, propertyId })
+        navigation.popToTop();
+        navigation.navigate("UploadingFiles", { images: space.photos, propertyId });
     }
 
     return (
-        <ScrollView>
-            <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
-                <Lista active={(!mode) + ""} onPress={() => setMode(false)}>Lista</Lista>
-                <Lista active={(mode) + ""} onPress={() => setMode(true)}>Mapa</Lista>
-            </View>
-            <View style={{ width: "100%", alignItems: "center" }}>
-                {
-                    space.photos && space.photos.length ? (<Image source={{ uri: space.photos[0] }}
-                    style={{ width: 400, height: 400 }} />) 
-                    : <NoPhotos>No hay fotos para mostrar</NoPhotos>
-                }
-
-            </View>
-            <Container>
-                <TextoPrecio>${space.price}</TextoPrecio>
-                <TextoNegro>{space.title} - <Capitalize>{space.neighborhood}</Capitalize></TextoNegro>
-                <TextoGrande>{space.size} mtr2 - {space.type}</TextoGrande>
-                <TextoComun>{space.description}</TextoComun>
-                <TextoCaracteristicas>Caracteristicas especiales</TextoCaracteristicas>
-                <ServicesWrapper>
-                    <Service source={require("../../public/icons/ducha-ne.png")}/>
-                    <Service source={require("../../public/icons/toiletes-ne.png")}/>
-                    <Service source={require("../../public/icons/wifi-ne.png")}/>
-                </ServicesWrapper>
-                <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
-                <Button mb="12px" bg="#2cca31" onPress={onSubmit}>Publicar espacio</Button>
-            </Container>
-        </ScrollView>
+        <SingleView
+            space={{...space, photos: space.photos.map(pic => pic.uri)}}
+            loading={false}
+            preview={true}
+        >
+            <Button mb="12px" bg="#2cca31" onPress={onSubmit}>Publicar espacio</Button>
+        </SingleView>
     )
 }
 

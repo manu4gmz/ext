@@ -11,11 +11,10 @@ const AddPhotos = ({ title, text, navigation, onChange, removePicture, addPictur
 	}, [pictures])
 
 	useEffect(() => {
-		console.log("PALABRAS QUE LE LEGAN AL ADDPHOTOS JEJE\n",images);
-		setPictures(images ? images.map(uri => ({uri})) : [])
+		setPictures(images ? images.map(uri => ({ uri })) : [])
 
 
-		window.addPhoto = (pic) => addPicture({uri:pic})
+		window.addPhoto = (pic) => addPicture({ uri: pic })
 	}, [images])
 
 	return <View>

@@ -74,7 +74,7 @@ router.get("/singleSpace/:id", (req, res, next) => {
       const final = data.data()
       final.id = data.id
       res.status(200)
-      
+
         .json(final)
     })
     .catch(next)
@@ -108,7 +108,6 @@ router.delete("/deleteSpace/:id", (req, res, next) => {
 router.put('/update/:id', (req, res, next) => {
   const id = req.params.id
   const body = req.body
-  console.log(body)
   const update = {};
 
   const dataTypes = {
@@ -163,7 +162,6 @@ router.put('/update/:id', (req, res, next) => {
 router.put('/coordenadas/:id', (req, res, next) => {
   const id = req.params.id
   const propiedad = req.body
-  console.log(req.body, "Este es el req body antes de updatear")
   db.collection('properties').doc(id).get()
     .then((data) => {
 
@@ -184,27 +182,20 @@ router.get('/comments/:id', (req, res, next) => {
   db.collection("properties").doc(id).get()
     .then(data => {
       let comentarios = data.data().comments;
-      let habilitado = true
+      // let habilitado = true
 
-      //Si el user ya comento va a devolverle un se
-      comentarios.forEach(elemento => {
-        if (elemento.userId === req.body.userId) habilitado = false
-      })
-
-      // let habilitado = comments.forEach(elemento => {
-      //   let resultado = true;
-      //   if (elemento.userId === req.body.userId) {
-      //     resultado =  false
-      //   }
-      //   return resultado
+      // //Si el user ya comento va a devolverle un se
+      // comentarios.forEach(elemento => {
+      //   if (elemento.userId === req.body.userId) habilitado = false
       // })
-
       res.status(200)
-        .json({ comentarios, habilitado })
+        // .json({ comentarios, habilitado })
+        .json(comentarios)
     })
     .catch(next)
 })
 
+// RUTA PARA INGRESAR NUEVO COMENTARIO
 router.put('/comments/:id', (req, res, next) => {
 
   const id = req.params.id
@@ -212,28 +203,51 @@ router.put('/comments/:id', (req, res, next) => {
   db.collection("properties").doc(id).get()
     .then(data => {
       let comentarios = data.data().comments;
-
-      //que no se pueda pedir un put si un comment con ese userId existe
-      // comentarios.forEach(elemento => {
-      //   if (elemento.userId === req.body.userId) res.sendStatus(400)
-      // })
-
       let newComment = {
         "userId": req.body.userId,
         "comment": req.body.comment,
-        "rating": req.body.rating,
+        "nombre": req.body.nombre,
         "habilitado": true
       }
-
       comentarios.push(newComment)
-
       db.collection('properties').doc(id).update({ comments: comentarios })
         .then(data => {
-          res.sendStatus(201)
+
+          db.collection("properties").doc(id).get()
+            .then(data => {
+              let comentarios = data.data().comments;
+              res.status(200).send(comentarios)
+            })
+
+        })
+        .catch(next)
+    })
+})
+
+//Respuesta del dueño, pasa el id de la propiedad por propertyId, y el indice del comment por commentIndex
+router.put('/response', (req, res, next) => {
+  let { propertyId, commentIndex } = req.query
+
+  db.collection("properties").doc(propertyId).get()
+    .then(data => {
+
+      let comentarios = data.data().comments;
+
+      comentarios[commentIndex].response = req.body.response
+
+      db.collection('properties').doc(propertyId).update({ comments: comentarios })
+        .then(data => {
+
+          db.collection("properties").doc(propertyId).get()
+            .then(data => {
+              let comentarios = data.data().comments;
+              res.status(200).send(comentarios)
+            })
+
         })
     })
-    // .then(() => { db.collection('properties').doc(id).update({ comments: comments }) })
     .catch(next)
+  // res.send({ 'La propiedad en la que esta el comment': propertyId, 'El comment al que se quiere responder': commentIndex })
 })
 
 
@@ -274,6 +288,7 @@ router.get("/:page", (req, res) => {
         properties: properties.slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount),
         pages: maxPage,
         total: properties.length,
+        markers: properties.filter(a => a.location && a.location[0]).map(a => ({...a.location[0], id: a.id})),
       })
 
     })
