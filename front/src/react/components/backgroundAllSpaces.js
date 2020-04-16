@@ -55,11 +55,8 @@ function mapBadge(filter, remove) {
 
 export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments, markers }) => {
   const [mode, setMode] = useState(false);
-<<<<<<< HEAD
 
   // console.log("favs", favs)
-=======
->>>>>>> 075ac0ae20be767282c4e95b38fda08832e25232
   return (
     <ScrollView ref={scrollView}>
       <View>
@@ -277,7 +274,7 @@ const PaginationText = styled.Text`
 `
 
 const Badge = styled.View`
-  height: 28px;
+  height: 24px;
   background-color: #F77171;
   padding: 4px;
   border-radius: 6px;
@@ -288,14 +285,15 @@ const Badge = styled.View`
 const BadgeText = styled.Text`
   font-size: 12px;
   color:white;
-  line-height: 20px;
+  line-height: 16px;
+  flex: 1;
   text-transform: capitalize;
   margin-right: 4px;
 `
 const BadgeRemove = styled.Image`
   margin-right: 4px;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 `
 const BadgeWrapper = styled.View`
   width: 100%;

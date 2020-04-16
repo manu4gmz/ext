@@ -114,19 +114,12 @@ router.put("/favs/:id", (req, res, next) => {
   const fav = req.body.id
   db.collection("users").doc(id).get()
     .then((data) => {
-<<<<<<< HEAD
       const newdata= data.data().favoritos.filter((favorito)=>{
         return favorito !==fav })
       // const newdata = data.data()
       // const index = newdata.favoritos.indexOf(fav);
       // newdata.favoritos.splice(index, 1)
       const favfinal = [... new Set(newdata)]
-=======
-      const newdata = data.data()
-      const index = newdata.favoritos.indexOf(fav);
-      newdata.favoritos.splice(index, 1)
-      const favfinal = [... new Set(newdata.favoritos)]
->>>>>>> 075ac0ae20be767282c4e95b38fda08832e25232
       db.collection("users").doc(id).update({ favoritos: favfinal })
         .then(() => db.collection("users").doc(id).get()
           .then((data) => data.data())
