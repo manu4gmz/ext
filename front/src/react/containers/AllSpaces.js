@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import BackgroundAllSpaces from "../components/backgroundAllSpaces";
 import { fetchSpaces } from "../../redux/actions/spaces"
 import { fetchFav, fetchFavs,deleteFav, deleteFavs, addFav  } from "../../redux/actions/user"
-import Axios from "axios";
 
 function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, route, fetchSpaces,state,fetchFavs }) {
 
@@ -13,17 +12,17 @@ function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, r
   const [spaces, setSpaces] = useState({ properties: [], total: 0, pages: 0 });
 
   useEffect(() => {
-    if (!user) return;
+    fetchSpaces(route.params.query, route.params.index)
+    .then(data => {
+      setSpaces(data);
+      setLoading(false);
+    });
+    if (!user.uid) return;
     deleteFavs()
     fetchFav(user.uid)
       .then((res) => {
         fetchFavs(res.data.favoritos)
       })
-    fetchSpaces(route.params.query, route.params.index)
-      .then(data => {
-        setSpaces(data);
-        setLoading(false);
-      });
   }, [])
 
   function setIndex(i) {

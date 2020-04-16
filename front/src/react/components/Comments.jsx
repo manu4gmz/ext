@@ -14,8 +14,8 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser
             ? comments.map((a, index) => {
               if (a.userId === user.id) { existe = true }
               return (
-                <View>
-                  <Card key={index}>
+                <View key={index}>
+                  <Card>
                     <TouchableOpacity onPress={() => redirectToUser(a.userId)}>
                       <Text style={{ fontWeight: "bold", textDecorationLine: "underline" }}>
                         {a.nombre || "Anonymous"}
@@ -68,7 +68,7 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser
             })
             : null}
         </View>
-        {user ?
+        { user.id ?
           (
             existe ?
               (
