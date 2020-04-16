@@ -179,7 +179,7 @@ function Root() {
       <Stack.Screen
         name="SingleView"
         component={SingleViewPage}
-        options={({ header: () => null }, titulo("Single view"))}
+        options={({ header: () => null }, titulo("Detalles de espacio"))}
       />
       <Stack.Screen
         name="AllSpaces"

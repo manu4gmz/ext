@@ -3,11 +3,13 @@ import { StyleSheet, Text, View, Image, TextInput, Animated, Dimensions, ScrollV
 import styled from "styled-components/native";
 import { FlingGestureHandler, Directions } from 'react-native-gesture-handler';
 import Boton from './../ui/Button'
+import Icon from './../ui/Icon'
 import qs from 'qs'
 import Carousel from "../components/Carousel";
 import Loading from "../components/Loading";
 import MapView from 'react-native-maps';
 import Map from "../components/map";
+import Collapsable from "../components/Collapsable";
 
 const icons = {
     "Aire Acondicionado":require("../../public/icons/services/airconditioner.png"),
@@ -23,14 +25,8 @@ const icons = {
 
 export default ({ space, loading, allSpaces, navigation, propietario, edit, handleEdit }) => {
   const [mode, setMode] = useState(false)
+  const [services, setServices ] = useState(false);
 
-  const [observations, setObservations] = useState(false);
-  const [rules, setRules] = useState(false);
-  const [services, setServices] = useState(false);
-  const [ubication, setUbication] = useState(false)
-
-  const spaceDescription = <Text>{space.description}</Text>
-  const spaceRules = <Text>{space.rules}</Text>
   const spaceUbication = <Text>{space.street} {space.streetNumber}</Text>
 
   if (loading) return <Loading />
@@ -57,14 +53,23 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
 
   return (
     <ScrollView>
-      <View>
         <View style={{ backgroundColor: "#4A94EA", flexDirection: "row" }}>
           <Lista active={(!mode) + ""} onPress={() => (setMode(false))}>Lista</Lista>
           <Lista active={(mode) + ""} onPress={() => (setMode(true))}>Mapa</Lista>
         </View>
+        
           {!mode ? (
-            <View>
-              <Carousel images={space.photos || []} />
+             <Wrapper>
+             <StyledView style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
+             <View style={{
+                width: '100%',
+                height: (space.photos || []).length ? 250 : "auto",
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+                overflow: "hidden"
+              }} >
+                <Carousel images={space.photos || []} />
+              </View>
               <Container>
                 <Titulo>{space.title}</Titulo>
                   {space.province === 'ciudad autónoma de buenos aires'
@@ -77,48 +82,53 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                   </View>
                   <Divider />
                   <TextoComun>{space.description}</TextoComun>
-                  <TextoCaracteristicas onPress={() => setServices(!services)}>Servicios</TextoCaracteristicas>
-                  <ServicesWrapper height={services}>
-                      {
-                          (space.services || []).map((service, i) => (
+                  {
+                    (space.services || []).length ?
+                    <Collapsable title="Servicios" min={70} max={Math.ceil((space.services || []).length/4)*70}>
+                      <ServicesWrapper height={services}>
+                          {
+                            (space.services || []).map((service, i) => (
                               <Service key={i} source={icons[service]} />
-                          ))
-                      }
-                  </ServicesWrapper>
-                  <View>
-                    <Titulo onPress={() => setObservations(!observations)}>Observaciones</Titulo>
-                    {observations ? <ToggleableWrapper>
-                        <Divider/>
-                        <Text>{space.observations}</Text>
-                      </ToggleableWrapper> : null}
-                  </View>
-                  <View>
-                    <Titulo onPress={() => setRules(!rules)}>Reglas</Titulo>
-                    {rules ? <ToggleableWrapper>
-                        <Divider/>
-                        <Text>{space.rules}</Text>
-                      </ToggleableWrapper> : null}
-                  </View>
-                  <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
-                  <MapView style={styles.mapStyle}
-                      initialRegion={{
-                          latitude: Number(space.location[0].lat),
-                          longitude: Number(space.location[0].lng),
-                          latitudeDelta: 0.0922,
-                          longitudeDelta: 0.0421,
-                      }}>
-                      <MapView.Marker
-                        coordinate={{
-                          latitude: Number(space.location[0].lat),
-                          longitude: Number(space.location[0].lng),
-                        }}
-                      >
-                          <Image
-                              style={{ width: 40, height: 50 }}
-                              source={require("../../public/icons/icono_marker_az.png")}
-                          />
-                      </MapView.Marker>
-                  </MapView>
+                              ))
+                            }
+                      </ServicesWrapper>
+                    </Collapsable>
+                    : null
+                  }
+                  <Collapsable title="Observaciones" content={space.observations}/>
+                  <Collapsable title="Reglas" content={space.rules}/>
+
+                  {
+                    space.location && space.location[0] ? 
+                    <View>
+                      <TextoCaracteristicas>Ubicacion</TextoCaracteristicas>
+                      <Location>
+                        <Image style={{width:25, height: 25}} source={require("../../public/icons/location.png")}/>
+                        <LocationText>{space.street} {space.streetNumber},  {space.neighborhood}, <Capitalize>{space.province === 'ciudad autónoma de buenos aires'
+                    ? "capital federal" : space.province}</Capitalize></LocationText>
+                      </Location>
+                      <MapView style={styles.mapStyle}
+                          initialRegion={{
+                            latitude: Number(space.location[0].lat),
+                              longitude: Number(space.location[0].lng),
+                              latitudeDelta: 0.0922,
+                              longitudeDelta: 0.0421,
+                          }}>
+                          <MapView.Marker
+                            coordinate={{
+                              latitude: Number(space.location[0].lat),
+                              longitude: Number(space.location[0].lng),
+                            }}
+                          >
+                              <Image
+                                  style={{ width: 40, height: 50 }}
+                                  source={require("../../public/icons/icono_marker_az.png")}
+                              />
+                          </MapView.Marker>
+                      </MapView>
+                    </View>
+                    : null
+                  }
                   <DoubleWraper>
                       <Boton
                           onPress={() =>
@@ -143,14 +153,15 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                       </Boton>
                   </DoubleWraper>
                 </Container>
-            </View>
+           </StyledView>
+              </Wrapper>
           ) 
           : 
-          <Map navigation={navigation} allSpaces={allSpaces} centroide={space.location[0]}></Map>
+          <Map navigation={navigation} allSpaces={allSpaces} centroide={space.location && space.location[0]}></Map>
           
           }
-      </View>
-    </ScrollView >
+        
+    </ScrollView>
   )
 }
 const Lista = styled.Text`
@@ -199,14 +210,12 @@ const Divider = styled.View`
 
 `
 
-const ToggleableWrapper = styled.View`
-  margin-bottom: 15px;
-`
+
 
 const TextoComun = styled.Text`
 font-size: 13px;
 font-weight: 600;
-margin: 0 3px 3px 3px;
+margin-bottom: 10px;
 `
 
 const TextoCaracteristicas = styled.Text`
@@ -220,7 +229,6 @@ const ServicesWrapper = styled.View`
     width: 100%;
     flex-wrap: wrap;
     overflow: hidden;
-    height: ${p=>p.height ? "auto" : "70px"};
 `
 
 const Service = styled.Image`
@@ -245,6 +253,18 @@ margin: 3% 0px;
 const Span = styled.Text`
     font-weight: 200;
     font-size: 12px;
+`
+
+const Location = styled.View`
+  flex-direction: row;
+  height: 30px;
+  margin-bottom: 12px;
+`
+
+const LocationText = styled.Text`
+  font-size: 12px;
+  flex:1;
+  align-self: center;
 `
 
 const styles = StyleSheet.create({
