@@ -48,7 +48,6 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
     function sendId(id) {
         return navigation.navigate(`SingleView`, { propertyId: id })
     }
-    console.log("update", centroide)
     //const [vw, vh] = [100, 120];
     const { width: vw, height: vh } = Dimensions.get("window");
     return (
@@ -67,12 +66,6 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
                         <MapView.Marker
                             key={index}
                             identifier={property.id}
-                            ref={marker => {
-                                console.log(marker)
-                                /*marker.addEventListener("click",()=>{
-                                    console.log("dou")
-                                })*/
-                            }}
                             onClick={(e)=>handleMarkerPress(e, property.id)}
                             onPress={(e)=>handleMarkerPress(e, property.id)}
                             coordinate={{

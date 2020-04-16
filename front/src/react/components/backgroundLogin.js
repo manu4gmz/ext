@@ -38,17 +38,18 @@ export default ({ Username, Password, onChangePassword, onChangeUser, Onsubmit, 
                     <BotonIngresar onPress={Onsubmit} bg="">Ingresar</BotonIngresar>
                     : <BotonIngresar bg="#000144" color="#E9E9E9" onPress={Onsubmit}>Ingresar</BotonIngresar>
                 }
-                <BotonGoogle title=" Inquilino" onPress={OnsubmitGoogle}>Ingresar con google</BotonGoogle>
 
-                <BotonGoogle title=" Inquilino" onPress={OnsubmitFacebook}>Ingresar con facebook</BotonGoogle>
+                <TextRow>
+                    <Divider />
+                    <LoginMethods>O ingresa con</LoginMethods>
+                    <Divider />
+                </TextRow>
+                <DoubleWrapper>
+                    <BotonGoogle title=" Inquilino" onPress={OnsubmitGoogle} style={{marginRight: 6}}>Google</BotonGoogle>
+                    <BotonGoogle title=" Inquilino" onPress={OnsubmitFacebook} style={{marginLeft: 6}}>Facebook</BotonGoogle>
+                </DoubleWrapper>
 
-                <RememberPassword>¿Olvido su contraseña? </RememberPassword>
-                <BotonRegistrarse
-                    title="Registrarse"
-                    onPress={() => navigation.navigate('Register')}
-                >Registrarse
-                </BotonRegistrarse>
-
+                <WhiteText onPress={() => navigation.navigate('Register')}>Creá tu cuenta</WhiteText>
             </View>
 
         </ImageBackground >
@@ -60,6 +61,11 @@ const Icon = styled.Image`
     width: 20px;
     margin-left: 25px;
     position: absolute;
+`
+
+const DoubleWrapper = styled.View`
+    flex-direction: row;
+    width: 250px;
 `
 
 const styles = StyleSheet.create({
@@ -115,7 +121,7 @@ const styles = StyleSheet.create({
 })
 
 const Error = styled.Text`
-    font-size: 15px;
+    font-size: 12px;
     color: tomato;
 `
 
@@ -127,11 +133,7 @@ const TextoPrincipal = styled.Text`
     font-size:23px
 `
 
-const RememberPassword = styled.Text`
-    color:#E9E9E9;
-    margin: 0 auto;
-    font-size:15px;
-`
+
 
 const BotonIngresar = styled.Text`
 color: ${props => props.color || "#262626"};
@@ -146,27 +148,55 @@ margin:10px auto;
 text-align:center
 `
 const BotonGoogle = styled.Text`
-background-color : white;
-color: #262626;
-height: 40px;
-width: 250px;
-border-color:#E9E9E9;
-border-width: 1px;
-border-radius: 30px;
-padding-top:10px;
-margin:10px auto;
-text-align:center
+    background-color: white;
+    color: #262626;
+    flex-grow: 1;
+    height: 40px;
+    width: 250px;
+    border-color: #E9E9E9;
+    border-width: 1px;
+    border-radius: 30px;
+    padding-top: 10px;
+    margin: 10px auto;
+    text-align: center;
 `
 
 const BotonRegistrarse = styled.Text`
-color: #262626;
-height: 40px;
-width: 250px;
-borderColor:#262626
-;
-borderWidth: 1px;
-borderRadius: 30px;
-paddingTop:10px;
-margin:10px auto;
-textAlign:center
+    color: #262626;
+    height: 40px;
+    width: 250px;
+    border-color:#262626;
+    border-width: 1px;
+    border-radius: 30px;
+    padding-top:10px;
+    margin: 10px auto;
+    text-align: center;
+`
+const Divider = styled.View`
+  height: 1px;
+  background-color: white;
+  flex: 1;
+  align-self: center;
+`
+
+const TextRow = styled.View`
+    flex-direction: row;
+    width: 220px;
+  flex-grow: 1;
+
+`
+const LoginMethods = styled.Text`
+    color:#E9E9E9;
+    margin: 0 auto;
+    font-size: 12px;
+    width: 90px;
+  text-align: center;
+
+`
+
+const WhiteText = styled.Text`
+font-size: 14px;
+  text-align: center;
+    color:#E9E9E9;
+
 `
