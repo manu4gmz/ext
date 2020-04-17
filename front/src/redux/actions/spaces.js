@@ -92,7 +92,7 @@ export const editSpace = (propertyId, body) => (dispatch, getState) => {
 
 export const fetchComments = id => (dispatch) => {
     return axios
-        .get(`http://localhost:5000/ext-api/us-central1/app/api/properties/comments/${id}`)
+        .get(`https://ext-api.web.app/api/properties/comments/${id}`)
         .then(res => res.data)
         .then(data => dispatch(allComments(data)))
 }

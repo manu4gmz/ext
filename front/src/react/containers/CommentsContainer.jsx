@@ -7,7 +7,7 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment, route, user, n
   useEffect(() => {
     fetchSpace(route.params.propertyId);
     fetchComments(route.params.propertyId)
-  }, []);
+  }, [route.params.propertyId]);
 
   const [comment, setComment] = useState("");
   const [response, setResponse] = useState("")

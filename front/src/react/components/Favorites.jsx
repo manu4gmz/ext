@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity, Linking } from "react-native";
-import { useNavigation } from "@react-navigation/native"
+//import { useNavigation } from "@react-navigation/native"
 import styled from "styled-components/native";
 import { Rating } from 'react-native-ratings';
 import Boton from './../ui/Button'
@@ -13,8 +13,8 @@ import Axios from "axios";
 
 
 
-function Favorites({ user,fetchFavs, deleteFavs, deleteFav,state }) {
-  const navigation = useNavigation();
+function Favorites({ user,fetchFavs, deleteFavs, deleteFav, state, navigation }) {
+  //const navigation = useNavigation();
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -35,6 +35,10 @@ function Favorites({ user,fetchFavs, deleteFavs, deleteFav,state }) {
     deleteFav(newFavs, id, userId)
     setTimeout(function(){ setLoading(false); }, 2000)
    
+  }
+
+  function sendId(id) {
+    return navigation.navigate(`SingleView`, { propertyId: id })
   }
 
   return (

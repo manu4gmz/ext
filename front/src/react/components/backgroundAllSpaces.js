@@ -129,12 +129,16 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
                             </View>
                           </TouchableOpacity>
 
+                        {
+                          user.uid ? 
                           <TouchableOpacity onPress={() => favorites(user.uid,espacio.id,espacio)}>
                             <Image
                               style={{ width: 30, height: 30, marginRight: 2 }}
                               source={favs.some(fav=> fav.id == espacio.id) ? (require("../../public/icons/corazon-ro.png")) : (require("../../public/icons/corazon-ne.png"))}
                             />
                           </TouchableOpacity>
+                          : null
+                        }
                         </View>
                         <View style={{ flexDirection: "row" }}
                         >
