@@ -59,6 +59,7 @@ function useInput(name, placeholder, validation, form, setForm, index, inline = 
         value={field.value || ""}
         onChangeText={onChangeText}
         placeholder={placeholder}
+        secureTextEntry={name === "Contraseña"}
       />
       {
         field.error ? <Error>{field.error}</Error> : null

@@ -139,8 +139,7 @@ router.put("/ownerForm/:id", (req, res, next) => {
       address: req.body.address
     })
     .then((data) => {
-      db.collection('users').doc(id).get()
-        .then((usuario) => res.status(201).json(usuario.data()))
+      res.status(201).send({msg: "Editado perfectamente"})
 
     })
     .catch(next)

@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components/native'
 import { View, Text } from 'react-native'
 import Boton from '../ui/Button'
+import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 
 
 export default ({ alerta, user, handlerNombre, handlerApellido, handlerTel, handlerDireccion, nombre, apellido, tel, direccion, submit
@@ -12,6 +13,11 @@ export default ({ alerta, user, handlerNombre, handlerApellido, handlerTel, hand
         style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
       >
         <ViewInfo>
+
+          <AddSpaceFormProgress
+            title="Completá tus datos"
+            state={0}
+          />
           <ViewInput>
 
             <StyledTitles>Nombre*</StyledTitles>
@@ -54,17 +60,17 @@ export default ({ alerta, user, handlerNombre, handlerApellido, handlerTel, hand
         </ViewInfo>
 
       </StyledView>
+        {alerta ? (<AlertaTexto>¡Cuidado! Verifique su contenido</AlertaTexto>) : (null)}
       <ViewButton>
         <Boton
           onPress={() => { submit() }}
           bg="#4A94EA"
           color="#F7F7F7"
           mt="5px"
-        >Mas Info.
+        >Siguiente
        </Boton>
 
       </ViewButton>
-      {alerta ? (<AlertaTexto>¡Cuidado! Verifique su contenido...</AlertaTexto>) : (null)}
 
 
 

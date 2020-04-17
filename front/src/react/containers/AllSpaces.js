@@ -67,6 +67,7 @@ function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, r
   return (
     <BackgroundAllSpaces
       allSpaces={spaces.properties}
+      markers={spaces.markers}
       favs={state.user.favorites}
       user={user}
       total={spaces.total}
