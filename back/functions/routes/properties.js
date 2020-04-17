@@ -278,8 +278,8 @@ router.get("/:page", (req, res) => {
           && (!condicion.photos || (propiedad.photos || []).length > 0))
           && (propiedad.visible != false)
       })
-      return filtrado//.sort((a, b) => ((a.verified == true) && (b.verified == false)) ? -1 : 1)
-
+      return filtrado.sort((a, b) => (a.verified === b.verified) ? 0 : a.verified ? -1 : 1 )
+     
     })
     .then(properties => {
       const maxPage = Math.ceil(properties.length / pagesCount);
