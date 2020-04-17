@@ -9,7 +9,7 @@ const RegisterPage = ({ registerUser, navigation }) => {
         const firstName = e['Nombre y Apellido'].value.slice(0, num)
         const lastName = e['Nombre y Apellido'].value.slice(num + 1)
         const email = e["Email"].value
-        const password = e["contraseña"].value
+        const password = e["Contraseña"].value
         const favoritos = []
         const address = ''
         const phoneNumber = ''

@@ -18,7 +18,7 @@ const mailValidation = (val) => {
 const fields = [
     ["Nombre y Apellido", "Pepe Grillo"],
     ["Email", "nombre@mail.com", mailValidation],
-    ["contraseña", "********"],
+    ["Contraseña", "********"],
 ]
 
 const backgroundRegister = ({ onSubmit }) => {
