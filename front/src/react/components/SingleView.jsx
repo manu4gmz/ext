@@ -140,26 +140,28 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                     !preview ?
                     <DoubleWraper>
                       <Boton
-                          onPress={() => 
-                            sendEmail(
-                              'robertovilla2102@gmail.com',
-                              'Greeting!',
-                                  'I think you are fucked up how many letters you get.')
-                                  .then(() => {
-                                    console.log('Our email successful');
-                                  })}
-                                  bg="#4A94EA"
-                                  color="#F7F7F7"
-                                  mr="5px"
-                                  >Email
+                        onPress={() =>
+                          sendEmail(
+                            `${propietario.email}`,
+                            'Greeting!',
+                            'I think you are nice person.')
+                            .then(() => {
+                              console.log('Our email successful');
+                            })
+                            .catch(err => console.error(err))
+                        }
+                        bg="#4A94EA"
+                        color="#F7F7F7"
+                        mr="5px"
+                      >Email
                       </Boton>
-                      <Boton
-                          onPress={() => Linking.openURL(`tel:+54 9 ${'11 65342325'}`)}
-                          bg="#F77171"
-                          color="#F7F7F7"
-                          ml="5px"
-                          >Llamar
-                      </Boton>
+
+                    <Boton
+                        onPress={() => Linking.openURL(`tel:${propietario.phoneNumber}`)}
+                        bg="#F77171"
+                        color="#F7F7F7"
+                        ml="5px"
+                      >Llamar</Boton>
                   </DoubleWraper>
                   : null
                   }

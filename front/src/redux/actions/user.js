@@ -1,6 +1,7 @@
 import { LOGGED, USERPROPERTIES, USERFAVS, DELFAV, DELFAVS, ADDFAVORITE } from "../constants"
 import firebase from "../firebase";
 import axios from 'axios'
+import {getUserInfo} from "./profile"; 
 
 const auth = firebase.auth();
 
@@ -96,7 +97,13 @@ export const fetchUser = (userId) => {
 //Completar los datos en el form de ofrecer espacio
 export const offerUser = (userId, data) => dispatch => {
 	return axios.put(`https://ext-api.web.app/api/users/ownerForm/${userId}`, data)
-		.then((data) => dispatch(setLoggedUser(data.data)))
+		.then(() => {
+			dispatch(getUserInfo(userId));
+			fetchUser(userId)
+			 .then(data => dispatch(setLoggedUser(data)));
+			//dispatch(setLoggedUser(data.data))
+			//dispatch(fetUser)
+		})
 }
 
 export const logUser = (email, password) => dispatch => {

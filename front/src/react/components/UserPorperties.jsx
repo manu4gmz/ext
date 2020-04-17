@@ -26,9 +26,11 @@ const UserProperties = ({ propiedades, fetchProperties, user, navigation }) => {
   const sendId = (id) => navigation.navigate(`SingleView`, { propertyId: id })
   const editSpace = (id) => navigation.push("EditSpace", { propertyId: id })
 
+  if (!propiedades.length) return <Centered><Tit>Todavia no tenés propiedades!</Tit></Centered>
+
   return (
     <ScrollView>
-      {!loading
+      {!loading 
         ?
         <Wrapper>
           {propiedades.map((espacio, index) => {
@@ -165,6 +167,19 @@ const DoubleWraper = styled.View`
   flex-direction: row;
   justify-content: space-between;
   margin-top: 12px;
+`
+
+const Centered = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+`
+const Tit = styled.Text`
+  font-size: 20px;
+  font-weight: 100;
+  color: grey;
+  margin-top: 80px;
 `
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserProperties)
