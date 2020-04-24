@@ -1,24 +1,32 @@
 # Espacio por tiempo
 
 
-<img src="screenshots/img1.png" width="300"/> | <img src="screenshots/img2.png" width="300"/> | <img src="screenshots/img3.png" width="300"/> |
----------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
-Pantalla de inicio                            | Filtros de búsqueda                           | Lista de resultados                           |
----------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
-
 Espacio por tiempo es una aplicación desarrollada en React Native haciendo uso de la tecnología de Expo. Se trata de una app mobile y también de una Progressive Web Application para encontrar, publicar y contactar espacios para todo tipo de usos. Hace uso de la cámara para sacar fotos y de la API de Google Maps para poder visualizar los espacios por su ubicación en los mapas, entre otras cosas.
-
-<img src="screenshots/img4.png" width="300"/> | <img src="screenshots/img5.png" width="300"/> | <img src="screenshots/img6.png" width="300"/> |
----------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
-Mapa con los resultados                       | Vista de detalle del espacio                  | Inicio de sesión                              |
----------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
 
 Para el manejo de datos realizamos una Restful API con Express con una base de datos hecha con Firebase.
 
-<img src="screenshots/img7.png" width="300"/> | <img src="screenshots/img8.png" width="300"/> | <img src="screenshots/img9.png" width="300"/> |
----------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
-Menú lateral                                  | Formulario de publicar un espacio             | Perfil                                        |
----------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
+------
+
+## Capturas de pantalla
+
+
+| Pantalla de inicio | Filtros de búsqueda | Lista de resultados |
+|:---------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
+|<img src="screenshots/img1.png" width="300"/>|<img src="screenshots/img2.png" width="300"/>|<img src="screenshots/img3.png" width="300"/>|
+
+
+| Mapa con los resultados | Vista de detalle del espacio | Inicio de sesión |
+|:---------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
+|<img src="screenshots/img4.png" width="300"/> | <img src="screenshots/img5.png" width="300"/> | <img src="screenshots/img6.png" width="300"/> |
+
+
+|Menú lateral | Formulario de publicar un espacio | Perfil |
+|:---------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
+|<img src="screenshots/img7.png" width="300"/> | <img src="screenshots/img8.png" width="300"/> | <img src="screenshots/img9.png" width="300"/> |
+
+
+-----
+
 
 ## Lista de Funcionalidades
 
