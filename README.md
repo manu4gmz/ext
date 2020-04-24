@@ -1,5 +1,6 @@
 # Espacio por tiempo
 
+
 <img src="screenshots/img1.png" width="300"/> | <img src="screenshots/img2.png" width="300"/> | <img src="screenshots/img3.png" width="300"/> |
 ---------------------------------------------:|:---------------------------------------------:|:---------------------------------------------:|
 Pantalla de inicio                            | Filtros de búsqueda                           | Lista de resultados                           |
@@ -59,3 +60,6 @@ Menú lateral                                  | Formulario de publicar un espac
 4. Ejecutar en el celular
 
    Para esto deberá descargarse la aplicación de Expo y con esta scannear el código QR en la ventana de Expo en la PC. Esto puede tardar unos minutos en lo que construye eñ *bundle* y luego que el dispositivo lo descargue. Una vez hecho esto se debería poder visualizar el proyecto en el celular. 
+
+
+

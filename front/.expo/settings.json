@@ -1,8 +1,9 @@
 {
+  "urlRandomness": "ic-r2u",
   "hostType": "lan",
   "lanType": "ip",
   "dev": true,
   "minify": false,
-  "urlRandomness": "gx-sxx",
+  "urlRandomness": "vv-8f7",
   "https": false
 }

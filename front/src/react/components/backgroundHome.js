@@ -1,74 +1,80 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, ImageBackground, View, ScrollView } from 'react-native'
-import styled from "styled-components/native"
-import { connect } from 'react-redux'
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, ImageBackground, ScrollView } from 'react-native';
+import styled from "styled-components/native";
+import { connect } from 'react-redux';
+import Button from "../ui/Button";
+import HomeTabBar from "../components/HomeTabBar";
+import Navbar from './Navbar';
 
-const backgroundHome = ({ navigation }) => {
+const backgroundHome = ({ navigation, userInfo, user }) => {
   return (
     <ImageBackground
       source={require('../../public/images/imagen_fondo1.jpg')}
       style={styles.fondo}
       blurRadius={4}
     >
+      <Navbar />
       <Wrapper>
         <ScrollView>
           <StyledView>
             <StyledTitle>Encontrá tu Espacio</StyledTitle>
-            <StyledText>Descubrí espacios para todas tus reuniones laborales, fiestas, presentaciones, eventos y mas.</StyledText>
+            <StyledText>Descubrí espacios para todas tus reuniones laborales, fiestas, presentaciones, eventos y más.</StyledText>
             <Button
-              color="#4A94EA"
-              width="100%"
-              letras="#F7F7F7"
+              onPress={() => navigation.push("SerchSpace")}
             >Buscar</Button>
           </StyledView>
 
-          <StyledView>
-            <StyledTitle>Ofrecé tu Espacio</StyledTitle>
-            <StyledText>Ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
-            <Button
-              color="#F77171"
-              width="100%"
-              letras="#F7F7F7"
-            >Buscar</Button>
-          </StyledView>
+          {user.email
+            ? (
+              <StyledView>
+                <StyledTitle>Ofrecé tu Espacio</StyledTitle>
+                <StyledText>Ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
+                <Button
+                  onPress={() => navigation.push('OwnerForm')}
+                  bg="#F77171">Ofrecer
+                </Button>
+              </StyledView>
+            )
+            : (
+              <StyledView>
+                <StyledTitle>Logueate y Publica un Espacio</StyledTitle>
+                <StyledText>Logueate y ganá dinero ofreciendo tu espacio, local u oficina disponible para que otros puedan disfrutarlo cuando no lo utilices.</StyledText>
+                <Button
+                  onPress={() => navigation.navigate('Login')}
+                  bg="#F77171">Ingresar
+                </Button>
+              </StyledView>
+            )
+
+          }
 
           <DoubleWraper>
-            <WideBtn
-              color="#F7F7F7"
-              letras="gray"
-              height='45px'
-              style={{ marginRight: 5 }}
+            <Button
+              bg="#F7F7F7"
+              color="gray"
+              mr="5px"
             >Conocé más
-          </WideBtn>
+          </Button>
 
-            <WideBtn
-              color="#F7F7F7"
-              letras="gray"
-              height='45px'
-              style={{ marginLeft: 5 }}
+            <Button
+              bg="#F7F7F7"
+              color="gray"
+              ml="5px"
             >Novedades
-            </WideBtn>
+            </Button>
           </DoubleWraper>
 
           <View>
-            <WideBtn
-              color="#4A94EA"
-              letras="#F7F7F7"
-              height='50px'
+            <Button
+              bg="#4A94EA"
+              color="#F7F7F7"
+              mb="5px"
             >Invita amigos y gana!
-            </WideBtn>
-
-            <WideBtn
-              color="#F77171"
-              letras="#F7F7F7"
-              height='50px'
-              onPress={() => navigation.navigate('Login')}
-            >Go to login
-            </WideBtn>
+            </Button>
           </View>
-
         </ScrollView>
       </Wrapper>
+      <HomeTabBar navigation={navigation} />
     </ImageBackground >
   )
 }
@@ -84,47 +90,33 @@ const styles = StyleSheet.create({
 const DoubleWraper = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 3%;
+  margin: 3% 0px;
 `
 const Wrapper = styled.View`
 flex-direction: row;
   justify-content: space-between;
   margin: 0px 15px;
+  max-width: 500px;
+  align-self: center;
 `
 const StyledView = styled.View`
   margin: 10px 0;
   background-color: #F7F7F7;
   padding : 20px 25px 15px;
-  border-radius: 10px
+  border-radius: 5px
 `
 const StyledTitle = styled.Text`
 margin-bottom : 2%;
-font-size: 25px ;
+font-size: 22px;
+font-weight: 600;
 `
 const StyledText = styled.Text`
 margin-bottom : 10px;
 font-size: 15px ;
 color : gray;
 `
-const Button = styled.Text`
-  padding-top : 4%;
-  width:${props => props.width}
-  height: 45px;
-  text-align : center;
-  border-radius: 5px;
-  color: ${props => props.letras}
-  background-color: ${props => props.color}
-`
-const WideBtn = styled.Text`
-  flex-grow : 1;
-  margin : 3% 0;
-  padding-top : 4%;
-  font-size: 15px;
-  height: ${props => props.height}
-  text-align : center;
-  border-radius: 5px;
-  color: ${props => props.letras}
-  background-color: ${props => props.color}
+const View = styled.View`
+margin : 2% 0;
 `
 
 export default connect(null, null)(backgroundHome)
