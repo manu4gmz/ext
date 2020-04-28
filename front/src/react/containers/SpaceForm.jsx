@@ -5,7 +5,7 @@ import Picker from "../components/Picker";
 import TextPrompt from "../components/TextPrompt";
 import Typeahead from "../components/Typeahead";
 import AddPhotos from "../components/AddPhotos";
-import Form from "../components/Form";
+import GenericForm from '../components/GenericForm';
 
 import { fetchProvincias, fetchLocalidades, fetchCoords } from "../../redux/actions/locations";
 import { addSpace } from '../../redux/actions/spaces'
@@ -23,6 +23,7 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
   const [provincias, setProvincias] = useState([])
   const [localidades, setLocalidades] = useState([])
   const [province, setProvince] = useState({})
+  const [localidad, setLocalidad] = useState({})
   const [region, setRegion] = useState({})
 
   function getProvincias(val) {
@@ -30,9 +31,6 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
       .then(data => setProvincias(data))
   }
 
-
-
-  
   function getLocalidades(val) {
     fetchLocalidades(val, province.id)
       .then(data => {
@@ -48,34 +46,24 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
     setProvince(val);
   };
 
+  const handleSelectLocalidad = (val) => {
+    if (!val) return setLocalidad({});
+    setLocalidad(val);
+  };
+
   /**************************************************/
 
 
   const onSubmit = function (form) {
-    console.log(region)
     const datosSpace = {
-      verificated: false,
-      neighborhood: (form["Barrio*"] || {}).value,
-      province: (form["Provincia*"] || {}).value,
-      type: (form["Tipo de Espacio*"] || {}).value,
-      street: (form["Calle*"] || {}).value,
-      streetNumber: (form["Número"] || {}).value,
-      floor: (form['Piso'] || {}).value,
-      apt: (form['Depto'] || {}).value,
-      size: (form["Tamaño #(mtr2)#*"] || {}).value,
-      capacity: (form["Capacidad*"] || {}).value,
-      price: (form["Valor hora ($)"] || {}).value,
-      cleanup: (form["Tasa limpieza ($)*"] || {}).value,
-      rules: (form["Reglas de Convivencia"] || {}).value,
-      observations: (form["Observaciones"] || {}).value,
-      description: (form["Descripcion"] || {}).value,
+      ...form,
+      verified: false,
       userId: user,
       visible: false,
       location: [],
-      photos: (form["Agregar fotos"] || {}).value || [],
-      title: form["Titulo*"].value,
-      services: form["Caracteristicas y servicios*"].value,
-      comments: []
+      comments: [],
+      neighborhood: localidad.label,
+      province: province.label,
     };
 
     //navigation.navigate("PreviewSpace", { space: datosSpace })
@@ -96,97 +84,115 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
 
   }
 
+
+  
   const fields = [
-    ["Titulo*", "Excelente lugar para..."],
-    [({ onChange }) => <Typeahead
-      title="Provincia*"
-      placeholder="Buenos Aires, Cordoba, San Luis.."
-      getOptions={getProvincias}
-      handleSelect={handleSelectProvince}
-      onChange={onChange}
-      options={provincias}
-    />, 3],
+    {title:"Titulo*", placeholder:"Excelente lugar para...", name:"title"},
+    {
+      element:({ onChange }) => <Typeahead
+        title="Provincia*"
+        placeholder="Buenos Aires, Cordoba, San Luis.."
+        getOptions={getProvincias}
+        handleSelect={handleSelectProvince}
+        onChange={onChange}
+        options={provincias}
+        name="province"
+
+      />, 
+      name: "province",
+      index:3
+    },
     //[({ onChange }) => <Province.Input onChange={onChange} title={"Provincia*"} placeholder="Buenos Aires, Cordoba, San Luis.." />],
-    [({ onChange }) => province.id ? <Typeahead
-      title="Barrio*"
-      placeholder="Flores, Saavedra.."
-      getOptions={getLocalidades}
-      handleSelect={() => null}
-      onChange={onChange}
-      options={localidades}
-    /> : null, 2],
-    ["Calle*", "Av. Congreso, Castillo"],
+    {
+      element:({ onChange }) => province.id ? <Typeahead
+        title="Barrio*"
+        placeholder="Flores, Saavedra.."
+        getOptions={getLocalidades}
+        handleSelect={handleSelectLocalidad}
+        onChange={onChange}
+        options={localidades}
+        name="neighborhood"
+      /> : null, 
+      name: "neighborhood",
+      index: 2,
+    },
+    {title:"Calle*", placeholder:"Av. Congreso, Castillo", name:"street"},
     [
-      ["Número", "1332"],
-      ["Piso", "4"],
-      ["Depto", "B"]
+      {title:"Número", placeholder: "1332", name:"streetNumber"},
+      {title:"Piso",  placeholder:"4", name:"floor"},
+      {title:"Depto", placeholder: "B", name:"apt"},
     ],
+    { 
+      element: ({ onChange, value }) => <Type.Input 
+        onChange={onChange} 
+        title={"Tipo de Espacio"} 
+        placeholder="Selecciona el espacio que ofrece." 
+        value={value} 
+        name="type"
+      />,
+      name: "type"
+    },
     [
-      ({ onChange }) => (
-        <Type.Input
-          onChange={onChange}
-          title={"Tipo de Espacio*"}
-          placeholder="Selecciona el espacio que ofrece."
-        />
-      )
-    ],
-    [
-      ["Tamaño #(mtr2)#*", "mtr2"],
-      ["Capacidad*", "Cant. personas"]
-    ],
-
-    [
-      ({ onChange }) => (
-        <Descripcion.Input
-          onChange={onChange}
-          title="Descripcion"
-          placeholder="Breve descripcion del lugar..."
-        />
-      )
-    ],
-    [
-      ({ onChange }) => (
-        <Services.Input
-          onChange={onChange}
-          title={"Caracteristicas y servicios*"}
-          placeholder="Wifi, Cafe, Snacks, TV, Aire Acond.."
-        />
-      )
-    ],
-    [
-      ({ onChange }) => (
-        <Observation.Input
-          onChange={onChange}
-          title="Observaciones"
-          placeholder="Horarios disponibles, particularidades, etc."
-        />
-      )
+      {title: "Tamaño #(mtr2)#", placeholder: "mtr2", name:"size"},
+      {title: "Capacidad*", placeholder: "Cant. personas", name:"capacity"}
     ],
 
-    [
-      ["Valor hora ($)", "$560"],
-      ["Tasa limpieza ($)*", "$180"]
-    ],
+    { 
+      element: ({ onChange, value }) => <Descripcion.Input 
+        onChange={onChange} 
+        title="Descripcion" 
+        name="description" 
+        placeholder="Breve descripcion del lugar..." 
+        value={value}
+      />,
+      name: "description"
+    },
+    { 
+      element: ({ onChange, value }) => <Services.Input 
+        onChange={onChange} 
+        title={"Caracteristicas y servicios*"} 
+        placeholder="Wifi, Cafe, Snacks, TV, Aire Acond.." 
+        value={value} 
+        name="services"
+      />,
+      name: "services"
+    },
+    { 
+      element: ({ onChange, value }) => <Observation.Input
+        onChange={onChange} 
+        title="Observaciones" 
+        name="observations" 
+        placeholder="Horarios disponibles, particularidades, etc." 
+        value={value}
+      />,
+      name: "observations"
+    },
 
     [
-      ({ onChange }) => (
-        <Rules.Input
-          onChange={onChange}
-          title="Reglas de Convivencia"
-          placeholder="Aclaraciones, límites, reglas del lugar..."
-        />
-      )
+      {title:"Valor hora ($)*", placeholder:"$560", name:"price"},
+      {title:"Tasa limpieza ($)", placeholder:"$180", name:"cleanup"},
     ],
-    [
-      ({ title, onChange }) => (
-        <AddPhotos
-          text="Agregar fotos"
-          navigation={navigation}
-          onChange={onChange}
-          title={title}
-        />
-      )
-    ]
+
+    {
+      element: ({ onChange, value }) => <Rules.Input 
+        onChange={onChange} 
+        title="Reglas de Convivencia" 
+        name="rules" 
+        placeholder="Aclaraciones, límites, reglas del lugar..." 
+        value={value}
+      />,
+      name:"rules"
+    },
+    {
+      element: ({ title, onChange, value }) => <AddPhotos 
+        text="Agregar fotos" 
+        name="photos" 
+        navigation={navigation} 
+        onChange={onChange} 
+        title={title} 
+      />,
+      name:"photos"
+    },
   ];
 
   return (
@@ -239,7 +245,7 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
         }
       />
 
-      <Form
+      <GenericForm
         name="space"
         onSubmit={onSubmit}
         fields={fields}

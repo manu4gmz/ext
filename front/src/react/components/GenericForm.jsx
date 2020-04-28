@@ -38,7 +38,7 @@ function useInput({ title, name, placeholder, validation, index, element }, form
       {
         element({
           title: (title) => <StyledTitles>{title.split("#")[0]}{title.split("#")[1] ? <SmallText>{title.split("#")[1]}</SmallText> : null}{title.split("#")[2] || null}</StyledTitles>,
-          value: (form[name] || "").value,
+          value: field.value,
           onChange: name ? (value, error = null) => {
 
             if (typeof value == "function") setForm(value);
@@ -71,7 +71,7 @@ function useInput({ title, name, placeholder, validation, index, element }, form
   )
 }
 
-const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, values }) => {
+const Form = ({ fields, onSubmit, sendText, header, values }) => {
 
   const parsedInitialState = values ? Object.keys(values).reduce((acc, key) => ({ ...acc, [key]: { value: values[key], error: null } }), {}) : {};
 
@@ -100,9 +100,6 @@ const Form = ({ fields, onSubmit, sendText, header, saveForm, initialForm, value
         useInput({ ...field, index: i }, form, setForm, inline)
     )
   }
-
-  useEffect(() => {
-  }, [form])
 
   function handleSubmit() {
     const data = Object.keys(form).reduce((acc, key) => key && form[key].edited ? ({ ...acc, [key]: form[key].value }) : acc, {})
@@ -227,8 +224,6 @@ const View = styled.View`
 const DisabledButton = styled(Button)`
   background-color: transparent;
   color: #b2b2b2;
-  line-height: 30px;
-  flex:1;
   flex:1;
   border: solid 1px #b2b2b2;
 `

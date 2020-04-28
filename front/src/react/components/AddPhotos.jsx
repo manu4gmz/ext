@@ -2,20 +2,54 @@ import React, { Component, useEffect, useState } from 'react';
 import { Text, Image, View, ScrollView, TouchableOpacity } from 'react-native'
 import styled from "styled-components/native";
 import { connect } from "react-redux";
+import * as ImagePicker from 'expo-image-picker';
 import { removePicture, addPicture, setPictures } from "../../redux/actions/files";
+import { Camera } from 'expo-camera';
 
 const AddPhotos = ({ title, text, navigation, onChange, removePicture, addPicture, pictures, images, setPictures, name }) => {
 
+	const [hasCameraRoll, setHasCameraRoll] = useState(null);
+	const [hasCamera, setHasCamera] = useState(null);
+
+	useEffect(() => {
+		(async () => {
+		  const { status } = await ImagePicker.requestCameraRollPermissionsAsync()
+		  setHasCameraRoll(status === 'granted');
+		})();
+		(async () => {
+			try {
+				const { status } = await Camera.requestPermissionsAsync();
+				setHasCamera(status === 'granted');
+			}
+			catch(err){
+			}
+		  })();
+	}, []);
+
+	function getFromGallery() {
+		ImagePicker.launchImageLibraryAsync({
+		  	allowsEditing: true,
+			allowsMultipleSelection: true,
+			aspect: [500, 380]
+		})
+		  .then(data => {
+			if (data.cancelled) return;
+			addPicture({
+				uri: data.uri,
+				height: data.height,
+				width: data.width
+			})
+		})
+	}
+
 	useEffect(() => {
 		name ? onChange(pictures) : onChange((form) => ({ ...form, [text]: { value: pictures, error: null } }))
-	}, [pictures])
+	}, [pictures]);
 
 	useEffect(() => {
-		setPictures(images ? images.map(uri => ({ uri })) : [])
-
-
-		window.addPhoto = (pic) => addPicture({ uri: pic })
-	}, [images])
+		setPictures(images ? images.map(uri => ({ uri })) : []);
+		window.addPhoto = (pic) => addPicture({ uri: pic });
+	}, [images]);
 
 	return <View>
 		{title(text)}
@@ -33,11 +67,25 @@ const AddPhotos = ({ title, text, navigation, onChange, removePicture, addPictur
 				})
 			}
 		</PicsRoll>
-		<Photos onPress={() => navigation.push("Camera")}>
-			<PhotosText>+</PhotosText>
-			<Icon source={require("../../public/icons/camera.png")} />
-			<PhotosText>({pictures.length || 0})</PhotosText>
-		</Photos>
+		<Row>
+			<PhotosLabel>{pictures.length || 0}</PhotosLabel>
+			{
+				hasCamera ?
+				<Photos onPress={()=>navigation.push("Camera")}>
+					<PhotosText>+</PhotosText>
+					<Icon source={require("../../public/icons/camera.png")} />
+				</Photos>
+				: null
+			}
+			{
+				hasCameraRoll ?
+				<Photos onPress={()=>getFromGallery()}>
+					<PhotosText>+</PhotosText>
+					<Icon source={require("../../public/icons/galery.png")} />
+				</Photos>
+				: null
+			}
+		</Row>
 	</View>
 }
 
@@ -87,7 +135,7 @@ const Icon = styled.Image`
 `
 
 const Photos = styled.TouchableOpacity`
-	width: 45%;
+	width: 80px;
 	border-radius: 50px;
 	background-color: #4a94ea;
 	height: 35px;
@@ -95,11 +143,34 @@ const Photos = styled.TouchableOpacity`
 	justify-content: center;
 	align-content: center;
 	align-self: center;
+	margin-left: 12px;
 `
+
+const PhotosLabel = styled.Text`
+	width: 35px;
+	background-color: #d9d5c8;
+	border-radius: 50px;
+	height: 35px;
+	flex-direction: row;
+	justify-content: center;
+	align-content: center;
+	align-self: center;
+	margin-left: 0px;
+	line-height: 35px;
+	color: black;
+	font-size: 16px;
+	text-align: center;
+`
+
 
 const PhotosText = styled.Text`
 	line-height: 35px;
 	color: white;
 	font-size: 16px;
 	margin: 0 2px;
+`
+
+const Row = styled.View`
+	flex-direction: row;
+	justify-content: center;
 `
