@@ -31,6 +31,8 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
   }
 
 
+
+  
   function getLocalidades(val) {
     fetchLocalidades(val, province.id)
       .then(data => {
