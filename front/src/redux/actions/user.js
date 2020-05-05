@@ -1,7 +1,8 @@
 import { LOGGED, USERPROPERTIES, USERFAVS, DELFAV, DELFAVS, ADDFAVORITE } from "../constants"
 import firebase from "../firebase";
-import axios from 'axios'
+import api from '../api'
 import {getUserInfo} from "./profile"; 
+
 
 const auth = firebase.auth();
 
@@ -37,13 +38,33 @@ const deleteFavorite = (fav) => ({
 export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	auth.onAuthStateChanged((user) => {
 		if (user) {
+		
+			auth.currentUser.getIdToken(true).then(function(idToken) {
+				api.get("/users/authenticate")
+					.then(rta => rta.data)
+					.then(user => {
+						dispatch(setLoggedUser({
+							...user,
+							idToken
+						}));
+						if (ifLogged && typeof ifLogged == "function") ifLogged(user);
+					})
+					.catch(err => console.error(err))	
+			}).catch(function(error) {
+				console.error("Hubo un error con la autorización del usuario");
+				if (ifNotlogged && typeof ifNotlogged == "function") ifNotlogged();
+			});
 			//const userObj = { email: user.email, uid: user.uid, properties: user.properties };
+			/*
+			
 			fetchUser(user.uid)
 				.then(userData => {
 					const loggedUser = { ...userData, uid: user.uid };
 					dispatch(setLoggedUser(loggedUser))
 					if (ifLogged && typeof ifLogged == "function") ifLogged(loggedUser);
 				})
+
+				*/
 		} else {
 			dispatch(setLoggedUser({}))
 			if (ifNotlogged && typeof ifNotlogged == "function") ifNotlogged();
@@ -51,24 +72,27 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	});
 }
 
+
+
 //Agrega el favorito seleccionado
 export const addFav = (newFavs,userId,id) => dispatch => {
-	return axios.put(`https://ext-api.web.app/api/users/fav/${userId}`, { id })
+	return api.put(`/users/fav/${userId}`, { id })
 		.then(() => dispatch(addFavorite(newFavs)))
 		
 }
 //Te trae todos los ids de los espacios marcados como favoritos por el user
 export const fetchFav = (userId) => {
-	return axios.get(`https://ext-api.web.app/api/users/favs/${userId}`)
+	return api.get(`/users/favs/${userId}`)
 		.then((data) => data)
 
 }
 //Te trae todos los espacios (completos) marcados como favortios por el user
-export const fetchFavs = (favoritos) => dispatch => {
-        return Promise.all(favoritos.map((spaceId) => {
-           axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
-            .then(res => dispatch(userFavorites(res.data)))
-		}))
+export const fetchFavs = (favoritos) => (dispatch,getState) => {
+        return api.get(`/users/favorites/${getState().user.logged.uid}`)
+            .then(res => {
+				dispatch(userFavorites(res.data));
+				return res.data;
+			})
 }
 //Elimina todos los favoritos del store
 export const deleteFavs = () => dispatch => {
@@ -77,7 +101,7 @@ export const deleteFavs = () => dispatch => {
 
 //Elimina el favorito seleccionado
 export const deleteFav = (favorites,id,userId) => dispatch => {
-	axios.put(`https://ext-api.web.app/api/users/favs/${userId}`, { id })
+	api.put(`/users/favs/${userId}`, { id })
       .then((data) => {
 		dispatch(deleteFavorite(favorites))
       })
@@ -85,18 +109,18 @@ export const deleteFav = (favorites,id,userId) => dispatch => {
 }
 
 export const fetchProperties = (userId) => dispatch => {
-	return axios.get(`https://ext-api.web.app/api/properties/userSpaces/${userId}`)
+	return api.get(`/properties/userSpaces`)
 		.then(res => dispatch(userProperties(res.data)))
 }
 
 export const fetchUser = (userId) => {
-	return axios.get(`https://ext-api.web.app/api/users/info/${userId}`)
+	return api.get(`/users/info/${userId}`)
 		.then((data) => data.data)
 }
 
 //Completar los datos en el form de ofrecer espacio
 export const offerUser = (userId, data) => dispatch => {
-	return axios.put(`https://ext-api.web.app/api/users/ownerForm/${userId}`, data)
+	return api.put(`/users/ownerForm/${userId}`, data)
 		.then(() => {
 			dispatch(getUserInfo(userId));
 			fetchUser(userId)
@@ -106,9 +130,9 @@ export const offerUser = (userId, data) => dispatch => {
 		})
 }
 
-export const logUser = (email, password) => dispatch => {
+export const logUser = (email, password, afterLogged) => dispatch => {
 	return auth.signInWithEmailAndPassword(email, password)
-		.then(() => dispatch(getUser()))
+		.then(() => dispatch(getUser(afterLogged)))
 		.catch((error) => {
 			console.log(error);
 			let result = {};
@@ -154,8 +178,8 @@ export const getUserGoogle = () => dispatch => {
 				phoneNumber: '',
 			}
 
-			axios
-				.post(`https://ext-api.web.app/api/users/register`, bodyUpdate)
+			api
+				.post(`/users/register`, bodyUpdate)
 				.then(data => console.log(data))
 		})
 		.catch((error) => {

@@ -4,12 +4,13 @@ import BackgroundLogin from '../components/backgroundLogin'
 import { logUser, getUserGoogle, getUser } from "../../redux/actions/user";
 import { loginFacebook } from "../../redux/actions/facebookLogin"
 
-const LoginPage = ({ logUser, navigation, getUserGoogle, getUser, loginFacebook }) => {
+const LoginPage = ({ logUser, navigation, getUserGoogle, getUser, loginFacebook, route }) => {
     const [Username, setUsername] = useState("")
     const [Password, setPassword] = useState("")
     const [error, setError] = useState({})
 
     useEffect(() => {
+        
         getUser(() => navigation.navigate('Root', { screen: "Home" }));
 
     }, [])
@@ -22,10 +23,11 @@ const LoginPage = ({ logUser, navigation, getUserGoogle, getUser, loginFacebook 
     const onChangeUser = (e) => { setUsername(e); clearError("email") }
     const onChangePassword = (e) => { setPassword(e); clearError("pass") }
     const Onsubmit = function () {
-        logUser(Username, Password)
+        console.log((route.params || {}).then ? ()=> navigation.navigate(route.params.then, route.params.params || {}) : ()=>navigation.navigate('Home'))
+        logUser(Username, Password, (route.params || {}).then ? ()=> navigation.navigate(route.params.then, route.params.params || {}) : ()=>navigation.navigate('Home'))
             .then(err => {
                 if (err) return setError(err.target ? err : {});
-                navigation.navigate('Home')
+                
             })
     }
 

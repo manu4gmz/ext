@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import Icon from "../ui/Icon";
 import { useNavigation } from "@react-navigation/native"
 
-const Navbar = ({ title, userInfo, backRoute }) => {
+const Navbar = ({ title, user, backRoute }) => {
   const navigation = useNavigation();
   return (
     <Background>
@@ -20,7 +20,7 @@ const Navbar = ({ title, userInfo, backRoute }) => {
             source={require('../../public/icons/sidebar.png')} 
           />
         }
-        <Title>{title || `Hola ${((userInfo.firstName || ', Bienvenido!')) || ""}!`}</Title>
+        <Title>{title || `Hola ${((user.firstName || ', Bienvenido!')) || ""}!`}</Title>
         <Icon source={require('../../public/images/isologotipo-only.png')} />
       </Wrapper>
     </Background>
@@ -60,7 +60,6 @@ const Back = styled(Icon)`
 
 const mapStateToProps = (state) => ({
   user: state.user.logged,
-  userInfo: state.profile.userInfo
 })
 
 export default connect(mapStateToProps, null)(Navbar);

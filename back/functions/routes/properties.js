@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const db = require("../services/firebase").admin.firestore();
 
+const validateUser = require("../authenticate");
+
 //* buscar todos los espacios por filtros
 router.get("/spaces", (req, res, next) => {
   const condicion = req.query
@@ -47,8 +49,8 @@ router.get("/allSpaces", (req, res, next) => {
 })
 
 //* buscar todos los espacios de un usuario
-router.get("/userSpaces/:id", (req, res, next) => {
-  const id = req.params.id
+router.get("/userSpaces", validateUser(false), (req, res, next) => {
+  const id = req.userId;
   db.collection("properties").where('userId', '==', id).get()
     .then((data) => {
       const arr = data.docs.map(userProperties => {
@@ -81,7 +83,7 @@ router.get("/singleSpace/:id", (req, res, next) => {
 })
 
 //* crear un espacio
-router.post("/createSpace", (req, res, next) => {
+router.post("/createSpace", validateUser(false), (req, res, next) => {
   const body = req.body
   db.collection("properties").add(body)
     .then((data) => {
@@ -94,6 +96,8 @@ router.post("/createSpace", (req, res, next) => {
 
 
 //* eliminar un espacio 
+/*
+
 router.delete("/deleteSpace/:id", (req, res, next) => {
   const id = req.params.id
   db.collection("properties").doc(id).delete()
@@ -101,14 +105,16 @@ router.delete("/deleteSpace/:id", (req, res, next) => {
       res.sendStatus(200)
     })
     .catch(next)
-})
+})*/
 
 
 //* updatear un espacio 
-router.put('/update/:id', (req, res, next) => {
-  const id = req.params.id
-  const body = req.body
+router.put('/update/:id', validateUser(false), (req, res, next) => {
+  const id = req.params.id;
+  const body = req.body;
   const update = {};
+
+  //res.header('Access-Control-Allow-Origin', req.header('origin') );
 
   const dataTypes = {
     visible: "boolean",
@@ -132,38 +138,50 @@ router.put('/update/:id', (req, res, next) => {
   }
 
   let error = "";
-
-  Object.keys(dataTypes).forEach(key => {
-    if (body[key] == undefined) return;
-    else if (typeof body[key] == dataTypes[key]) update[key] = body[key];
-    else error = `Error: ${key} no corresponde al tipo de dato "${dataTypes[key]}"`;
-  })
-
-  if (error) return res.status(400).send({ msg: error });
-  if (!body.uid) return res.status(401).send({ msg: "Error: tenes que pasar el uid del usuario" });
-
-  db.collection("properties").doc(id).get()
-    .then(data => data.data())
-    .then(space => {
-      if (space && space.userId == body.uid)
-        return db.collection('properties').doc(id).update(update)
-          .then(() => {
-            res.status(200).send({ msg: "Editado correctamente" })
-          })
-      return res.status(401).send({ msg: "Error: flasheaste capo" });
-
+  console.log(body);
+  
+  db.collection('properties').doc(id).get()
+  .then(space => space.data())
+  .then((space) => {
+    
+    console.log(req.userId)
+    if (space.userId != req.userId) return res.status(401).send({msg: "This's not your property!"});
+    
+    
+    Object.keys(dataTypes).forEach(key => {
+      console.log(key,":", body[key])
+      if (body[key] == undefined) return;
+      else if (typeof body[key] == dataTypes[key]) update[key] = body[key];
+      else error = `Error: ${key} no corresponde al tipo de dato "${dataTypes[key]}"`;
     })
+    
+    if (error) return res.status(400).send({ msg: error });
+    if (!Object.values(update).length) return res.status(400).send({ msg: "Mal el formato del body" });
+    //if (!body.uid) return res.status(401).send({ msg: "Error: tenes que pasar el uid del usuario" });
 
-    .catch(next)
+    console.log(update);
 
-
+    db.collection('properties').doc(id).update(update)
+      .then(() => {
+        res.status(200).send({ msg: "Editado correctamente" })
+      })
+      .catch(err => {
+        res.status(500).send({ msg: "Error: hubo un error actualizando la propiedad" });
+      })    
+  })
+  .catch(err => {
+    res.status(500).send({ msg: "Error: hubo un error buscando la propiedad" });
+      
+  })
 })
 
-router.put('/coordenadas/:id', (req, res, next) => {
+router.put('/coordenadas/:id', validateUser(false), (req, res, next) => {
   const id = req.params.id
   const propiedad = req.body
   db.collection('properties').doc(id).get()
-    .then((data) => {
+    .then(rta => rta.data())
+    .then(prop => {
+      if (prop.userId != req.userId) return res.status(401).send({msg: "This's not your property!"});
 
       db.collection('properties').doc(id).update({ location: propiedad })
         .then(data => {
@@ -303,4 +321,4 @@ router.get("/:page", (req, res) => {
 })
 
 
-module.exports = router
+module.exports = router;

@@ -13,7 +13,7 @@ export default function (state = initialCartState, action) {
         case USERPROPERTIES:
             return { ...state, properties: action.properties }
         case USERFAVS:
-            return { ...state, favorites: [...state.favorites, action.favs] } 
+            return { ...state, favorites: action.favs } 
         case DELFAVS:
             return { ...state, favorites: []}    
         case DELFAV:

@@ -1,14 +1,17 @@
 import React, { useState } from "react";
-import { Text, View, ScrollView, TextInput, Button, TouchableOpacity } from "react-native";
+import { Text, View, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
+import Button from "../ui/Button";
 
-export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser, redirectToLogin, handleResponseChange, handleResponse, comments }) => {
+export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser, redirectToLogin, handleResponseChange, handleResponse, comments, response, comment }) => {
   //Para saber si el usuario ya comento
   let existe = false
 
+  if (space.userId == user.id && !comments.length) return <Centered><Tit>Todavia no hay comentarios!</Tit></Centered>;
+
   return (
     <ScrollView style={{ height: "100%", backgroundColor: '#E9E9E9' }}>
-      <View>
+      <View style={{marginBottom: 36}}>
         <View>
           {comments
             ? comments.map((a, index) => {
@@ -17,50 +20,47 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser
                 <View key={index}>
                   <Card>
                     <TouchableOpacity onPress={() => redirectToUser(a.userId)}>
-                      <Text style={{ fontWeight: "bold", textDecorationLine: "underline" }}>
-                        {a.nombre || "Anonymous"}
-                      </Text>
+                      <OwnerLabel>{a.nombre || "Anonymous"}</OwnerLabel>
                     </TouchableOpacity>
                     <Text
                     >
                       {a.comment}
                     </Text>
 
-                    {a.response ?
-                      (<Respuesta>
-                        <Text>
+                    {
+                      a.response ?
+                      <Respuesta>
+                        <RtaBorder/>
+                        <Text style={{flex: 1}}>
                           {a.response}
                         </Text>
-                      </Respuesta>)
+                      </Respuesta>
                       :
                       (
                         space.userId === user.id ?
-                          (
-                            <View>
-                              <TextInput
-                                name="comment"
-                                multiline={true}
-                                numberOfLines={2}
-                                style={{
-                                  marginBottom: 6,
-                                  backgroundColor: '#E9E9E9',
-                                  borderBottomWidth: 1,
-                                  borderBottomColor: '000',
-                                  padding: 6
-                                }}
-                                onChangeText={text => handleResponseChange(text)}
-                              ></TextInput>
-                              <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                <TouchableOpacity onPress={() => handleResponse(index)} style={{ marginRight: 0, marginLeft: 'auto' }}>
-                                  <Text>Responder</Text>
+                          <View>
+                            <CommentInput
+                              name="comment"
+                              multiline={true}
+                              numberOfLines={response[index] ? 5 : 1}
+                              placeholder="Responder"
+                              
+                              onChangeText={text => handleResponseChange(text, index)}
+                              value={response[index] || ""}
+                            />
+                            {
+                              response[index] ?
+                              <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "flex-end" }}>
+                                <TouchableOpacity onPress={() => handleResponse(index)}>
+                                  <SendResponse>Enviar Respuesta</SendResponse>
                                 </TouchableOpacity>
                               </View>
-                            </View>
-                          )
-                          :
-                          null
-                      )}
-
+                              : null
+                            }
+                          </View>
+                          : null
+                      )
+                    }
                   </Card>
 
                 </View>
@@ -68,51 +68,40 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser
             })
             : null}
         </View>
-        { user.id ?
-          (
-            existe ?
-              (
-                <View style={{ backgroundColor: "#D9D5C8", padding: 12 }}>
-                  <Text> Ya comentaste en esta publicación </Text>
-                </View>
-              )
-              :
-              (
-                <Card>
-                  <View>
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: '#000144',
-                        paddingBottom: 10
-                      }}
-                    >
-                      Escribi tu comentario:
-                </Text>
-                    <TextInput
-                      name="comment"
-                      multiline={true}
-                      numberOfLines={2}
-                      style={{
-                        marginBottom: 6,
-                        backgroundColor: '#fff',
-                        borderWidth: 1,
-                        borderColor: '#000144',
-                        padding: 6
-                      }}
-                      onChangeText={text => handleCommentChange(text)}
-                    ></TextInput>
-                    <Button color="#000144" title="submit" onPress={() => handleSubmit()}>
-                      submit
-                </Button>
-                  </View>
-                </Card>
-              )
+        { 
+          space.userId !== user.id ?
+          (user.id ?
+            (
+              existe ?
+                (
+                  <CommentsAlert>
+                    <Text> Ya comentaste en esta publicación </Text>
+                  </CommentsAlert>
+                )
+                :
+                (
+                  <Card>
+                    <View>
+                      
+                      <CommentInput
+                        name="comment"
+                        multiline={true}
+                        placeholder="Escribe una opinión"
+                        numberOfLines={comment ? 5 : 1}
+                        value={comment}
+                        onChangeText={text => handleCommentChange(text)}
+                      />
+                      <Button mt="12px" onPress={() => handleSubmit()}>Enviar</Button>
+                    </View>
+                  </Card>
+                )
+            )
+            :
+            <CommentsAlert>
+              <Text>Para comentar esta publicacion <TouchableOpacity onPress={() => redirectToLogin()}><span style={{ textDecoration: 'underline' }}>ingresá a tu cuenta</span></TouchableOpacity></Text>
+            </CommentsAlert>
           )
-          :
-          <View style={{ backgroundColor: "#D9D5C8", padding: 12 }}>
-            <Text>Para comentar esta publicacion <TouchableOpacity onPress={() => redirectToLogin()}><span style={{ textDecoration: 'underline' }}>ingresá a tu cuenta</span></TouchableOpacity></Text>
-          </View>
+          : null
         }
       </View>
     </ScrollView >
@@ -121,16 +110,73 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser
 
 const Card = styled.View`
   background-color: #F7F7F7;
-  margin: 12px;
-  border-radius: 12px;
+  margin: 6px 24px;
+  border-radius: 5px;
   padding: 12px;
-  box-shadow: 0px 3px 3px #c2c2c2;
+  box-shadow: 0px 5px 5px #c2c2c2;
 `
 const Respuesta = styled.View`
-border-left-style:solid;
-border-left-color: black;
-border-left-width: 1px;
-padding-left: 10px;
-margin-left: 10px;
-margin-top: 5px;
+
+  margin-top: 5px;
+  margin-top: 12px;
+  padding: 6px 0px;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+`
+
+const OwnerLabel = styled.Text`
+  color: #4a94ea;
+  font-weight: 700;
+  margin-bottom: 2px;
+`
+
+const SendResponse = styled.Text`
+  background-color: #4a94ea;
+  color: white;
+  padding: 6px 18px;
+  align-self: flex-end;
+  border-radius: 75px;
+  margin-right: 0;
+  line-height: 24px;
+  margin-top: 12px;
+  margin-left: auto;
+`
+
+const CommentInput = styled.TextInput`
+  margin-top: 6px;
+  background-color: #f7f7f7;
+  border-bottom-width: 2px;
+  border-bottom-color: #b8b8b8;
+  padding: 2px;
+`
+
+const RtaBorder = styled.View`
+  background-color: #4a94ea;
+  width: 3px;
+  height: 100%;
+  margin-right: 12px;
+  border-radius: 3px;
+  min-height: 36px;
+  align-self: flex-start;
+`
+
+const Centered = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+`
+
+const Tit = styled.Text`
+  font-size: 20px;
+  font-weight: 100;
+  color: grey;
+  margin-top: 80px;
+`
+
+const CommentsAlert = styled.View`
+  background-color: #D9D5C8; 
+  padding: 12px;
+  margin-top: 12px;
 `

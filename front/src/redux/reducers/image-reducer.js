@@ -5,7 +5,6 @@ const inicialState = []
 export default (state = inicialState, action) => {
   switch (action.type) {
     case SET_PICTURES:
-      console.log("ndea")
       return action.pictures
   	case ADD_PICTURE:
   		return [...state, action.picture]

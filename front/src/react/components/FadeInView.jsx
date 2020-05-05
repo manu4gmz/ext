@@ -8,7 +8,7 @@ export default ({children, order})=>{
 		Animated.timing(fadeAnim,{
 			toValue: 1,
 			duration: 500,
-			delay: order ? 300*order : 0,
+			delay: order ? 500*order : 0,
 		}).start();
 	},[])
 

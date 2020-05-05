@@ -68,11 +68,12 @@ const EditSpace = ({ navigation, editSpace, fetchLocalidades, fetchProvincias, r
   },[])
 
   const onSubmit = function (form) {
-    console.log(form);
+    console.log(route.params.propertyId);
     const photos = [...form.photos.map(obj => ({...obj}))];
     delete form.photos;
     editSpace(route.params.propertyId,form)
       .then(propertyId => {
+        if (!propertyId) return;
         const newImages = photos.filter(a => !spacePhotos.includes(a.uri))
         //navigation.push("SingleView", { propertyId })
         console.log("ESTOY A PUNTO DE UPLOADEAR, ESTAS SON LAS IMAGENES",photos)

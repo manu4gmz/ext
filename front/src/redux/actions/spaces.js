@@ -1,5 +1,7 @@
-import axios from "axios"
-import { SPACE, ALLSPACES, IDSPACE, PORPERTIESID, ALLCOMMENTS, PROPIETARIO } from "../constants"
+import api from "../api"
+import { SPACE, ALLSPACES, IDSPACE, PORPERTIESID, ALLCOMMENTS, PROPIETARIO } from "../constants";
+
+
 
 const propertiesId = (id) => ({
     type: PORPERTIESID,
@@ -26,7 +28,7 @@ const fetchPropietario = (propietarioId) => ({
 })
 
 export const fecthUserProp = (propId) => dispatch => {
-    return axios.get(`https://ext-api.web.app/api/users/info/${propId}`)
+    return api.get(`/users/info/${propId}`)
         .then((data) => {
             return dispatch(fetchPropietario(data.data))
         })
@@ -38,7 +40,7 @@ const allComments = (comments) => ({
 })
 
 export const fetchSpace = (spaceId) => dispatch => {
-    return axios.get(`https://ext-api.web.app/api/properties/singleSpace/${spaceId}`)
+    return api.get(`/properties/singleSpace/${spaceId}`)
         .then(res => res.data)
         .then(res => {
             dispatch(singleSpace(res))
@@ -48,7 +50,7 @@ export const fetchSpace = (spaceId) => dispatch => {
 
 export const fetchSpaces = (datosSpace, page = 1) => dispatch => {
     const queries = Object.keys(datosSpace).map(key => key + "=" + datosSpace[key]).join("&");
-    return axios.get(`https://ext-api.web.app/api/properties/${page}${queries ? "?" + queries : ""}`)
+    return api.get(`/properties/${page}${queries ? "?" + queries : ""}`)
         .then(res => res.data)
         .then(data => {
             dispatch(allSpaces(data))
@@ -60,15 +62,15 @@ export const fetchId = (id) => dispatch => {
 }
 
 export const addSpace = (body) => dispatch => {
-    return axios
-        .post(`https://ext-api.web.app/api/properties/createSpace`, body)
+    return api
+        .post(`/properties/createSpace`, body)
         .then(res => res.data)
         .catch(error => console.log(error))
 }
 
 export const addPhotos = (id, body) => dispatch => {
-    return axios
-        .put(`https://ext-api.web.app/api/properties/update/${id}`, {
+    return api
+        .put(`/properties/update/${id}`, {
             ...body,
             uid: getState().user.logged.uid
         })
@@ -78,8 +80,8 @@ export const addPhotos = (id, body) => dispatch => {
 
 export const editSpace = (propertyId, body) => (dispatch, getState) => {
     console.log(getState().user.logged.uid)
-    return axios
-        .put(`https://ext-api.web.app/api/properties/update/${propertyId}`, {
+    return api
+        .put(`/properties/update/${propertyId}`, {
             ...body,
             uid: getState().user.logged.uid
         })
@@ -91,23 +93,23 @@ export const editSpace = (propertyId, body) => (dispatch, getState) => {
 }
 
 export const fetchComments = id => (dispatch) => {
-    return axios
-        .get(`https://ext-api.web.app/api/properties/comments/${id}`)
+    return api
+        .get(`/properties/comments/${id}`)
         .then(res => res.data)
         .then(data => dispatch(allComments(data)))
 }
 
 export const writeComment = (id, comment, nombre) => (dispatch, getState) => {
-    return axios
-        .put(`https://ext-api.web.app/api/properties/comments/${id}`, { comment, userId: getState().user.logged.uid, nombre })
+    return api
+        .put(`/properties/comments/${id}`, { comment, userId: getState().user.logged.uid, nombre })
         // .put(`http://localhost:5000/ext-api/us-central1/app/api/properties/comments/${id}`, { comment, userId: getState().user.logged.uid, nombre })
         .then(res => dispatch(allComments(res.data)))
     // console.log({ comment, userId: getState().user.logged.uid, nombre })
 }
 
 export const writeResponse = (propertyId, commentIndex, response) => dispatch => {
-    return axios
-        .put(`https://ext-api.web.app/api/properties/response?propertyId=${propertyId}&commentIndex=${commentIndex}`, { response })
+    return api
+        .put(`/properties/response?propertyId=${propertyId}&commentIndex=${commentIndex}`, { response })
         // .put(`http://localhost:5000/ext-api/us-central1/app/api/properties/response?propertyId=${propertyId}&commentIndex=${commentIndex}`, { response })
         .then(res => dispatch(allComments(res.data)))
 }       

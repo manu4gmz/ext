@@ -3,35 +3,35 @@ import { View } from 'react-native'
 import styled from "styled-components/native";
 import { connect } from "react-redux";
 
-const Profile = ({ user, userInfo, navigation }) => {
+const Profile = ({ user, navigation }) => {
 
   return (
     <ViewPrincipal>
-      {user.id
+      {user.uid
         ? <View style={{ marginTop: 18 }}>
           <Wrapper>
             <ImgProfile source={require('../../public/icons/profile/icono_foto.png')} />
             <InfoContainer>
 
-              <Title>{`${userInfo.firstName} ${userInfo.lastName}`}</Title>
+              <Title>{`${user.firstName} ${user.lastName}`}</Title>
 
               <ViewText>
                 <IconText source={require('../../public/icons/profile/icono_mail.png')} />
-                <Text>{`${userInfo.email}`}</Text>
+                <Text>{`${user.email}`}</Text>
               </ViewText>
 
               <ViewText>
                 <IconText source={require('../../public/icons/profile/icono_telef.png')} />
-                {userInfo.phoneNumber
-                  ? <Text>{`${userInfo.phoneNumber}`}</Text>
+                {user.phoneNumber
+                  ? <Text>{`${user.phoneNumber}`}</Text>
                   : <Text>No disponible</Text>
                 }
               </ViewText>
 
               <ViewText>
                 <IconText source={require('../../public/icons/profile/icono_user.png')} />
-                {userInfo.address
-                  ? <Text>{`${userInfo.address}`}</Text>
+                {user.address
+                  ? <Text>{`${user.address}`}</Text>
                   : <Text>No disponible</Text>
                 }
               </ViewText>

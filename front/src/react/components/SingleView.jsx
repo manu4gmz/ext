@@ -23,7 +23,7 @@ const icons = {
     "Ducha":require("../../public/icons/services/ducha.png"),
 }
 
-export default ({ space, loading, allSpaces, navigation, propietario, edit, handleEdit, children, preview }) => {
+export default ({ space, loading, allSpaces, navigation, propietario, edit, logged, handleEdit, children, preview }) => {
   const [mode, setMode] = useState(false)
   const [services, setServices ] = useState(false);
 
@@ -77,8 +77,8 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
               <Container>
                 <Titulo>{space.title}</Titulo>
                   {space.province === 'ciudad autónoma de buenos aires'
-                    ? <Subtitulo>{`${space.neighborhood} - Capital Federal - ${space.size}mtr2`}</Subtitulo>
-                    : <Subtitulo>{`${space.neighborhood} - ${space.province} - ${space.size}mtr2`}</Subtitulo>
+                    ? <Subtitulo>{space.neighborhood} - Capital Federal - {space.size} m<Exponent>2</Exponent></Subtitulo>
+                    : <Subtitulo>{space.neighborhood} - {space.province} - {space.size} m<Exponent>2</Exponent></Subtitulo>
                   }
                   <View style={{ flexDirection: "row" }}>
                     <Precio>{`$${space.price}`}</Precio>
@@ -86,6 +86,11 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                   </View>
                   <Divider />
                   <TextoComun>{space.description}</TextoComun>
+                  <TouchableOpacity onPress={() => navigation.navigate(`Comments`, { propertyId: space.id }) }>
+                    <Text
+                      style={{ color: "grey", fontWeight: "bold", paddingLeft: 0, paddingTop: 10, paddingBottom: 10 }}
+                    >({(space.comments || "").length || 0}) Ver comentarios</Text>
+                  </TouchableOpacity>
                   {
                     (space.services || []).length ?
                     <Collapsable title="Servicios" min={90} max={Math.ceil((space.services || []).length/4)*90}>
@@ -138,6 +143,8 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                   }
                   {
                     !preview ?
+                    
+                    ( logged ?
                     <DoubleWraper>
                       <Boton
                         onPress={() =>
@@ -163,6 +170,17 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, hand
                         ml="5px"
                       >Llamar</Boton>
                   </DoubleWraper>
+                    : 
+                    <DoubleWraper>
+                       <Boton
+                        onPress={() => navigation.navigate("Login", {then: "SingleView", params: {propertyId: space.id }})}
+                        bg="#4A94EA"
+                        color="#F7F7F7"
+                        mr="5px"
+                      >Iniciá sesión para contactar
+                      </Boton>
+                    </DoubleWraper>
+                  )
                   : null
                   }
                   {
@@ -304,3 +322,10 @@ const styles = StyleSheet.create({
     height: 350
   },
 })
+
+const Exponent = styled(Subtitulo)`
+  font-size: 12px;
+  position: relative;
+  top: -3px;
+  margin: 0px;
+`;

@@ -10,7 +10,7 @@ export const uploadFiles = (files, propId = 1, progessCb) => (dispatch, getState
 	const user = getState().user.logged;
 	const uid = user.uid;
 
-	console.log("Al action le llegaron " + files.length + " fotos.")
+	//console.log("Al action le llegaron " + files.length + " fotos.")
 
 	let progress = [];
 

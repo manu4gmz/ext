@@ -46,12 +46,12 @@ function CustomDrawerContent(props) {
           source={require("../../public/images/isologotipo-only.png")}
           size={68}
         />
-        {props.userInfo.id ? (
+        {props.user.uid ? (
           <View>
             <Title style={styles.title}>
-              {props.userInfo.firstName} {props.userInfo.lastName}
+              {props.user.firstName} {props.user.lastName}
             </Title>
-            <Caption style={styles.caption}>{props.userInfo.email}</Caption>
+            <Caption style={styles.caption}>{props.user.email}</Caption>
           </View>
         ) : (
             <View>
@@ -68,7 +68,7 @@ function CustomDrawerContent(props) {
         }
       />
 
-      {props.userInfo.id ? (
+      {props.user.uid ? 
         <View>
           <DrawerItem
             label="Mi Perfil"
@@ -86,23 +86,23 @@ function CustomDrawerContent(props) {
             }
           />
         </View>
-      ) : (
-          <View>
-            <DrawerItem
-              label="Login"
-              onPress={() =>
-                props.navigation.navigate("Root", { screen: "Login" }, props)
-              }
-            />
+      : 
+        <View>
+          <DrawerItem
+            label="Login"
+            onPress={() =>
+              props.navigation.navigate("Root", { screen: "Login" }, props)
+            }
+          />
 
-            <DrawerItem
-              label="Register"
-              onPress={() =>
-                props.navigation.navigate("Root", { screen: "Register" }, props)
-              }
-            />
-          </View>
-        )}
+          <DrawerItem
+            label="Register"
+            onPress={() =>
+              props.navigation.navigate("Root", { screen: "Register" }, props)
+            }
+          />
+        </View>
+      }
     </DrawerContentScrollView>
   );
 }
@@ -236,7 +236,7 @@ const DrawerComponenet = ({ userInfo, user }) => {
       drawerType="slide"
       drawerStyle={{ width: 200 }}
       drawerContent={props => (
-        <CustomDrawerContent {...props} userInfo={userInfo} user={user} />
+        <CustomDrawerContent {...props} user={user} />
       )}
     >
       <Drawer.Screen name="Root" component={Root} />
@@ -246,7 +246,6 @@ const DrawerComponenet = ({ userInfo, user }) => {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    userInfo: state.profile.userInfo,
     user: state.user.logged
   };
 };

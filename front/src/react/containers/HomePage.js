@@ -5,12 +5,13 @@ import { getUserInfo } from '../../redux/actions/profile'
 import { getUser } from "../../redux/actions/user";
 
 const HomePage = ({ navigation, user, getUserInfo, userInfo, getUser }) => {
+  /*
   useEffect(() => {
     if (user.uid) getUserInfo(user.uid)
-  }, [user])
+  }, [user])*/
 
   useEffect(() => {
-    getUser(() => navigation.navigate('Root', { screen: "Home" }));
+    getUser()//() => navigation.navigate('Root', { screen: "Home" }));
   }, [])
 
 
@@ -24,13 +25,11 @@ const HomePage = ({ navigation, user, getUserInfo, userInfo, getUser }) => {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    user: state.user.logged,
-    userInfo: state.profile.userInfo
+    user: state.user.logged
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  getUserInfo: id => dispatch(getUserInfo(id)),
   getUser: () => dispatch(getUser())
 })
 

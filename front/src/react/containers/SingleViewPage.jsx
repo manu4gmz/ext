@@ -3,16 +3,19 @@ import { connect } from "react-redux";
 import { StyleSheet, Text, View, Image } from "react-native";
 import SingleView from "../components/SingleView";
 import { fetchSpace, fecthUserProp } from "../../redux/actions/spaces"
-const SingleViewPage = ({ space, fetchSpace, id, route, allSpaces, navigation, fecthUserProp, propietario }) => {
+const SingleViewPage = ({ space, fetchSpace, id, route, allSpaces, navigation, fecthUserProp, propietario,logged }) => {
 
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         fetchSpace(route.params.propertyId)
-            .then((res) => {
-                fecthUserProp(res.userId)
-                    .then(() => setLoading(false))
-            })
-    }, [])
+        .then((res) => {
+            setLoading(false)
+        })
+
+        if (logged) {
+            fecthUserProp(route.params.propertyId)
+        }
+    }, [logged])
 
 
     return <SingleView
@@ -21,11 +24,13 @@ const SingleViewPage = ({ space, fetchSpace, id, route, allSpaces, navigation, f
         loading={loading}
         navigation={navigation}
         propietario={propietario}
+        logged={logged}
     />;
 };
 
 const mapStateToProps = (state, ownProps) => {
     return {
+        logged: state.user.logged.uid,
         id: state.spaces.idSpace,
         space: state.spaces.singleSpace,
         allSpaces: state.spaces.allSpaces,

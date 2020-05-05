@@ -1,6 +1,7 @@
 import axios from "axios"
 import firebase from "../firebase";
 const auth = firebase.auth();
+import api from "../api";
 
 export const registerUser = (body) => async (dispatch) => {
   const user = await auth.createUserWithEmailAndPassword(body.email, body.password)
@@ -16,8 +17,8 @@ export const registerUser = (body) => async (dispatch) => {
     phoneNumber: body.phoneNumber,
   }
 
-  return axios
-    .post(`https://ext-api.web.app/api/users/register`, bodyUpdate)
+  return api
+    .post(`/users/register`, bodyUpdate)
     .then(data => data)
     .catch(error => console.log(error))
 }
