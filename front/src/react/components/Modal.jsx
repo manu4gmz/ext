@@ -3,24 +3,43 @@ import styled from "styled-components/native";
 import React, { useState, useEffect } from 'react'
 import { Text, View, TouchableOpacity, ScrollView  } from 'react-native'
 import Button from "../ui/Button";
+import { Animated, Easing } from "react-native";
 
 export default ([modal, setModal]) => {
 
-
+  
     return {
 
       Modal: ()=> { 
+        const [fadeAnim] = useState(new Animated.Value(0))
+        
+        
+        useEffect(()=>{
+          Animated.timing(fadeAnim, {
+            toValue: modal ? 1 : 0,
+            duration: 300,
+          }).start();
+        },[modal])
+        
         if (!modal) return null;
-        console.log(modal)
-
         return <Wrapper visible={modal} onPress={()=>setModal(null)}>
-          <Modal underlayColor="white" onPress={()=>{}} style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
-            <ScrollView>
-              <View style={{paddingRight: 10}}>
-                { modal }
-              </View>
-            </ScrollView>
-          </Modal>
+          <Animated.View style={{
+            opacity: fadeAnim, // Binds directly
+            transform: [{
+              translateY: fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [150, 0]  // 0 : 150, 0.5 : 75, 1 : 0
+              }),
+            }],
+          }}>
+            <Modal underlayColor="white" onPress={()=>{}} style={{ shadowColor: "#000", shadowOffset: {width:0, height:3}, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
+              <ScrollView>
+                <View style={{paddingRight: 10}}>
+                  { modal }
+                </View>
+              </ScrollView>
+            </Modal>
+          </Animated.View>
         </Wrapper>
 
     },

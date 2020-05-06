@@ -201,3 +201,8 @@ export const LogoutUser = () => {
 			console.log(error)
 		})
 }
+
+export const searchUsers = (query) => {
+	if (query.length < 3) return []; 
+	return api.get(`/users?s=${query}`).then(rta => rta.data);
+}

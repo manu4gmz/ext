@@ -33,9 +33,10 @@ export default function SpaceReducedCard ({espacio, index, navigation, user, fav
             onPress={()=>callInfo(()=>{
                 return <View>
                     <Titulo style={{marginBottom: 12}}>{espacio.title}</Titulo>
-                        <RoundedButton onPress={()=>navigation.push("SingleView", {propertyId: espacio.id})} bg={"white"} color={"#4a94ea"}>Ver publicación</RoundedButton>
-                        <RoundedButton onPress={()=>navigation.push("EditSpace", {propertyId: espacio.id})} bg={"white"} color={"#4a94ea"}>Editar</RoundedButton>
-                        <RoundedButton onPress={()=>navigation.push("EditSpace", {propertyId: espacio.id})} bg={"white"} color={"#4a94ea"}>Registrar inquilino</RoundedButton>
+                    <TextButton onPress={()=>navigation.push("SingleView", {propertyId: espacio.id})} bg={"white"}>Ver publicación</TextButton>
+                    <TextButton onPress={()=>navigation.push("EditSpace", {propertyId: espacio.id})} bg={"white"}>Editar</TextButton>
+                    <TextButton onPress={()=>navigation.push("UserSearch", {propertyId: espacio.id})} bg={"white"}>Registrar inquilino</TextButton>
+                    <TextButton onPress={()=>navigation.push("Comments", {propertyId: espacio.id})} bg={"white"}>Ver Comentarios ({(espacio.comments || []).length})</TextButton>
                     {
                         Object.keys(tableFields).map((key,i) => (
                             espacio[key] ? <TableRow style={{ borderBottomColor: "#DDD", borderBottomWidth: 1}} key={i}>
@@ -54,6 +55,10 @@ export default function SpaceReducedCard ({espacio, index, navigation, user, fav
                             </View> : null
                         ))
                     }
+                    <TableRow style={{ borderBottomColor: "#DDD", borderBottomWidth: 1}}>
+                        <TableLeft>{(espacio.photos || []).length} fotos</TableLeft>
+                    </TableRow>
+                    <Carousel images={espacio.photos || []} height={250} />
                 </View>
             })}
             style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
@@ -98,8 +103,10 @@ export default function SpaceReducedCard ({espacio, index, navigation, user, fav
     </FadeInView>
 }
 
-const RoundedButton = styled(Button)`
-    border-radius: 50px;
+const TextButton = styled.Text`
+    flex:1;
+    color: #4a94ea;
+    padding: 6px 0;
 `
 const DoubleWrapper = styled.View`
     flex-direction: row;
@@ -129,6 +136,7 @@ const Precio = styled.Text`
 `
 const Titulo = styled.Text`
   font-size: 17px;
+  font-weight: 500;
   text-transform: capitalize;
   margin: 3px 3px 0px 3px;
 `

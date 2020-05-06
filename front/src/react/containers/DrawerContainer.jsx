@@ -27,12 +27,12 @@ import UploadingFiles from "../containers/UploadingFiles";
 import Profile from "../components/Profile";
 import EditSpace from "../containers/EditSpace"
 import CommentsContainer from "../containers/CommentsContainer";
-import UserProperties from '../components/UserPorperties'
-
+import UserProperties from '../components/UserPorperties';
 
 //importando action creator
 import { LogoutUser } from "../../redux/actions/user";
 import Favorites from "../components/Favorites";
+import UserSearch from "./UserSearch";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -221,6 +221,12 @@ function Root() {
         name="Favorites"
         component={Favorites}
         options={{ header: () => null }, titulo("Favoritos")}
+      />
+
+      <Stack.Screen
+        name="UserSearch"
+        component={UserSearch}
+        options={{ header: () => null }, titulo("Lista de usuarios")}
       />
     </Stack.Navigator>
   );

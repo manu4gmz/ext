@@ -167,17 +167,32 @@ router.get('/:mail', (req, res, next) => {
 })
 
 router.get('/', validateUser(false), (req, res, next) => {
+  const query = req.query.s.toLowerCase();
+
   db.collection('users').get()
-    .then(usuarios => {
+    .then(rta => rta.docs)
+    .then(users => {
+      const result = users.map(userData => {
+        const user = userData.data();
+        if (!query) return {...user, id: user.id}
+        const full = (user.firstName + " " + user.lastName).toLowerCase();
+
+
+
+        if (user.firstName.slice(0,query.length).toLowerCase() == query) return { ...user, uid: user.id, match:"firstName"};
+        if (user.lastName.slice(0,query.length).toLowerCase() == query) return { ...user, uid: user.id, match:"lastName"};
+        if (full.slice(0,query.length).toLowerCase() == query.trim()) return { ...user, uid: user.id, match:"fullName"};
+        if (user.email.slice(0,query.length).toLowerCase() == query) return { ...user, uid: user.id, match:"email"};
+        if (full.includes(query)) return { ...user, uid: user.id, match:"name"};
+
+
+        return false;
+      }).filter(a=>a);
+
+
       res
         .status(200)
-        .json(usuarios.docs.map(user => {
-          const data = user.data()
-          return {
-            ...data,
-            id: user.id
-          }
-        }))
+        .json(result)
     })
     .catch(next)
 })

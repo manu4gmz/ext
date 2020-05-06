@@ -59,12 +59,7 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const StyledView = styled.View`
-  margin: 10px 5px;
-  background-color: #F7F7F7;
-  padding : 0;
-  border-radius: 10px;
-`
+
 const Wrapper = styled.View`
   margin: 0px auto;
   width: 100%;
@@ -79,6 +74,7 @@ const Centered = styled.View`
   width: 100%;
   align-items: center;
 `
+
 const Tit = styled.Text`
   font-size: 20px;
   font-weight: 100;
