@@ -1,4 +1,4 @@
-import { LOGGED, USERPROPERTIES, USERFAVS, DELFAV, DELFAVS, ADDFAVORITE } from "../constants"
+import { LOGGED, USERPROPERTIES, USERFAVS } from "../constants"
 import firebase from "../firebase";
 import api from '../api'
 import {getUserInfo} from "./profile"; 
@@ -16,24 +16,24 @@ const userProperties = (properties) => ({
 	properties
 });
 
-const addFavorite = (id) => ({
-	type: ADDFAVORITE,
-	id
-})
-const userFavorites = (favs) => ({
+const setFavSpaces = (properties) => ({
 	type: USERFAVS,
-	favs
-})
+	properties
+});
 
-const deleteFavorites = () => ({
-	type: DELFAVS,
-	
-})
 
-const deleteFavorite = (fav) => ({
-	type: DELFAV,
-	fav
-})
+const fetchLoggedUser = () => (dispatch,getState) => {
+	return api.get("/users/authenticate")
+		.then(rta => rta.data)
+		.then(user => {
+			console.log(user);
+			dispatch(setLoggedUser({
+				...getState().user.logged,
+				...user
+			}))
+			return user;
+		});
+};
 
 export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 	auth.onAuthStateChanged((user) => {
@@ -75,38 +75,25 @@ export const getUser = (ifLogged, ifNotlogged) => dispatch => {
 
 
 //Agrega el favorito seleccionado
-export const addFav = (newFavs,userId,id) => dispatch => {
-	return api.put(`/users/fav/${userId}`, { id })
-		.then(() => dispatch(addFavorite(newFavs)))
-		
+export const addFav = (id) => (dispatch,getState) => {
+	return api.put(`/users/favs/${id}`)
+		.then(() => {
+			dispatch(fetchLoggedUser());
+			dispatch(fetchFavs());
+		});
 }
-//Te trae todos los ids de los espacios marcados como favoritos por el user
-export const fetchFav = (userId) => {
-	return api.get(`/users/favs/${userId}`)
-		.then((data) => data)
 
-}
 //Te trae todos los espacios (completos) marcados como favortios por el user
-export const fetchFavs = (favoritos) => (dispatch,getState) => {
+export const fetchFavs = () => (dispatch,getState) => {
         return api.get(`/users/favorites/${getState().user.logged.uid}`)
             .then(res => {
-				dispatch(userFavorites(res.data));
+				console.log(res.data)
+				dispatch(setFavSpaces(res.data));
 				return res.data;
 			})
 }
-//Elimina todos los favoritos del store
-export const deleteFavs = () => dispatch => {
-	return dispatch(deleteFavorites())
-}
 
-//Elimina el favorito seleccionado
-export const deleteFav = (favorites,id,userId) => dispatch => {
-	api.put(`/users/favs/${userId}`, { id })
-      .then((data) => {
-		dispatch(deleteFavorite(favorites))
-      })
-	
-}
+
 
 export const fetchProperties = (userId) => dispatch => {
 	return api.get(`/properties/userSpaces`)
@@ -119,12 +106,10 @@ export const fetchUser = (userId) => {
 }
 
 //Completar los datos en el form de ofrecer espacio
-export const offerUser = (userId, data) => dispatch => {
-	return api.put(`/users/ownerForm/${userId}`, data)
-		.then(() => {
-			dispatch(getUserInfo(userId));
-			fetchUser(userId)
-			 .then(data => dispatch(setLoggedUser(data)));
+export const offerUser = (data) => (dispatch,getState) => {
+	return api.put(`/users/ownerForm/${getState().user.logged.uid}`, data)
+		.then((user) => {
+			dispatch(fetchLoggedUser())
 			//dispatch(setLoggedUser(data.data))
 			//dispatch(fetUser)
 		})

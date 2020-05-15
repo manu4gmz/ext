@@ -8,15 +8,19 @@ const SingleViewPage = ({ space, fetchSpace, id, route, allSpaces, navigation, f
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         fetchSpace(route.params.propertyId)
-        .then((res) => {
-            setLoading(false)
+        .then((space) => {
+            setLoading(false);
+
+            if (logged) {
+                console.log("Buscando al propietario!")
+                fecthUserProp(space.userId);
+            }
         })
 
-        if (logged) {
-            fecthUserProp(route.params.propertyId)
-        }
-    }, [logged])
+        
+    }, []);
 
+    console.log(propietario)
 
     return <SingleView
         space={space}
@@ -30,7 +34,7 @@ const SingleViewPage = ({ space, fetchSpace, id, route, allSpaces, navigation, f
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        logged: state.user.logged.uid,
+        logged: state.user.logged,
         id: state.spaces.idSpace,
         space: state.spaces.singleSpace,
         allSpaces: state.spaces.allSpaces,

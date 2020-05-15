@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import saveForm from "../../redux/actions/forms";
 import { connect } from 'react-redux'
 
-import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native'
+import { StyleSheet, Text, Image, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, AsyncStorage  } from 'react-native'
 import styled from "styled-components/native";
 import Button from "../ui/Button";
 
@@ -33,6 +33,12 @@ function useInput({ title, name, placeholder, validation, index, element }, form
 
   const field = form[name] || {};
 
+  const onChangeText = (val) => {
+    setForm((form) => ({ ...form, [name]: { value: val, error: field.error, edited: true } }))
+    validate(val, name, validation, setForm);
+  }
+
+
   if (typeof element == "function") return (
     <View key={index} style={{ zIndex: 40 - index }}>
       {
@@ -44,16 +50,19 @@ function useInput({ title, name, placeholder, validation, index, element }, form
             if (typeof value == "function") setForm(value);
             else setForm(form => ({ ...form, [name]: { value, error, edited: true } }));
           } : setForm,
-          index
+          index,
+          input: (val) => <StyledInput
+            error={field.error ? "true" : "false"}
+            value={val || ""}
+            onChangeText={onChangeText}
+            placeholder={placeholder || ""}
+            secureTextEntry={name === "password"}
+          />
         })
       }
     </View>
   )
 
-  const onChangeText = (val) => {
-    setForm((form) => ({ ...form, [name]: { value: val, error: field.error, edited: true } }))
-    validate(val, name, validation, setForm);
-  }
 
   return (
     <View key={index} style={{ width: (100 / inline - (inline == 1 ? 0 : 2)) + "%" }}>
@@ -62,7 +71,8 @@ function useInput({ title, name, placeholder, validation, index, element }, form
         error={field.error ? "true" : "false"}
         value={field.value || ""}
         onChangeText={onChangeText}
-        placeholder={placeholder}
+        placeholder={placeholder || ""}
+        secureTextEntry={name === "password"}
       />
       {
         field.error ? <Error>{field.error}</Error> : null
@@ -71,11 +81,26 @@ function useInput({ title, name, placeholder, validation, index, element }, form
   )
 }
 
-const Form = ({ fields, onSubmit, sendText, header, values }) => {
+const Form = ({ fields, onSubmit, sendText, header, values, name }) => {
 
   const parsedInitialState = values ? Object.keys(values).reduce((acc, key) => ({ ...acc, [key]: { value: values[key], error: null } }), {}) : {};
 
   const [form, setForm] = useState(parsedInitialState);
+
+  useEffect(()=>{
+    if (!name) return;
+    AsyncStorage.getItem(name)
+    .then(data => {
+      if (!data) return;
+      const form = JSON.parse(data);
+      setForm(form);
+    });
+  },[]);
+
+  useEffect(()=>{
+    if (!name) return;
+    AsyncStorage.setItem(name, JSON.stringify(form));
+  },[form]);
 
   const checkRequired = ({ title, name, validation }) => {
     if (typeof title == "string" && title[title.length - 1] == "*") return name;
@@ -103,7 +128,7 @@ const Form = ({ fields, onSubmit, sendText, header, values }) => {
 
   function handleSubmit() {
     const data = Object.keys(form).reduce((acc, key) => key && form[key].edited ? ({ ...acc, [key]: form[key].value }) : acc, {})
-    onSubmit(data);
+    onSubmit(data, setForm);
   }
 
   return (

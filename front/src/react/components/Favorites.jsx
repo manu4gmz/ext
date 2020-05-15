@@ -7,35 +7,23 @@ import Boton from './../ui/Button'
 import Carousel from "../components/Carousel";
 import FadeInView from "../components/FadeInView";
 import Loading from "../components/Loading";
-import { fetchFavs, deleteFav, deleteFavs, fetchFav } from "../../redux/actions/user"
+import { fetchFavs } from "../../redux/actions/user"
 import { connect } from "react-redux";
 import Axios from "axios";
+import FavoriteButton from "../components/FavoriteButton";
 
 
-
-function Favorites({ user,fetchFavs, deleteFavs, deleteFav, state, navigation }) {
+function Favorites({ user, fetchFavs, spaces, navigation }) {
   //const navigation = useNavigation();
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    deleteFavs()
-    fetchFav(user.uid)
-      .then((res) => {
-        fetchFavs(res.data.favoritos)
-        .then(()=>{
-          setTimeout(function(){ setLoading(false); }, 1500)
-          })
+    fetchFavs()
+      .then(()=>{
+        setLoading(false);
       })
   }, [])
 
-  function delFav(id, userId) { 
-    setLoading(true)
-    let newFavs =  state.user.favorites.filter(fav => fav.id !== id)
-    deleteFavs()
-    deleteFav(newFavs, id, userId)
-    setTimeout(function(){ setLoading(false); }, 2000)
-   
-  }
 
   function sendId(id) {
     return navigation.navigate(`SingleView`, { propertyId: id })
@@ -44,11 +32,11 @@ function Favorites({ user,fetchFavs, deleteFavs, deleteFav, state, navigation })
   return (
     
     <ScrollView>
-      {!loading && state.user.favorites.length ? (
+      {!loading && spaces.length ? (
         
         !loading ?
           <Wrapper>
-            {state.user.favorites.map((espacio, index) => {
+            {spaces.map((espacio, index) => {
               return (
                 <FadeInView key={index} order={index}>
                   <StyledView
@@ -86,22 +74,11 @@ function Favorites({ user,fetchFavs, deleteFavs, deleteFav, state, navigation })
                                 ratingCount={5}
                                 imageSize={15}
                               />
-                              <TouchableOpacity onPress={() => showComments(espacio.id)}>
-                                <Text
-                                  style={{ color: "grey", fontWeight: "bold", padding: 10 }}
-                                >{`${(espacio.comments || "").length || 0}  Ver comentarios`}
-                                </Text>
-                              </TouchableOpacity>
+                              <FavoriteButton espacio={espacio}/>
                             </View>
                           </TouchableOpacity>
 
-                          <TouchableOpacity 
-                          onPress={() => delFav(espacio.id, user.uid)}>
-                            <Image
-                              style={{ width: 30, height: 30, marginRight: 2 }}
-                              source={(require("../../public/icons/corazon-ro.png"))}
-                            />
-                          </TouchableOpacity>
+                          <FavoriteButton espacio={espacio}/>
                         </View>
                         <View style={{ flexDirection: "row" }}
                         >
@@ -198,15 +175,13 @@ const Tit = styled.Text`
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user.logged,
-    state
+    spaces: state.user.favorites
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchFavs: (favoritos) => (dispatch(fetchFavs(favoritos))),
-    deleteFavs: () => (dispatch(deleteFavs())),
-    deleteFav: (favorites, id, userId) => (dispatch(deleteFav(favorites, id, userId)))
+    fetchFavs: () => (dispatch(fetchFavs())),
   }
 }
 

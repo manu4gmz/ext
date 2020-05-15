@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import { connect } from "react-redux";
 import BackgroundAllSpaces from "../components/backgroundAllSpaces";
-import { fetchSpaces } from "../../redux/actions/spaces"
-import { fetchFav, fetchFavs,deleteFav, deleteFavs, addFav  } from "../../redux/actions/user"
+import { fetchSpaces } from "../../redux/actions/spaces";
 
 function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, route, fetchSpaces,state,fetchFavs }) {
 
@@ -17,12 +16,6 @@ function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, r
       setSpaces(data);
       setLoading(false);
     });
-    if (!user.uid) return;
-    deleteFavs()
-    fetchFav(user.uid)
-      .then((res) => {
-        fetchFavs(res.data.favoritos)
-      })
   }, [])
 
   function setIndex(i) {
@@ -37,19 +30,7 @@ function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, r
     return navigation.navigate(`Comments`, { propertyId: id })
   }
 
-  function favorites (userId, id, espacio) {
-    let favoritos = state.user.favorites
-      if(favoritos.length && favoritos.some(fav=> fav.id == id)){
-        let newFavs =  favoritos.filter(fav => fav.id !== id)
-        deleteFavs()
-        deleteFav(newFavs, id, userId)
-        
-    } else {
-      let newFavs = [...favoritos, espacio]
-      addFav(newFavs,userId,id)      
-    }
-  
-  }
+
 
   function removeFilter(key) {
     const { query } = route.params;
@@ -68,13 +49,11 @@ function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, r
     <BackgroundAllSpaces
       allSpaces={spaces.properties}
       markers={spaces.markers}
-      favs={state.user.favorites}
       user={user}
       total={spaces.total}
       pages={spaces.pages}
       navigation={navigation}
       sendId={sendId}
-      favorites={favorites}
       setIndex={setIndex}
       scrollView={scrollView}
       index={route.params.index}
@@ -98,11 +77,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchFavs: (favoritos) => (dispatch(fetchFavs(favoritos))),
-    fetchSpaces: (query, index) => (dispatch(fetchSpaces(query, index))),
-    deleteFavs: () => (dispatch(deleteFavs())),
-    deleteFav: (favorites, id, userId) => (dispatch(deleteFav(favorites, id, userId))),
-    addFav: (newFavs,userId,id) => (dispatch(addFav(newFavs,userId,id)))
+    fetchSpaces: (query, index) => (dispatch(fetchSpaces(query, index)))
   }
 }
 

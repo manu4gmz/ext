@@ -22,9 +22,9 @@ const captureId = (idSpace) => ({
     idSpace
 })
 
-const fetchPropietario = (propietarioId) => ({
+const fetchPropietario = (propietario) => ({
     type: PROPIETARIO,
-    propietarioId
+    propietario
 })
 
 export const fecthUserProp = (propId) => dispatch => {

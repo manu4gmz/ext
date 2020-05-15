@@ -141,17 +141,17 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, logg
                     </View>
                     : null
                   }
-                  {
+                  { 
                     !preview ?
                     
-                    ( logged ?
+                    ( logged.uid && (propietario.id || propietario.uid) ?
                     <DoubleWraper>
-                      <Boton
+                      {(propietario.contact || {}).email ? <Boton
                         onPress={() =>
                           sendEmail(
                             `${propietario.email}`,
-                            'Greeting!',
-                            'I think you are nice person.')
+                            `Consulta publicación ${space.title} en Espacio por Tiempo`,
+                            `Hola ${propietario.firstName}, \n\n vi tu publicación en Espacio por Tiempo "${space.title}", estoy interesado en alquirla.\n\n Saludos, ${logged.firstName}`)
                             .then(() => {
                               console.log('Our email successful');
                             })
@@ -161,15 +161,23 @@ export default ({ space, loading, allSpaces, navigation, propietario, edit, logg
                         color="#F7F7F7"
                         mr="5px"
                       >Email
-                      </Boton>
-
-                    <Boton
-                        onPress={() => Linking.openURL(`tel:${propietario.phoneNumber}`)}
-                        bg="#F77171"
-                        color="#F7F7F7"
-                        ml="5px"
-                      >Llamar</Boton>
+                      </Boton> : null}
+                    {(propietario.contact || {}).tel ? <Boton
+                      onPress={() => Linking.openURL(`tel:${propietario.phoneNumber}`)}
+                      bg="#F77171"
+                      color="#F7F7F7"
+                      ml="5px"
+                      >Llamar
+                    </Boton> : null}
+                    {(propietario.contact || {}).wpp ? <Boton
+                      onPress={() => Linking.openURL(`https://wa.me/${propietario.phoneNumber}?text=Hola ${propietario.firstName}, vi tu publicación en Espacio por Tiempo "${space.title}", estoy interesado en alquirla.\n Saludos, ${logged.firstName}`)}
+                      color="#F7F7F7"
+                      bg="#25d366"
+                      ml="5px"
+                    >Whatsapp
+                    </Boton> : null }
                   </DoubleWraper>
+                  
                     : 
                     <DoubleWraper>
                        <Boton

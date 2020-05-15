@@ -29,7 +29,7 @@ export default function (state = initialCartState, action) {
         case "COORDENADAS":
             return { ...state, coordenadas: action.coordenadas }
         case PROPIETARIO:
-            return { ...state, propietario: action.propietarioId }
+            return { ...state, propietario: action.propietario }
         default:
             return state;
     }

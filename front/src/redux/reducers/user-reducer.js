@@ -1,4 +1,4 @@
-import { LOGGED, USERPROPERTIES, USERFAVS, DELFAV, DELFAVS, ADDFAVORITE } from "../constants"
+import { LOGGED, USERPROPERTIES, USERFAVS} from "../constants"
 
 const initialCartState = {
     logged: {},
@@ -11,15 +11,9 @@ export default function (state = initialCartState, action) {
         case LOGGED:
             return { ...state, logged: action.logged }
         case USERPROPERTIES:
-            return { ...state, properties: action.properties }
+            return { ...state, properties: action.properties };
         case USERFAVS:
-            return { ...state, favorites: action.favs } 
-        case DELFAVS:
-            return { ...state, favorites: []}    
-        case DELFAV:
-            return { ...state, favorites: action.fav}  
-        case ADDFAVORITE:
-            return {...state,favorites: action.id }           
+            return { ...state, favorites: action.properties };       
         default:
             return state;
     }

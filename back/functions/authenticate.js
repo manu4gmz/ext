@@ -24,7 +24,7 @@ function validateUser(fetchUser = true) {
               req.user = { 
                 ...user, 
                 uid: uid,
-
+                id: uid
               };
 
               

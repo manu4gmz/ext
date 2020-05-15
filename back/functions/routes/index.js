@@ -1,39 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const cookieParser = require("cookie-parser")
-const cors = require("cors");
+const fb = require("../services/firebase").admin;
+const db = fb.firestore();
 
 
-//router.use(cookieParser());
-//router.use(cors());
-/*
-const corsConfig = {
-    origin: true,
-    credentials: true,
-};*/
 
-//router.use(cors(corsConfig));
-//router.options('*', cors(corsConfig));
+function retrieveUserFromToken(text) {
+  return (new Buffer(text, "base64")).toString('ascii');
+}
 
-/*
-router.use(function (req, res, next) {
-    //res.header("Access-Control-Allow-Origin", "https://espacioportiempo.netlify.app");
-    //res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, OPTIONS");
-    //res.header("Access-Control-Allow-Headers", "header, Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,Keep-Alive,X-Requested-With,If-Modified-Since");
-    if ("OPTIONS" === req.method) {
-        res.sendStatus(200);
-    }
-    else {
-        next();
-    }
-});
-*/
+router.get("/verify-email/:token",(req,res) => {
 
-//importando rutas
-const users = require('./users')
-const properties = require('./properties')
+    const uid = retrieveUserFromToken(req.params.token);
 
-router.use('/users', users)
-router.use('/properties', properties)
+    db.collection("users").doc(uid).get()
+    .then(rta => rta.data())
+    .then(user => {
+        if (!user.emailVerified) db.collection("users").doc(uid).set({emailVerified: true}, { merge: true });
 
-module.exports = router
+        res.send(`<center>
+            <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
+                <h3>Hola, ${user.firstName}!</h3>
+                <h4>${user.email}</h4>
+                <p>Muchas gracias por verificar tu email!</p>
+            </div>
+        </center>`)
+    })
+
+})
+
+module.exports = router;

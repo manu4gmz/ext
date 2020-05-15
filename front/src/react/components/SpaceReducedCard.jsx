@@ -7,6 +7,7 @@ import Button from "../ui/Button";
 
 
 const tableFields = {
+    visible: "Visible",
     province: "Provincia",
     neighborhood: "Localidad",
     street: "Calle",
@@ -55,10 +56,7 @@ export default function SpaceReducedCard ({espacio, index, navigation, user, fav
                             </View> : null
                         ))
                     }
-                    <TableRow style={{ borderBottomColor: "#DDD", borderBottomWidth: 1}}>
-                        <TableLeft>{(espacio.photos || []).length} fotos</TableLeft>
-                    </TableRow>
-                    <Carousel images={espacio.photos || []} height={250} />
+                    
                 </View>
             })}
             style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}
@@ -73,7 +71,7 @@ export default function SpaceReducedCard ({espacio, index, navigation, user, fav
                 }
                 <InlineRow style={{alignSelf: "center", marginLeft: espacio.photos && espacio.photos.length ? 0 : 12, paddingTop: 6, paddingBottom: 6}}>
 
-                    <Titulo>{espacio.title}</Titulo>
+                    <Titulo style={{color: espacio.visible ? "#000" : "#666" }}>{espacio.title}</Titulo>
                     {espacio.province === 'ciudad autónoma de buenos aires'
                         ? <Subtitulo>{espacio.neighborhood} - Capital Federal</Subtitulo>
                         : <Subtitulo>{espacio.neighborhood} - {espacio.province}</Subtitulo>

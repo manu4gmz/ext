@@ -4,9 +4,9 @@ import styled from "styled-components/native";
 import Carousel from "./Carousel";
 import { View, TouchableOpacity, Text, Image } from "react-native";
 import Boton from "../ui/Button";
+import FavoriteButton from "./FavoriteButton";
 
-
-export default function SpaceCard ({espacio, index, user, favs, favorites}) {
+export default function SpaceCard ({espacio, index, user, navigation}) {
 
     return <FadeInView order={index}>
         <StyledView
@@ -29,7 +29,7 @@ export default function SpaceCard ({espacio, index, user, favs, favorites}) {
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                 <TouchableOpacity
                 style={{ flex: 1 }}
-                onPress={() => { return sendId(espacio.id) }}
+                onPress={() => navigation.push("SingleView", {propertyId: espacio.id})}
                 >
                 <Titulo>{espacio.title}</Titulo>
                 {espacio.province === 'ciudad autónoma de buenos aires'
@@ -40,18 +40,11 @@ export default function SpaceCard ({espacio, index, user, favs, favorites}) {
                 </TouchableOpacity>
 
                 {
-                user.uid ? 
-                <TouchableOpacity onPress={() => favorites(user.uid,espacio.id,espacio)}>
-                    <Image
-                    style={{ width: 30, height: 30, marginRight: 2 }}
-                    source={favs.some(fav=> fav.id == espacio.id) ? (require("../../public/icons/corazon-ro.png")) : (require("../../public/icons/corazon-ne.png"))}
-                    />
-                </TouchableOpacity>
-                : null
+                    user.uid ? <FavoriteButton espacio={espacio}/> : null
                 }
             </View>
             <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
-                <TouchableOpacity onPress={() => showComments(espacio.id)}>
+                <TouchableOpacity onPress={() => navigation.push("Comments", {propertyId: espacio.id})}>
                 <Text
                     style={{ color: "grey", fontWeight: "bold", paddingLeft: 0, paddingTop: 10, paddingBottom: 10 }}
                     >({(espacio.comments || "").length || 0})  Ver comentarios</Text>

@@ -50,7 +50,7 @@ function mapBadge(filter, remove) {
 
 }
 
-export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, favorites, favs, filter, removeFilter, loading, showComments, markers }) => {
+export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, filter, removeFilter, loading, showComments, markers }) => {
   const [mode, setMode] = useState(false);
 
   // console.log("favs", favs)
@@ -86,7 +86,7 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
         !loading ?
 
           !mode ? <Wrapper>
-            {allSpaces.map((espacio, index) => <SpaceCard key={index} {...({espacio, favs, user, index, favorites, navigation, showComments, sendId})}/>)}
+            {allSpaces.map((espacio, index) => <SpaceCard key={index} {...({espacio, user, index, navigation, showComments, sendId})}/>)}
             <PaginationWrapper>
               {
                 index > 1 ?

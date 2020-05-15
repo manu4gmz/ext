@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const express = require('express');
-const routes = require('./routes/index')
+const routes = require('./routes');
+const api = require('./api');
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
@@ -12,8 +13,8 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.use('/api', routes)
-app.get('/', (req, res) => res.send('App On'))
+app.use('/api', api);
+app.use('/', routes);
 
 app.get('/api/timestamp', (req, res) => {
 	res.send(`${Date.now()}`);

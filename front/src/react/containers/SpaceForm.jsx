@@ -53,7 +53,6 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
 
   /**************************************************/
 
-
   const onSubmit = function (form) {
     const datosSpace = {
       ...form,

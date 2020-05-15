@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const fb = require("../services/firebase").admin;
 
+const dotenv = require('dotenv').config();
+
 const db = fb.firestore();
 
 const validateUser = require("../authenticate");
@@ -16,26 +18,39 @@ router.get("/only-logged", validateUser(false), (req,res,next) => {
   res.json(req.userId)
 })
 
+
+function getUserToken(uid) {
+  return (new Buffer(uid)).toString('base64');
+}
+
+
+const nodemailer = require('nodemailer');
+
 //* agregar un user
 router.post('/register', (req, res, next) => {
-  const data = req.body
+  const data = req.body;
   db.collection('users').doc(data.id).set(data)
-    .then((data) =>
+    .then(() => {
       res
-        .status(201)
-        .json(data.id)
-    )
+      .status(201)
+      .json(data.id)
+    })
     .catch(next)
 })
 
+router.post('/get-token', (req, res, next) => {
+  const data = req.body;
+  res.send(getUserToken(data.id))
+})
 
-router.put('/update/:id', validateUser(false), (req, res, next) => {
+
+router.put('/update/:id', validateUser(), (req, res, next) => {
   const id = req.params.id;
   const data = req.body;
 
+  if (req.user.id !== id) return res.status(401).send({msg:"Not your user"});
 
-
-  db.collection('users').doc(id).set(data)
+  db.collection('users').doc(id).set(data, {merge: true})
     .then(() => res.sendStatus(200))
 })
 
@@ -57,23 +72,7 @@ router.get('/info/:id', validateUser(false), async (req, res, next) => {
     .json(data.data())
 })
 
-//* agregar favoritos
-router.put('/fav/:id', validateUser(false), (req, res, next) => {
-  const id = req.params.id
-  const dataaa = req.body.id
-  db.collection('users').doc(id).get()
-    .then((data) => {
-      const newdata = data.data()
-      newdata.favoritos.push(dataaa)
-      const favfinal = [... new Set(newdata.favoritos)]
-      db.collection("users").doc(id).update({ favoritos: favfinal })
 
-    })
-    .then(() => {
-      res.sendStatus(201)
-    })
-    .catch(next)
-})
 
 //*buscar favoritos
 router.get("/favs/:id", validateUser(false), (req, res, next) => {
@@ -85,36 +84,80 @@ router.get("/favs/:id", validateUser(false), (req, res, next) => {
 })
 
 //*eliminar favoritos
-router.put("/favs/:id", validateUser(false), (req, res, next) => {
+router.put("/favs/:id", validateUser(true), (req, res, next) => {
 
-  const id = req.params.id
-  const fav = req.body.id
-  db.collection("users").doc(id).get()
-    .then((data) => {
-      const newdata = data.data().favoritos.filter((favorito) => {
-        return favorito !== fav
+  const fav = req.params.id
+  const user = req.user;
+
+  console.log(user);
+
+  let newData;
+
+  if (!user.favoritos || !user.favoritos.length) newData = [fav];
+  else if (user.favoritos.includes(fav)) newData = user.favoritos.filter((favorito) =>  favorito !== fav );
+  else newData = [ ...user.favoritos, fav ];
+
+  const favfinal = [... new Set(newData)];
+
+  db.collection("properties").doc(fav).get()
+  .then(rta => {
+    if (rta.data() || !favfinal.includes(rta.id)) {
+
+      db.collection("users").doc(user.id).update({ favoritos: favfinal })
+      .then(() => {
+        res.status(201).send({msg: "Puesto como favorito correctamente"})
       })
-      // const newdata = data.data()
-      // const index = newdata.favoritos.indexOf(fav);
-      // newdata.favoritos.splice(index, 1)
-      const favfinal = [... new Set(newdata)]
-      db.collection("users").doc(id).update({ favoritos: favfinal })
-        .then(() => db.collection("users").doc(id).get()
-          .then((data) => data.data())
-          .then((data) => res.status(201).send(data))
-          .catch(next))
-    })
+    }
+    else {
+
+      res.status(401).send({msg: "Esa propiedad no existe"})
+    }
+  })
+  .catch(err => {
+    res.status(401).send({msg: "Esa propiedad no existe"})
+  })
 })
 
-router.put("/ownerForm/:id", validateUser(false), (req, res, next) => {
+router.put("/ownerForm/:id", validateUser(true), (req, res, next) => {
   const id = req.params.id
-  db.collection("users").doc(id).update(
-    {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      phoneNumber: req.body.phoneNumber,
-      address: req.body.address
-    })
+  
+  const data= req.body;
+
+  if (req.user.id !== id) return res.status(401).send({msg:"Not your user"});
+
+  if (data.email !== req.user.email) {
+    data.emailVerified = false;
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD
+      },
+    });    
+  
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: data.email,
+      subject: 'Bienvenido a Espacio por Tiempo',
+      text: `Verifica el mail de tu cuenta para que los usuarios puedan contactarte! Entra en este link http://ext-api.web.app/verify-email/${getUserToken(req.user.id)}`
+    }; 
+  
+    console.log(process.env.EMAIL, process.env.EMAIL_PASSWORD)
+  
+    transporter.sendMail(mailOptions, function (error, info) {
+      console.log("senMail returned!");
+      if (error) {
+        return res.status(401).send({msg:"Invalid email"})
+        console.log("ERROR!!!!!!", error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+  
+  }
+
+  db.collection("users").doc(id).update(data)
     .then((data) => {
       res.status(201).send({msg: "Editado perfectamente"})
 
