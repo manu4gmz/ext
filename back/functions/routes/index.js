@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fb = require("../services/firebase").admin;
 const db = fb.firestore();
-
+const path = require("path");
 
 
 function retrieveUserFromToken(text) {
@@ -28,5 +28,13 @@ router.get("/verify-email/:token",(req,res) => {
     })
 
 })
+
+//router.get("/admin",(req,res) => res.redirect("/admin"))
+
+
+router.get("/admin/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "/../public/", "index.html"));
+});
+
 
 module.exports = router;
