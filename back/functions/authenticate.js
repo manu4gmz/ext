@@ -39,4 +39,39 @@ function validateUser(fetchUser = true) {
   }
 
   
-module.exports = validateUser;
+function validateAdmin(fetchUser = true) {
+  return function (req,res,next) {
+    const idToken = req.headers.authorization //req.query.idToken;
+    
+    if (!idToken) return res.status(401).send({msg:"Not logged in"});
+
+    auth.verifyIdToken(idToken)
+    .then(function(decodedToken) {
+      let uid = decodedToken.uid;
+      req.userId = uid; 
+
+      db.collection("users").doc(uid).get()
+        .then(userData => {
+          const user = userData.data();
+
+          if (user.admin != true) return res.status(401).send({msg:"Not an administrator"})
+
+          delete user.id;
+
+          req.user = { 
+            ...user, 
+            uid: uid,
+            id: uid
+          };
+
+          
+          next();
+        })
+    }).catch(function(error) {
+      res.status(401).send({msg:"Not valid idToken"})
+    });
+  }
+}
+
+  
+module.exports = {validateUser, validateAdmin};

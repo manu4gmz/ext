@@ -72,3 +72,13 @@ export const fetchSpaces = (type, filter = {}, page = 1) => dispatch => {
             return data;
         })
 }
+
+export const enableSpace = (id) => dispatch => {
+    return api.put(`/properties/enable/${id}`)
+    .then(()=>dispatch(fetchSpace(id)));
+}
+
+export const disableSpace = (id) => dispatch => {
+    return api.put(`/properties/disable/${id}`)
+    .then(()=>dispatch(fetchSpace(id)));
+}

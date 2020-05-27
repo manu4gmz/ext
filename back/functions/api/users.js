@@ -5,7 +5,7 @@ const dotenv = require('dotenv').config();
 
 const db = fb.firestore();
 
-const validateUser = require("../authenticate");
+const { validateUser } = require("../authenticate");
 
 const Promise = require("bluebird");
 //* buscar todos los usuarios
@@ -64,12 +64,14 @@ router.delete('/delete/:id', (req, res, next) => {
 
 //* traer un user por su id
 
-router.get('/info/:id', validateUser(false), async (req, res, next) => {
+router.get('/info/:id', validateUser(false), (req, res, next) => {
   const id = req.params.id
-  const data = await db.collection('users').doc(id).get()
-  res
-    .status(200)
-    .json(data.data())
+  db.collection('users').doc(id).get()
+  .then(data => {
+      res
+      .status(200)
+      .json(data.data())
+  })
 })
 
 

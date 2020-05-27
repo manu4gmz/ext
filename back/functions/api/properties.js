@@ -1,7 +1,28 @@
 const router = require('express').Router()
 const db = require("../services/firebase").admin.firestore();
 
-const validateUser = require("../authenticate");
+const { validateUser, validateAdmin } = require("../authenticate");
+
+const dataTypes = {
+  visible: "boolean",
+  neighborhood: "string",
+  province: "string",
+  type: "string",
+  street: "string",
+  streetNumber: "string",
+  size: "string",
+  capacity: "string",
+  price: "string",
+  cleanup: "string",
+  rules: "string",
+  observations: "string",
+  description: "string",
+  title: "string",
+  floor: "string",
+  apt: "string",
+  services: "object",
+  photos: "object"
+};
 
 //* buscar todos los espacios por filtros
 router.get("/spaces", (req, res, next) => {
@@ -29,7 +50,7 @@ router.get("/spaces", (req, res, next) => {
         .json(filtrado)
     })
     .catch(next)
-})
+});
 
 //* buscar todos los espacios 
 router.get("/allSpaces", (req, res, next) => {
@@ -46,7 +67,7 @@ router.get("/allSpaces", (req, res, next) => {
         }))
     })
     .catch(next)
-})
+});
 
 //* buscar todos los espacios de un usuario
 router.get("/userSpaces", validateUser(false), (req, res, next) => {
@@ -66,7 +87,7 @@ router.get("/userSpaces", validateUser(false), (req, res, next) => {
         .status(200)
         .json(arr)
     })
-})
+});
 
 //* buscar un solo espacio
 router.get("/singleSpace/:id", (req, res, next) => {
@@ -80,12 +101,25 @@ router.get("/singleSpace/:id", (req, res, next) => {
         .json(final)
     })
     .catch(next)
-})
+});
 
 //* crear un espacio
 router.post("/createSpace", validateUser(false), (req, res, next) => {
-  const body = req.body
-  db.collection("properties").add(body)
+  const body = req.body;
+  const obj = { enabled: false, comments: [], userId: req.userId, createdAt: new Date().getTime(), updatedAt: new Date().getTime() };
+  let error = "";
+
+
+  Object.keys(dataTypes).forEach(key => {
+    if (body[key] == undefined) return;
+    else if (typeof body[key] == dataTypes[key]) obj[key] = body[key];
+    else error = `Error: ${key} no corresponde al tipo de dato "${dataTypes[key]}"`;
+  })
+  
+  if (error) return res.status(400).send({ msg: error });
+  if (!Object.values(obj).length) return res.status(400).send({ msg: "Mal el formato del body" });
+
+  db.collection("properties").add(obj)
     .then((data) => {
       res
         .status(201)
@@ -107,35 +141,35 @@ router.delete("/deleteSpace/:id", (req, res, next) => {
     .catch(next)
 })*/
 
+router.put("/enable/:id", validateAdmin(), (req, res, next) => {
+  db.collection('properties').doc(req.params.id).update({enabled: true})
+  .then(()=>{
+    res.send({ msg: "Habilitado correctamente"})
+  })
+  .catch(()=>{
+    res.status(500).send({ msg: "Hubo un error interno actualizando ese espacio. " })
+  })
+})
+
+router.put("/disable/:id", validateAdmin(), (req, res, next) => {
+  db.collection('properties').doc(req.params.id).update({enabled: false})
+  .then(()=>{
+    res.send({ msg: "Deshabilitado correctamente"})
+  })
+  .catch(()=>{
+    res.status(500).send({ msg: "Hubo un error interno actualizando ese espacio. " })
+  })
+})
 
 //* updatear un espacio 
 router.put('/update/:id', validateUser(false), (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
-  const update = {};
+  const update = { enabled: false, updatedAt: new Date().getTime() };
 
   //res.header('Access-Control-Allow-Origin', req.header('origin') );
 
-  const dataTypes = {
-    visible: "boolean",
-    neighborhood: "string",
-    province: "string",
-    type: "string",
-    street: "string",
-    streetNumber: "string",
-    size: "string",
-    capacity: "string",
-    price: "string",
-    cleanup: "string",
-    rules: "string",
-    observations: "string",
-    description: "string",
-    title: "string",
-    floor: "string",
-    apt: "string",
-    services: "object",
-    photos: "object"
-  }
+
 
   let error = "";
   console.log(body);
@@ -149,7 +183,6 @@ router.put('/update/:id', validateUser(false), (req, res, next) => {
     
     
     Object.keys(dataTypes).forEach(key => {
-      console.log(key,":", body[key])
       if (body[key] == undefined) return;
       else if (typeof body[key] == dataTypes[key]) update[key] = body[key];
       else error = `Error: ${key} no corresponde al tipo de dato "${dataTypes[key]}"`;
@@ -295,15 +328,30 @@ router.get("/:page", (req, res) => {
           && (!condicion.v || propiedad.verified == true)
           && (!condicion.photos || (propiedad.photos || []).length > 0))
           && (propiedad.visible != false)
+          && ((propiedad.enabled == true && !condicion.checked) || (!propiedad.enabled && condicion.checked))
       })
+      if (condicion.checked) return filtrado.sort((a,b) => (b.updatedAt || 0 ) - (a.updatedAt || 0 ));
       return filtrado.sort((a, b) => (a.verified === b.verified) ? 0 : a.verified ? -1 : 1 )
      
     })
     .then(properties => {
       const maxPage = Math.ceil(properties.length / pagesCount);
       let page = ((req.params.page - 1) % maxPage) + 1;
+
+      const spaces = properties
+      .slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount)
+      .map(space => ({
+        title: space.title,
+        photos: space.photos,
+        id: space.id,
+        price: space.price,
+        size: space.size,
+        neighborhood: space.neighborhood,
+        province: space.province,
+      }))
+
       res.status(200).json({
-        properties: properties.slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount),
+        properties: spaces,
         pages: maxPage,
         total: properties.length,
         markers: properties.filter(a => a.location && a.location[0]).map(a => ({...a.location[0], id: a.id})),
