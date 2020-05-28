@@ -12,7 +12,7 @@ const SpacesComp = ({allSpaces, match, history, fetchSpaces}) => {
 
     const { type, page } = match.params;
     
-    if (!["pending","verified","all"].includes(type)) return <Redirect to="/spaces/pending/1"/>;// history.replace("pending");
+    if (!["pending","verified","all","rejected"].includes(type)) return <Redirect to="/spaces/pending/1"/>;// history.replace("pending");
 
     useEffect(()=>{
     

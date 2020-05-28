@@ -23,6 +23,11 @@ const Sidebar = ({history, logout}) => (
                     Verificados
                 </Item>
             </Link>
+            <Link to="/spaces/rejected/1">
+                <Item>
+                    Rechazados
+                </Item>
+            </Link>
             <Disabled>Denunciar</Disabled>
         </List>
         <Header>Administración</Header>
@@ -87,6 +92,8 @@ const Item = styled.li`
 
     &:hover {
         background-color: #2d2d55;
+        text-decoration: none;
+
     }
 
 

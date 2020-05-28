@@ -1,5 +1,5 @@
   
-import { SET_PENDING, SET_SPACES, SET_VERIFIED, SET_SPACE } from '../constants'
+import { SET_PENDING, SET_SPACES, SET_VERIFIED, SET_SPACE, SET_REJECTED } from '../constants'
 
 const initialState = {
     pending: {
@@ -8,6 +8,11 @@ const initialState = {
         total: 0
     },
     verified: {
+        properties: [],
+        pages: 0,
+        total: 0
+    },
+    rejected: {
         properties: [],
         pages: 0,
         total: 0
@@ -26,6 +31,8 @@ export default (state = initialState, action) => {
             return {...state, pending: action.spaces };
         case SET_VERIFIED:
             return {...state, verified: action.spaces };
+        case SET_REJECTED:
+            return {...state, rejected: action.spaces };
         case SET_SPACES:
             return {...state, all: action.spaces };
         case SET_SPACE:

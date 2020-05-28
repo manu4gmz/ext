@@ -3,16 +3,20 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export const Spaces = ({spaces, pages, actual}) => {
-    if (!spaces || spaces.length == 0) return <h5>No hay usuarios</h5>
+    if (!spaces || spaces.length == 0) return <h5>No hay espacios</h5>
     return <Table>
         <Head>
-            <Label>Fecha</Label>
+            {/* <Label></Label> */}
+            <Label>Creación</Label>
+            <Label>Actualización</Label>
             <WideLabel>Publicaciones</WideLabel>
         </Head>
         {
-            spaces.map((space,i) => (
-                <Row key={i}>
-                    <Label>{space.createdAt || "12/4/20"}</Label>
+            spaces.map((space,i) => {
+                return <Row key={i}>
+                    {/* <Label>{ space.photos && space.photos[0] ? <Thumbnail src={space.photos[0]}/> : null }</Label> */}
+                    <Label>{parseDate(space.createdAt)}</Label>
+                    <Label>{parseDate(space.updatedAt)}</Label>
                     <WideLabel>
                         <WideLabel>{space.title}{space.verified ? <Verified/> : null}</WideLabel>
                         <Link to={`/spaces/details/${space.id}`}>
@@ -20,7 +24,7 @@ export const Spaces = ({spaces, pages, actual}) => {
                         </Link>
                     </WideLabel>
                 </Row>
-            ))
+            })
         }
 
         <PagesRow>
@@ -34,6 +38,22 @@ export const Spaces = ({spaces, pages, actual}) => {
         </PagesRow>
     </Table>
 }
+
+
+function parseDate (timestamp) {
+    const date = timestamp ? new Date(timestamp) : null
+
+    return date ? (
+        (
+            new Date().getDate() == date.getDate() &&
+            new Date().getMonth() == date.getMonth() &&
+            new Date().getYear() == date.getYear()
+        ) 
+        ? `HOY ${date.getHours()}:${date.getMinutes()}`
+        : `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+    ) : "--";
+}
+
 
 export const Users = ({users}) => {
     return <Table>
@@ -91,6 +111,10 @@ const Row = styled.div`
     align-items: center;
     border-bottom: solid 1px #DDD;
     background-color: ${p => p.bg || "transparent"};
+    transition: background-color 300ms;
+    &:hover {
+        background-color: #f8f8f8;
+    }
 `
 
 const Head = styled(Row)`
@@ -101,6 +125,10 @@ const Head = styled(Row)`
 
     & label {
         padding: 0px 6px;
+    }
+
+    &:hover {
+        background-color: transparent;
     }
 `
 
@@ -114,20 +142,15 @@ const Details = styled.button`
     width: 80px;
     transition: background-color 300ms;
 
-    &:hover {
+    &:hover, &:active {
         background-color: #2d2d55;
         border: none;
+        outline: none;
     }
 
-    &:focus {
+    &:focus, &:active {
         outline: none;
         border: none;
-    }
-
-    &:active {
-        border: none;
-        outline: none; 
-        background-color: #2d2d55;
     }
 `
 
@@ -165,5 +188,10 @@ const Page = styled.label`
 
         color: white;
     }
+
+`
+
+const Thumbnail = styled.img`
+    width: 80px;
 
 `

@@ -89582,7 +89582,7 @@ module.exports = function(originalModule) {
 /*!*********************************!*\
   !*** ./redux/actions/spaces.js ***!
   \*********************************/
-/*! exports provided: fetchSpace, fetchSpaces, enableSpace, disableSpace */
+/*! exports provided: fetchSpace, fetchSpaces, enableSpace, disableSpace, verifySpace, unverifySpace */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89591,6 +89591,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fetchSpaces", function() { return fetchSpaces; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "enableSpace", function() { return enableSpace; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "disableSpace", function() { return disableSpace; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "verifySpace", function() { return verifySpace; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unverifySpace", function() { return unverifySpace; });
 /* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../api */ "./redux/api.js");
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../constants */ "./redux/constants.js");
 /* harmony import */ var _users__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./users */ "./redux/actions/users.js");
@@ -89614,6 +89616,13 @@ var setPending = function setPending(spaces) {
 var setVerified = function setVerified(spaces) {
   return {
     type: _constants__WEBPACK_IMPORTED_MODULE_1__["SET_VERIFIED"],
+    spaces: spaces
+  };
+};
+
+var setRejected = function setRejected(spaces) {
+  return {
+    type: _constants__WEBPACK_IMPORTED_MODULE_1__["SET_REJECTED"],
     spaces: spaces
   };
 };
@@ -89652,18 +89661,23 @@ var fetchSpaces = function fetchSpaces(type) {
   return function (dispatch) {
     var query = _objectSpread({}, filter);
 
-    if (!["pending", "verified", "all"].includes(type)) return;
+    if (!["pending", "verified", "all", "rejected"].includes(type)) return;
     var resultCb;
 
     switch (type) {
       case "pending":
-        query.checked = true;
+        query.enabled = true;
         resultCb = setPending;
         break;
 
       case "verified":
         query.v = true;
         resultCb = setVerified;
+        break;
+
+      case "rejected":
+        query.rejected = true;
+        resultCb = setRejected;
         break;
 
       case "all":
@@ -89692,6 +89706,20 @@ var enableSpace = function enableSpace(id) {
 var disableSpace = function disableSpace(id) {
   return function (dispatch) {
     return _api__WEBPACK_IMPORTED_MODULE_0__["default"].put("/properties/disable/".concat(id)).then(function () {
+      return dispatch(fetchSpace(id));
+    });
+  };
+};
+var verifySpace = function verifySpace(id) {
+  return function (dispatch) {
+    return _api__WEBPACK_IMPORTED_MODULE_0__["default"].put("/properties/verify/".concat(id)).then(function () {
+      return dispatch(fetchSpace(id));
+    });
+  };
+};
+var unverifySpace = function unverifySpace(id) {
+  return function (dispatch) {
+    return _api__WEBPACK_IMPORTED_MODULE_0__["default"].put("/properties/unverify/".concat(id)).then(function () {
       return dispatch(fetchSpace(id));
     });
   };
@@ -89925,19 +89953,21 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.request.use(function (
 /*!****************************!*\
   !*** ./redux/constants.js ***!
   \****************************/
-/*! exports provided: SET_PENDING, SET_VERIFIED, SET_SPACES, SET_SPACE, SET_USERS, SET_LOGGED */
+/*! exports provided: SET_PENDING, SET_VERIFIED, SET_REJECTED, SET_SPACES, SET_SPACE, SET_USERS, SET_LOGGED */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_PENDING", function() { return SET_PENDING; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_VERIFIED", function() { return SET_VERIFIED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_REJECTED", function() { return SET_REJECTED; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_SPACES", function() { return SET_SPACES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_SPACE", function() { return SET_SPACE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_USERS", function() { return SET_USERS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SET_LOGGED", function() { return SET_LOGGED; });
 var SET_PENDING = "SET_PENDING";
 var SET_VERIFIED = "SET_VERIFIED";
+var SET_REJECTED = "SET_REJECTED";
 var SET_SPACES = "SET_SPACES";
 var SET_SPACE = "SET_SPACE";
 var SET_USERS = "SET_USERS";
@@ -90048,6 +90078,11 @@ var initialState = {
     pages: 0,
     total: 0
   },
+  rejected: {
+    properties: [],
+    pages: 0,
+    total: 0
+  },
   all: {
     properties: [],
     pages: 0,
@@ -90068,6 +90103,11 @@ var initialState = {
     case _constants__WEBPACK_IMPORTED_MODULE_0__["SET_VERIFIED"]:
       return _objectSpread(_objectSpread({}, state), {}, {
         verified: action.spaces
+      });
+
+    case _constants__WEBPACK_IMPORTED_MODULE_0__["SET_REJECTED"]:
+      return _objectSpread(_objectSpread({}, state), {}, {
+        rejected: action.spaces
       });
 
     case _constants__WEBPACK_IMPORTED_MODULE_0__["SET_SPACES"]:
@@ -90352,6 +90392,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! styled-components */ "./node_modules/styled-components/dist/styled-components.browser.esm.js");
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
+function _templateObject10() {
+  var data = _taggedTemplateLiteral(["\n    width: 80px;\n\n"]);
+
+  _templateObject10 = function _templateObject10() {
+    return data;
+  };
+
+  return data;
+}
+
 function _templateObject9() {
   var data = _taggedTemplateLiteral(["\n    color: ", ";\n    margin: 0 3px;\n    padding: 0 12px;\n    line-height: 36px;\n    height: 36px;\n    box-sizing: border-box;\n    border-radius: 3px;\n    transition: background-color 300ms, color 300ms;\n\n    &:hover {\n        \n        background-color: ", ";\n\n        color: white;\n    }\n\n"]);
 
@@ -90383,7 +90433,7 @@ function _templateObject7() {
 }
 
 function _templateObject6() {
-  var data = _taggedTemplateLiteral(["\n    font-size: 12px;\n    padding: 6px 24px;\n    border-radius: 5px;\n    background-color: #4a94e9;\n    border: none;\n    color: white;\n    width: 80px;\n    transition: background-color 300ms;\n\n    &:hover {\n        background-color: #2d2d55;\n        border: none;\n    }\n\n    &:focus {\n        outline: none;\n        border: none;\n    }\n\n    &:active {\n        border: none;\n        outline: none; \n        background-color: #2d2d55;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    font-size: 12px;\n    padding: 6px 24px;\n    border-radius: 5px;\n    background-color: #4a94e9;\n    border: none;\n    color: white;\n    width: 80px;\n    transition: background-color 300ms;\n\n    &:hover, &:active {\n        background-color: #2d2d55;\n        border: none;\n        outline: none;\n    }\n\n    &:focus, &:active {\n        outline: none;\n        border: none;\n    }\n"]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -90393,7 +90443,7 @@ function _templateObject6() {
 }
 
 function _templateObject5() {
-  var data = _taggedTemplateLiteral(["\n    background-color: #DDD;\n    font-weight: 600;\n    padding: 4px 0px 3px;\n    \n\n    & label {\n        padding: 0px 6px;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    background-color: #DDD;\n    font-weight: 600;\n    padding: 4px 0px 3px;\n    \n\n    & label {\n        padding: 0px 6px;\n    }\n\n    &:hover {\n        background-color: transparent;\n    }\n"]);
 
   _templateObject5 = function _templateObject5() {
     return data;
@@ -90403,7 +90453,7 @@ function _templateObject5() {
 }
 
 function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n    display: flex;\n    flex-direction: row;\n    padding: 6px 0px;\n    align-items: center;\n    border-bottom: solid 1px #DDD;\n    background-color: ", ";\n"]);
+  var data = _taggedTemplateLiteral(["\n    display: flex;\n    flex-direction: row;\n    padding: 6px 0px;\n    align-items: center;\n    border-bottom: solid 1px #DDD;\n    background-color: ", ";\n    transition: background-color 300ms;\n    &:hover {\n        background-color: #f8f8f8;\n    }\n"]);
 
   _templateObject4 = function _templateObject4() {
     return data;
@@ -90451,11 +90501,11 @@ var Spaces = function Spaces(_ref) {
   var spaces = _ref.spaces,
       pages = _ref.pages,
       actual = _ref.actual;
-  if (!spaces || spaces.length == 0) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "No hay usuarios");
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Table, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Head, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Label, null, "Fecha"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(WideLabel, null, "Publicaciones")), spaces.map(function (space, i) {
+  if (!spaces || spaces.length == 0) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "No hay espacios");
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Table, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Head, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Label, null, "Creaci\xF3n"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Label, null, "Actualizaci\xF3n"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(WideLabel, null, "Publicaciones")), spaces.map(function (space, i) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Row, {
       key: i
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Label, null, space.createdAt || "12/4/20"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(WideLabel, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(WideLabel, null, space.title, space.verified ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Verified, null) : null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"], {
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Label, null, parseDate(space.createdAt)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Label, null, parseDate(space.updatedAt)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(WideLabel, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(WideLabel, null, space.title, space.verified ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Verified, null) : null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"], {
       to: "/spaces/details/".concat(space.id)
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Details, null, "Ver"))));
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(PagesRow, null, new Array(pages).fill(null).map(function (_, i) {
@@ -90468,6 +90518,12 @@ var Spaces = function Spaces(_ref) {
     }, i + 1));
   })));
 };
+
+function parseDate(timestamp) {
+  var date = timestamp ? new Date(timestamp) : null;
+  return date ? new Date().getDate() == date.getDate() && new Date().getMonth() == date.getMonth() && new Date().getYear() == date.getYear() ? "HOY ".concat(date.getHours(), ":").concat(date.getMinutes()) : "".concat(date.getDate(), "-").concat(date.getMonth() + 1, "-").concat(date.getFullYear()) : "--";
+}
+
 var Users = function Users(_ref2) {
   var users = _ref2.users;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Table, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Head, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Label, null, "Nombre"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Label, null, "Apellido"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Label, {
@@ -90498,6 +90554,7 @@ var Page = styled_components__WEBPACK_IMPORTED_MODULE_1__["default"].label(_temp
 }, function (p) {
   return p.active == "true" ? "#2d2d55" : "#4a94e9";
 });
+var Thumbnail = styled_components__WEBPACK_IMPORTED_MODULE_1__["default"].img(_templateObject10());
 
 /***/ }),
 
@@ -90558,8 +90615,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! styled-components */ "./node_modules/styled-components/dist/styled-components.browser.esm.js");
 /* harmony import */ var _redux_actions_spaces__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../redux/actions/spaces */ "./redux/actions/spaces.js");
-function _templateObject10() {
+function _templateObject12() {
   var data = _taggedTemplateLiteral(["\n    color: #AAA;\n    transition: color 300ms;\n    margin-right: 12px;\n    &:hover {\n        color: #555;\n    }\n"]);
+
+  _templateObject12 = function _templateObject12() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject11() {
+  var data = _taggedTemplateLiteral(["\n    transition: color 300ms;\n    font-weight: 500;\n    color: #000944;\n    &:hover {\n        cursor: pointer;\n        color: #5a5a92;\n    }\n\n    & ~ label:before {\n        content: \"-\";\n        margin: 0 6px;\n        color: #AAA;\n    }\n"]);
+
+  _templateObject11 = function _templateObject11() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject10() {
+  var data = _taggedTemplateLiteral(["\n    background-color: #4a94e9;\n    height: 36px;\n    line-height: 36px;\n    border-radius: 50px;\n    padding: 0 12px;\n    color: white;\n    border: none;\n    transition: background-color 300ms;\n    display: block;\n    margin-top: 12px;\n\n    &:hover {\n        background-color: #000944;\n    }\n\n    &:active, &:focus {\n        outline: none;\n    }\n"]);
 
   _templateObject10 = function _templateObject10() {
     return data;
@@ -90569,7 +90646,7 @@ function _templateObject10() {
 }
 
 function _templateObject9() {
-  var data = _taggedTemplateLiteral(["\n    transition: color 300ms;\n\n    &:hover {\n        color: #AAA;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    display: block;\n    padding: 12px;\n    background-color: transparent;\n    border: solid 1px #DDD;\n    border-radius: 3px;\n    min-height: 140px;\n\n    &:focus {\n        outline: none;\n    }\n"]);
 
   _templateObject9 = function _templateObject9() {
     return data;
@@ -90579,7 +90656,7 @@ function _templateObject9() {
 }
 
 function _templateObject8() {
-  var data = _taggedTemplateLiteral(["\n    background-color: #4a94e9;\n    height: 36px;\n    line-height: 36px;\n    border-radius: 50px;\n    padding: 0 12px;\n    color: white;\n    border: none;\n    transition: background-color 300ms;\n    display: block;\n    margin-top: 12px;\n\n    &:hover {\n        background-color: #000944;\n    }\n\n    &:active, &:focus {\n        outline: none;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    width: 500px;\n    margin: 24px auto 64px;\n"]);
 
   _templateObject8 = function _templateObject8() {
     return data;
@@ -90589,7 +90666,7 @@ function _templateObject8() {
 }
 
 function _templateObject7() {
-  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    display: block;\n    padding: 12px;\n    background-color: transparent;\n    border: solid 1px #DDD;\n    border-radius: 3px;\n\n    &:focus {\n        outline: none;\n    }\n"]);
+  var data = _taggedTemplateLiteral(["\n    flex: 1;\n    margin: 12px;\n    flex-direction: column;\n    max-width: 420px;\n    padding: 24px;\n    border-radius: 6px;\n    border: solid 1px #DDD;\n    display: flex;\n    box-shadow: 0px 3px 12px #0000002e;\n    transition: box-shadow 300ms;\n\n    &:hover {\n        box-shadow: 0px 3px 24px #0000002e;\n\n    }\n"]);
 
   _templateObject7 = function _templateObject7() {
     return data;
@@ -90599,7 +90676,7 @@ function _templateObject7() {
 }
 
 function _templateObject6() {
-  var data = _taggedTemplateLiteral(["\n    width: 500px;\n    margin: 24px auto 64px;\n"]);
+  var data = _taggedTemplateLiteral(["\n    width: 100%;\n    display: flex;\n    justify-content: center;\n    margin: 24px 12px 64px;\n    align-items: flex-start;\n\n"]);
 
   _templateObject6 = function _templateObject6() {
     return data;
@@ -90682,6 +90759,15 @@ var excuses = [{
 }, {
   "short": "Nombre inapropiado",
   full: "La publicación del espacio ha sido rechazada ya que el titulo no es apropiado y no se adecua a los términos y condiciones."
+}, {
+  "short": "Ubicación no válida",
+  full: "La publicación del espacio ha sido rechazada ya que la dirección definida no es válida."
+}, {
+  "short": "Ubicación fuera de alcance",
+  full: "La publicación del espacio ha sido rechazada ya que la dirección no entra dentro del rango definido para la misma"
+}, {
+  "short": "Valores incompletos",
+  full: "La publicación del espacio ha sido rechazada ya que tiene valores incompletos / inválidos."
 }];
 
 var Details = function Details(_ref) {
@@ -90690,7 +90776,9 @@ var Details = function Details(_ref) {
       space = _ref.space,
       fetchSpace = _ref.fetchSpace,
       disableSpace = _ref.disableSpace,
-      enableSpace = _ref.enableSpace;
+      enableSpace = _ref.enableSpace,
+      verifySpace = _ref.verifySpace,
+      unverifySpace = _ref.unverifySpace;
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     fetchSpace(match.params.id);
   }, []);
@@ -90704,6 +90792,21 @@ var Details = function Details(_ref) {
       _useState4 = _slicedToArray(_useState3, 2),
       agreed = _useState4[0],
       setAgreed = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      verifyConfirmation = _useState6[0],
+      setVerifyConfirmation = _useState6[1];
+
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState8 = _slicedToArray(_useState7, 2),
+      unverifyConfirmation = _useState8[0],
+      setUnverifyConfirmation = _useState8[1];
+
+  var created = space.createdAt ? new Date(space.createdAt) : null;
+  var updated = space.createdAt ? new Date(space.updatedAt) : null;
+  var phoneNumber = space.user && space.user.phoneNumber && space.user.phoneNumber.replace(/(\+| )/g, "");
+  var phone = phoneNumber ? "+54 9 ".concat(phoneNumber.slice(3, 5), " ").concat(phoneNumber.slice(5, 9), " ").concat(phoneNumber.slice(9, 13)) : "No tiene teléfono";
 
   function disable() {
     setReason("");
@@ -90727,17 +90830,27 @@ var Details = function Details(_ref) {
       height: "300px"
     },
     src: "http://maps.google.com/maps?q=".concat(space.location[0].lat, ",").concat(space.location[0].lng, "&output=embed&z=17")
-  }) : null, space.user ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Propietario"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, space.user.firstName, " ", space.user.lastName), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, space.user.email || "No tiene email"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, space.user.phoneNumber || "No tiene teléfono")) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Centered, null, space.enabled ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
-    onClick: disable
-  }, "Deshabilitar espacio") : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Confirmar espacio"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "\xBFConsidera que este espacio es aducuado seg\xFAn los est\xE1ndares de calidad de Espacio por Tiempo?"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
+  }) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Row, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Left, null, "Fecha creaci\xF3n"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Right, null, created ? "".concat(created.getDate(), "-").concat(created.getMonth(), "-").concat(created.getFullYear(), " ").concat(created.getHours(), ":").concat(created.getMinutes()) : "No tiene fecha")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Row, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Left, null, "\xDAltima actualizaci\xF3n"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Right, null, updated ? "".concat(updated.getDate(), "-").concat(updated.getMonth(), "-").concat(updated.getFullYear(), " ").concat(updated.getHours(), ":").concat(updated.getMinutes()) : "No tiene fecha")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(CardRow, null, space.user ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Card, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Propietario"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, space.user.firstName, " ", space.user.lastName), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, space.user.email || "No tiene email"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, phone)) : null, space.enabled && !space.verified ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Card, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Verificar espacio"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Si ya has entrado en contacto con el propietario y hallas corroborado sus caracter\xEDsticas, verifica el espacio para que los usuarios de la aplicaci\xF3n puedan hallarlo mas f\xE1cilmente."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
     onClick: function onClick() {
-      return setAgreed(true);
+      return setVerifyConfirmation(true);
     }
-  }, "Si"), " - ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
+  }, "Verificar"), verifyConfirmation ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Button, {
+    onClick: function onClick() {
+      return verifySpace(match.params.id);
+    }
+  }, "Confirmar") : null) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Card, null, space.enabled ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Deshabilitar espacio"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Si ha habido un problema con este espacio que infrinja los t\xE9rminos y condiciones, deshabil\xEDtalo y h\xE1celo saber al propietario."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
     onClick: function onClick() {
       return setAgreed(false);
     }
-  }, "No estoy de acuerdo"), agreed == true ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Button, {
+  }, "Deshabilitar espacio")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Confirmar espacio"), space.rejected ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Este espacio ha sido rechazado, \xBFaun as\xED considera que este espacio es aducuado seg\xFAn los est\xE1ndares de calidad de Espacio por Tiempo?") : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "\xBFConsidera que este espacio es aducuado seg\xFAn los est\xE1ndares de calidad de Espacio por Tiempo?"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
+    onClick: function onClick() {
+      return setAgreed(true);
+    }
+  }, "Si"), !space.rejected ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
+    onClick: function onClick() {
+      return setAgreed(false);
+    }
+  }, "No estoy de acuerdo") : null, agreed == true ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Button, {
     onClick: function onClick() {
       return enableSpace(match.params.id);
     }
@@ -90756,7 +90869,15 @@ var Details = function Details(_ref) {
     placeholder: "Escribe el motivo aqu\xED"
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Button, {
     onClick: disable
-  }, "Rechazar")) : null));
+  }, "Rechazar")) : null), space.verified ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Card, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Anular verificado"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Si hubo alg\xFAn problema y debe removerle el verificado a un espacio"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
+    onClick: function onClick() {
+      return setUnverifyConfirmation(true);
+    }
+  }, "Anular verificado"), unverifyConfirmation ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Button, {
+    onClick: function onClick() {
+      return unverifySpace(match.params.id);
+    }
+  }, "Confirmar") : null) : null));
 };
 
 var mapStateToProps = function mapStateToProps(state, ownProps) {
@@ -90775,6 +90896,12 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
     },
     disableSpace: function disableSpace(id, reason) {
       return dispatch(Object(_redux_actions_spaces__WEBPACK_IMPORTED_MODULE_3__["disableSpace"])(id, reason));
+    },
+    verifySpace: function verifySpace(id) {
+      return dispatch(Object(_redux_actions_spaces__WEBPACK_IMPORTED_MODULE_3__["verifySpace"])(id));
+    },
+    unverifySpace: function unverifySpace(id) {
+      return dispatch(Object(_redux_actions_spaces__WEBPACK_IMPORTED_MODULE_3__["unverifySpace"])(id));
     }
   };
 };
@@ -90785,11 +90912,13 @@ var Image = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].img(_templ
 var Row = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].div(_templateObject3());
 var Left = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].div(_templateObject4());
 var Right = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].div(_templateObject5());
-var Centered = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].div(_templateObject6());
-var Textarea = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].textarea(_templateObject7());
-var Button = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].button(_templateObject8());
-var Option = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].label(_templateObject9());
-var Excuse = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].label(_templateObject10());
+var CardRow = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].div(_templateObject6());
+var Card = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].div(_templateObject7());
+var Centered = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].div(_templateObject8());
+var Textarea = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].textarea(_templateObject9());
+var Button = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].button(_templateObject10());
+var Option = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].label(_templateObject11());
+var Excuse = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].label(_templateObject12());
 
 /***/ }),
 
@@ -91047,7 +91176,7 @@ function _templateObject5() {
 }
 
 function _templateObject4() {
-  var data = _taggedTemplateLiteral(["\n    color: white;\n    font-size: 14px;\n    padding: 0 24px;\n    transition: background-color 300ms;\n    line-height: 42px;\n    text-indent: 24px;\n    text-decoration: none;\n\n    &:hover {\n        background-color: #2d2d55;\n    }\n\n\n    &:after {\n        content: \" \";\n        width: 100%;\n        display: block;\n        border-bottom: solid 1px #40436e;\n    }\n\n"]);
+  var data = _taggedTemplateLiteral(["\n    color: white;\n    font-size: 14px;\n    padding: 0 24px;\n    transition: background-color 300ms;\n    line-height: 42px;\n    text-indent: 24px;\n    text-decoration: none;\n\n    &:hover {\n        background-color: #2d2d55;\n        text-decoration: none;\n\n    }\n\n\n    &:after {\n        content: \" \";\n        width: 100%;\n        display: block;\n        border-bottom: solid 1px #40436e;\n    }\n\n"]);
 
   _templateObject4 = function _templateObject4() {
     return data;
@@ -91103,7 +91232,9 @@ var Sidebar = function Sidebar(_ref) {
     to: "/spaces/all/1"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Item, null, "Publicaciones")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"], {
     to: "/spaces/verified/1"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Item, null, "Verificados")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Disabled, null, "Denunciar")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Header, null, "Administraci\xF3n"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(List, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"], {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Item, null, "Verificados")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"], {
+    to: "/spaces/rejected/1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Item, null, "Rechazados")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Disabled, null, "Denunciar")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Header, null, "Administraci\xF3n"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(List, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Link"], {
     to: "/users"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Item, null, "Usuarios")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Item, {
     onClick: function onClick() {
@@ -91163,7 +91294,7 @@ var SpacesComp = function SpacesComp(_ref) {
   var _match$params = match.params,
       type = _match$params.type,
       page = _match$params.page;
-  if (!["pending", "verified", "all"].includes(type)) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Redirect"], {
+  if (!["pending", "verified", "all", "rejected"].includes(type)) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_5__["Redirect"], {
     to: "/spaces/pending/1"
   }); // history.replace("pending");
 

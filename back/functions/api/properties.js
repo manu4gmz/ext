@@ -141,20 +141,41 @@ router.delete("/deleteSpace/:id", (req, res, next) => {
     .catch(next)
 })*/
 
-router.put("/enable/:id", validateAdmin(), (req, res, next) => {
-  db.collection('properties').doc(req.params.id).update({enabled: true})
+
+router.put("/verify/:id", validateAdmin(), (req, res) => {
+  db.collection('properties').doc(req.params.id).update({verified: true})
   .then(()=>{
-    res.send({ msg: "Habilitado correctamente"})
+    res.send({ msg: "Verificado correctamente"});
   })
   .catch(()=>{
     res.status(500).send({ msg: "Hubo un error interno actualizando ese espacio. " })
   })
 })
 
-router.put("/disable/:id", validateAdmin(), (req, res, next) => {
-  db.collection('properties').doc(req.params.id).update({enabled: false})
+router.put("/unverify/:id", validateAdmin(), (req, res) => {
+  db.collection('properties').doc(req.params.id).update({verified: false})
   .then(()=>{
-    res.send({ msg: "Deshabilitado correctamente"})
+    res.send({ msg: "Puesto como no verificado correctamente"});
+  })
+  .catch(()=>{
+    res.status(500).send({ msg: "Hubo un error interno actualizando ese espacio. " })
+  })
+})
+
+router.put("/enable/:id", validateAdmin(), (req, res) => {
+  db.collection('properties').doc(req.params.id).update({enabled: true, rejected: false})
+  .then(()=>{
+    res.send({ msg: "Habilitado correctamente"});
+  })
+  .catch(()=>{
+    res.status(500).send({ msg: "Hubo un error interno actualizando ese espacio. " })
+  })
+})
+
+router.put("/disable/:id", validateAdmin(), (req, res) => {
+  db.collection('properties').doc(req.params.id).update({enabled: false, rejected: true})
+  .then(()=>{
+    res.send({ msg: "Deshabilitado correctamente"});
   })
   .catch(()=>{
     res.status(500).send({ msg: "Hubo un error interno actualizando ese espacio. " })
@@ -165,7 +186,7 @@ router.put("/disable/:id", validateAdmin(), (req, res, next) => {
 router.put('/update/:id', validateUser(false), (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
-  const update = { enabled: false, updatedAt: new Date().getTime() };
+  const update = { enabled: false, updatedAt: new Date().getTime(), rejected: false };
 
   //res.header('Access-Control-Allow-Origin', req.header('origin') );
 
@@ -328,9 +349,10 @@ router.get("/:page", (req, res) => {
           && (!condicion.v || propiedad.verified == true)
           && (!condicion.photos || (propiedad.photos || []).length > 0))
           && (propiedad.visible != false)
-          && ((propiedad.enabled == true && !condicion.checked) || (!propiedad.enabled && condicion.checked))
+          && ((propiedad.enabled == true && !condicion.enabled) || (!propiedad.enabled && (condicion.enabled || condicion.rejected )))
+          && ((!propiedad.rejected && !condicion.rejected) || (propiedad.rejected && condicion.rejected))
       })
-      if (condicion.checked) return filtrado.sort((a,b) => (b.updatedAt || 0 ) - (a.updatedAt || 0 ));
+      if (condicion.enabled) return filtrado.sort((a,b) => (b.updatedAt || 0 ) - (a.updatedAt || 0 ));
       return filtrado.sort((a, b) => (a.verified === b.verified) ? 0 : a.verified ? -1 : 1 )
      
     })
@@ -348,6 +370,8 @@ router.get("/:page", (req, res) => {
         size: space.size,
         neighborhood: space.neighborhood,
         province: space.province,
+        createdAt: space.createdAt,
+        updatedAt: space.updatedAt
       }))
 
       res.status(200).json({
