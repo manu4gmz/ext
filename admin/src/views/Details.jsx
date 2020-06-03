@@ -45,7 +45,7 @@ const Details = ({ match, history, space, fetchSpace, disableSpace, enableSpace,
     function disable () {
         setReason("");
         setAgreed(null);
-        disableSpace(match.params.id);
+        disableSpace(match.params.id, reason);
     }
 
     return <div>
@@ -149,11 +149,9 @@ const Details = ({ match, history, space, fetchSpace, disableSpace, enableSpace,
             <div>
                 <h2>Confirmar espacio</h2>
                 {
-                    space.rejected ? 
-                    <p>Este espacio ha sido rechazado, ¿aun así considera que este espacio es aducuado según los estándares de calidad de Espacio por Tiempo?</p>
-                    : 
-                    <p>¿Considera que este espacio es aducuado según los estándares de calidad de Espacio por Tiempo?</p>
+                    space.rejected && space.reason ? <Warning>{space.reason}</Warning> : null
                 }
+                <p>¿Considera que este espacio es aducuado según los estándares de calidad de Espacio por Tiempo?</p>
                 <Option onClick={()=>setAgreed(true)}>Si</Option>
                 {
                     !space.rejected ?
@@ -339,6 +337,14 @@ const Option = styled.label`
         margin: 0 6px;
         color: #AAA;
     }
+`
+
+const Warning = styled.p`
+    background-color: #fff5e6;
+    padding: 12px;
+    border-radius: 3px;
+    border: solid 1px #ffaf36;
+    color: #ffaf36;
 `
 
 const Excuse = styled.label`

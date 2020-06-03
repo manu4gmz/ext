@@ -86,7 +86,7 @@ const Form = ({ fields, onSubmit, sendText, header, values, name }) => {
   const parsedInitialState = values ? Object.keys(values).reduce((acc, key) => ({ ...acc, [key]: { value: values[key], error: null } }), {}) : {};
 
   const [form, setForm] = useState(parsedInitialState);
-
+/*
   useEffect(()=>{
     if (!name) return;
     AsyncStorage.getItem(name)
@@ -100,7 +100,7 @@ const Form = ({ fields, onSubmit, sendText, header, values, name }) => {
   useEffect(()=>{
     if (!name) return;
     AsyncStorage.setItem(name, JSON.stringify(form));
-  },[form]);
+  },[form]);*/
 
   const checkRequired = ({ title, name, validation }) => {
     if (typeof title == "string" && title[title.length - 1] == "*") return name;

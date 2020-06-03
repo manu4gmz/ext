@@ -189,5 +189,9 @@ export const LogoutUser = () => {
 
 export const searchUsers = (query) => {
 	if (query.length < 3) return []; 
-	return api.get(`/users?s=${query}`).then(rta => rta.data);
+	return api.get(`/users/by-email?s=${query}`).then(rta => rta.data);
+}
+
+export const requestSpaceConfirmation = (propId, uid) => {
+	return api.put(`/properties/confirm-stay/${propId}`, {uid}).then(rta => rta.data);
 }

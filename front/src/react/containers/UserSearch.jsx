@@ -1,41 +1,62 @@
 import React, {useEffect, useState} from "react";
 import {View, Text, Image, ScrollView} from "react-native";
 import styled from "styled-components/native";
-
+import Button from "../ui/Button";
 import Loading from "../components/Loading";
-import { searchUsers } from '../../redux/actions/user';
+import { searchUsers, requestSpaceConfirmation } from '../../redux/actions/user';
 
 import Modal from "../components/Modal";
 
-export default function () {
+export default function ({navigation, route}) {
 
-    const [users, setUsers] = useState([]);
+    const [user, setUser] = useState({});
+    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState("")
 
     useEffect(() => {
-        if (input.length < 3) return setUsers([]);
+        if (input.length < 4) return setUser({});
         setLoading(true);
         searchUsers(input)
-            .then(setUsers)
+            .then(setUser)
             .then(()=>setLoading(false));
     },[input])
     
     const { Modal: Register, call, hide } = Modal(useState(null));
 
+    function getConfirmation() {
+
+        requestSpaceConfirmation(route.params.propertyId, user.uid)
+        .then(()=>{
+            navigation.pop();
+        })
+        .catch(setError)
+    }
 
     return (
         <View style={{height: "100%"}}>
           <Register/>
           <ScrollView>
             <Wrapper>
+                <Title>Registrar inquilino</Title>
                 <SearchBar onChangeText={setInput} value={input} placeholder={"Busca aquí"}/>
               {loading ?
                 <Loading/> :
-                (users.map((user, index) => (
-                    <UserCard user={user} key={index} input={input} call={call}/>
-                )))
+                <UserWrapper>
+                    <Text>{user.email}</Text>
+                </UserWrapper>
               }
+              {
+                user.uid ? <View>
+                    <Text>
+                        ¿Estás seguro de que quiere notificar al usuario para confirmar su estadía en tu espacio?
+                    </Text>
+                    {
+                        error ? <Error>Hubo un error enviando la confirmación</Error> : null
+                    }
+                    <Button mt={"20px"} onPress={getConfirmation}>Confirmar</Button>
+                </View> : null
+            }
             </Wrapper>
           </ScrollView>
         </View>
@@ -105,3 +126,13 @@ const UserWrapper = styled.TouchableOpacity`
     margin: 6px 0;
 
 `
+
+const Title = styled.Text`
+    font-weight: 500;
+    font-size: 20px;
+`
+
+const Error = styled.Text`
+    color: red;
+`
+

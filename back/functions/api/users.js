@@ -1,15 +1,14 @@
 const router = require('express').Router()
 const fb = require("../services/firebase").admin;
-
-const dotenv = require('dotenv').config();
+const crypto = require("crypto");
 
 const db = fb.firestore();
 
-const { validateUser } = require("../authenticate");
+const { validateUser, validateAdmin } = require("../authenticate");
 
 const Promise = require("bluebird");
 //* buscar todos los usuarios
-
+const transporter = require("./nodemailer");
 
 router.get("/authenticate", validateUser(), (req,res,next) => {
   res.json(req.user)
@@ -24,7 +23,6 @@ function getUserToken(uid) {
 }
 
 
-const nodemailer = require('nodemailer');
 
 //* agregar un user
 router.post('/register', (req, res, next) => {
@@ -130,31 +128,21 @@ router.put("/ownerForm/:id", validateUser(true), (req, res, next) => {
   if (data.email !== req.user.email) {
     data.emailVerified = false;
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD
-      },
-    });    
+    data.emailHash = crypto.randomBytes(3).toString('hex').toUpperCase();
+
+  
   
     const mailOptions = {
       from: process.env.EMAIL,
       to: data.email,
       subject: 'Bienvenido a Espacio por Tiempo',
-      text: `Verifica el mail de tu cuenta para que los usuarios puedan contactarte! Entra en este link http://ext-api.web.app/verify-email/${getUserToken(req.user.id)}`
+      text: `Verifica el mail de tu cuenta para que los usuarios puedan contactarte! Entra en este link http://ext-api.web.app/verify-email/${getUserToken(req.user.id)} o alternativa mente este link que es mucho mejor http://ext-api.web.app/verify-email/${req.user.id}/${data.emailHash}`
     }; 
   
-    console.log(process.env.EMAIL, process.env.EMAIL_PASSWORD)
+    //console.log(process.env.EMAIL, process.env.EMAIL_PASSWORD)
   
     transporter.sendMail(mailOptions, function (error, info) {
-      console.log("senMail returned!");
-      if (error) {
-        return res.status(401).send({msg:"Invalid email"})
-        console.log("ERROR!!!!!!", error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
+      if (error) return res.status(401).send({msg:"Invalid email"})
     });
   
   }
@@ -187,6 +175,34 @@ router.get('/favorites/:id', validateUser(false), (req, res, next) => {
     .catch(next)
 })
 
+router.get('/by-email', validateUser(false), (req, res, next) => {
+  const query = (req.query.s || "").toLowerCase();
+  //return res.status(500).send({msg:"hey"})
+  if (query.length < 4) return res.status(401).send({msg:"Query muy breve"})
+
+  db.collection('users').get()
+    .then(rta => rta.docs)
+    .then(usersData => {
+      for (let userData of usersData) {
+        const user = userData.data();
+
+        if (user.email.split("@")[0].toLowerCase() == query ||
+         (
+           user.email.slice(0,query.length) == query && query.includes("@")
+         )) {
+          return res
+          .status(200)
+          .json({ ...user, uid: user.id})
+        }
+      }
+      return res
+          .status(200)
+          .json({ msg: "Any user with that mail was found"})
+    })
+    .catch(next)
+})
+
+/*
 //* traer un user
 router.get('/:mail', (req, res, next) => {
   const mail = req.params.mail
@@ -209,9 +225,10 @@ router.get('/:mail', (req, res, next) => {
       }
     })
     .catch(next)
-})
+})*/
 
-router.get('/', validateUser(false), (req, res, next) => {
+
+router.get('/', validateAdmin(), (req, res, next) => {
   const query = req.query.s.toLowerCase();
 
   db.collection('users').get()

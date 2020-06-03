@@ -88,8 +88,10 @@ export const enableSpace = (id) => dispatch => {
         .then(()=>dispatch(fetchSpace(id)));
 }
 
-export const disableSpace = (id) => dispatch => {
-    return api.put(`/properties/disable/${id}`)
+export const disableSpace = (id, reason) => dispatch => {
+    return api.put(`/properties/disable/${id}`, {
+        reason
+    })
         .then(()=>dispatch(fetchSpace(id)));
 }
 
