@@ -77,7 +77,7 @@ const Modal = styled.TouchableHighlight`
   padding: 25px 10px 28px 20px;
   border-radius: 2px;
   height: 100%;
-  max-height: 580px;
+  max-height: 520px;
 
 `
 

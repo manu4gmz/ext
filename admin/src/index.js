@@ -14,7 +14,7 @@ export const history = createBrowserHistory({
 */
 ReactDOM.render(
     <Provider store ={ store } >
-        <BrowserRouter basename={process.env.URL}>
+        <BrowserRouter>
         	<Route path="/" component={App}/>
         </BrowserRouter>
     </Provider>, 

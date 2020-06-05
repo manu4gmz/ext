@@ -3,6 +3,7 @@ const db = require("../services/firebase").admin.firestore();
 const transporter = require("./nodemailer");
 const { validateUser, validateAdmin } = require("../authenticate");
 const crypto = require("crypto");
+const Promise = require("bluebird");
 
 const dataTypes = {
   neighborhood: "string",
@@ -116,7 +117,7 @@ router.put("/confirm-stay/:id", validateUser(true), (req,res,next) => {
               <p>Hola ${user.firstName},</p>
               <p>¿usted ha alquilado el espacio de ${space.title}?</p>
               
-              <form method="GET" action="http://localhost:5000/ext-api/us-central1/app/confirm-stay/${req.params.id}/${req.body.uid}/${confirmHash}">
+              <form method="GET" action="https://ext-api.web.app/confirm-stay/${req.params.id}/${req.body.uid}/${confirmHash}">
                 <input type="radio" id="yes-radio"
                 name="beenthere" value="true">
                 <label for="yes-radio">Si</label>
@@ -126,7 +127,7 @@ router.put("/confirm-stay/:id", validateUser(true), (req,res,next) => {
                 <label for="no-radio">No he ido a ese lugar</label>
                 
                 <p>Si lo ha hecho recomendamos que puedas dejar su comentario para que los demás usarios conozcan su experiencia.</p>
-                
+                <input type="number" name="rating" max=5 min=0>
                 <input type="textarea" placeholder="Escriba su experiencia aquí" name="comment">
                 <br>
                 <input type="submit">
@@ -374,80 +375,131 @@ router.put('/coordenadas/:id', validateUser(false), (req, res, next) => {
     .catch(next)
 })
 
+//Respuesta del dueño, pasa el id de la propiedad por propertyId, y el indice del comment por commentIndex
+router.post('/comments/:propid/:commentid', validateUser(false), (req, res, next) => {
+  //let { propertyId, commentIndex } = req.query
+
+  const { propid, commentid } = req.params;
+
+  db.collection("properties").doc(propid).get()
+    .then(rta => rta.data())
+    .then(space => {
+      if (space.userId != req.userId) return res.status(401).send({msg: "No es tu espacio"});
+      if (!req.body.comment)  return res.status(400).send({msg: "No hay comentario"});
+
+      return db.collection("properties").doc(propid).collection("comments").doc(commentid).get()
+      .then(comment=>{
+        console.log(comment.data())
+        if (!comment.data()) return res.status(400).send({msg:"Ese comentario no existe"});
+       
+        db.collection("properties").doc(propid).collection("comments").doc(commentid).update({response: req.body.comment}, {merge: true})
+          .then(()=>{
+            res.send({
+              msg: "respuesta añadida correctamente"
+            })
+          })
+      })
+
+
+    })
+    .catch(next)
+  
+//   .collection("comments").doc(commentid).get()
+// //  db.collection("properties").doc(propertyId).get()
+//     .then(data => {
+
+//       let comentarios = data.data().comments;
+
+//       comentarios[commentIndex].response = req.body.response
+
+//       db.collection('properties').doc(propertyId).update({ comments: comentarios })
+//         .then(data => {
+
+//           db.collection("properties").doc(propertyId).get()
+//             .then(data => {
+//               let comentarios = data.data().comments;
+//               res.status(200).send(comentarios)
+//             })
+
+//         })
+//     })
+//     .catch(next)
+  // res.send({ 'La propiedad en la que esta el comment': propertyId, 'El comment al que se quiere responder': commentIndex })
+})
 
 
 router.get('/comments/:id', (req, res, next) => {
   const id = req.params.id
-  db.collection("properties").doc(id).get()
-    .then(data => {
-      let comentarios = data.data().comments;
-      // let habilitado = true
+  db.collection("properties").doc(id).collection("comments").get()
+    .then(data => data.docs)
+    .then(comments => {
+      //let comentarios = data.data().comments;
+      return Promise.all(
+        comments.filter(a=>a.data().author).map(commentData => {
+          const comment = commentData.data();
+          return db.collection("users").doc(comment.author).get()
+            .then(rta => rta.data())
+            .then(user => ({ name: user.firstName + " " + user.lastName, ...comment, id: commentData.id }) )
+        })
+      )
+      .then(comments => {
 
-      // //Si el user ya comento va a devolverle un se
-      // comentarios.forEach(elemento => {
-      //   if (elemento.userId === req.body.userId) habilitado = false
-      // })
-      res.status(200)
-        // .json({ comentarios, habilitado })
-        .json(comentarios)
+        res.status(200).json(comments)
+      })
     })
     .catch(next)
 })
 
 // RUTA PARA INGRESAR NUEVO COMENTARIO
-router.put('/comments/:id', (req, res, next) => {
+router.post('/comments/:id', validateUser(false), (req, res, next) => {
 
-  const id = req.params.id
+  const id = req.params.id;
 
   db.collection("properties").doc(id).get()
-    .then(data => {
-      let comentarios = data.data().comments;
-      let newComment = {
-        "userId": req.body.userId,
-        "comment": req.body.comment,
-        "nombre": req.body.nombre,
-        "habilitado": true
-      }
-      comentarios.push(newComment)
-      db.collection('properties').doc(id).update({ comments: comentarios })
-        .then(data => {
+    .then(rta => rta.data())
+    .then(space => {
+      //console.log(space.rents,)
+      if (!(space.rents || []).includes(req.userId)) return res.status(401).send({msg:"No alquilaste aca"});
 
-          db.collection("properties").doc(id).get()
-            .then(data => {
-              let comentarios = data.data().comments;
-              res.status(200).send(comentarios)
-            })
+      if (!req.body.comment) return res.status(400).send({ msg: "No hay comentario" });
+      if (!req.body.rating) return res.status(400).send({ msg: "No hay rating" });
+      const rating = Number(req.body.rating);
+      if (isNaN(rating) || rating > 5 || rating < 1) return res.status(400).send({ msg: "Rating invalido" });
 
+      
+
+      db.collection("properties").doc(req.params.id).collection("comments").add({
+        author: req.userId,
+        comment: req.body.comment,
+        rating: req.body.rating,
+        date: (new Date()).getTime()
+      })
+      .then(()=>{
+        res.send({
+          msg: "Agregado tu comentario correctamente"
         })
-        .catch(next)
+      })
+      .catch(()=>{
+        res.status(500).send({
+          msg: "hubo un error interno"
+        })
+      })
+      
+      // comentarios.push(newComment)
+      // db.collection('properties').doc(id).update({ comments: comentarios })
+      //   .then(data => {
+
+      //     db.collection("properties").doc(id).get()
+      //       .then(data => {
+      //         let comentarios = data.data().comments;
+      //         res.status(200).send(comentarios)
+      //       })
+
+      //   })
+      //   .catch(next)
     })
 })
 
-//Respuesta del dueño, pasa el id de la propiedad por propertyId, y el indice del comment por commentIndex
-router.put('/response', (req, res, next) => {
-  let { propertyId, commentIndex } = req.query
-
-  db.collection("properties").doc(propertyId).get()
-    .then(data => {
-
-      let comentarios = data.data().comments;
-
-      comentarios[commentIndex].response = req.body.response
-
-      db.collection('properties').doc(propertyId).update({ comments: comentarios })
-        .then(data => {
-
-          db.collection("properties").doc(propertyId).get()
-            .then(data => {
-              let comentarios = data.data().comments;
-              res.status(200).send(comentarios)
-            })
-
-        })
-    })
-    .catch(next)
-  // res.send({ 'La propiedad en la que esta el comment': propertyId, 'El comment al que se quiere responder': commentIndex })
-})
 
 
 router.get("/:page", (req, res) => {

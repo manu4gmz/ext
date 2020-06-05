@@ -36,8 +36,19 @@ export default function SpaceReducedCard ({espacio, index, navigation, user, fav
                     <Titulo style={{marginBottom: 12}}>{espacio.title}</Titulo>
                     <TextButton onPress={()=>navigation.push("SingleView", {propertyId: espacio.id})} bg={"white"}>Ver publicación</TextButton>
                     <TextButton onPress={()=>navigation.push("EditSpace", {propertyId: espacio.id})} bg={"white"}>Editar</TextButton>
-                    <TextButton onPress={()=>navigation.push("UserSearch", {propertyId: espacio.id})} bg={"white"}>Registrar inquilino</TextButton>
-                    <TextButton onPress={()=>navigation.push("Comments", {propertyId: espacio.id})} bg={"white"}>Ver Comentarios ({(espacio.comments || []).length})</TextButton>
+                    {
+                        espacio.enabled ? 
+                        <View>
+                            <TextButton onPress={()=>navigation.push("UserSearch", {propertyId: espacio.id})} bg={"white"}>Registrar inquilino</TextButton>
+                            <TextButton onPress={()=>navigation.push("Comments", {propertyId: espacio.id})} bg={"white"}>Ver Comentarios ({(espacio.comments || []).length})</TextButton>
+                        </View>
+                        : (
+                            espacio.rejected == true ?
+                            <Text style={{color: "#ff5c5c"}}>{espacio.reason || "Este espacio ha sido rechazado. Revise los términos y condiciones."}</Text>
+                            : 
+                            <Text style={{color: "#c1c1c1"}}>Este espacio está pendiente a que sea aprobado.</Text>
+                        )
+                    }
                     {
                         Object.keys(tableFields).map((key,i) => (
                             espacio[key] ? <TableRow style={{ borderBottomColor: "#DDD", borderBottomWidth: 1}} key={i}>
@@ -71,7 +82,7 @@ export default function SpaceReducedCard ({espacio, index, navigation, user, fav
                 }
                 <InlineRow style={{alignSelf: "center", marginLeft: espacio.photos && espacio.photos.length ? 0 : 12, paddingTop: 6, paddingBottom: 6}}>
 
-                    <Titulo style={{color: espacio.visible ? "#000" : "#666" }}>{espacio.title}</Titulo>
+            <Titulo style={{color: espacio.visible ? "#000" : "#666" }}>{espacio.title}{espacio.rejected ? <Text style={{color:"#ff5c5c"}}>(!)</Text> : null}</Titulo>
                     {espacio.province === 'ciudad autónoma de buenos aires'
                         ? <Subtitulo>{espacio.neighborhood} - Capital Federal</Subtitulo>
                         : <Subtitulo>{espacio.neighborhood} - {espacio.province}</Subtitulo>

@@ -41,10 +41,6 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment, route, user, n
     return navigation.navigate(`Login`)
   }
 
-  function redirectToUser(id) {
-    //para ver info del que comento
-    console.log(`redirect to ${id}`)
-  }
   if (loading) return <Loading/>;
 
   return (
@@ -57,7 +53,6 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment, route, user, n
       handleResponseChange={handleResponseChange}
       handleResponse={handleResponse}
       redirectToLogin={redirectToLogin}
-      redirectToUser={redirectToUser}
       response={response}
       user={user}
     />
@@ -69,7 +64,7 @@ const mapStateToProps = (state, ownProps) => {
     id: state.spaces.idSpace,
     space: state.spaces.singleSpace,
     comments: state.spaces.comments,
-    user: state.profile.userInfo
+    user: state.user.logged
   };
 };
 

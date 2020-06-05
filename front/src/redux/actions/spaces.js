@@ -99,17 +99,16 @@ export const fetchComments = id => (dispatch) => {
         .then(data => dispatch(allComments(data)))
 }
 
-export const writeComment = (id, comment, nombre) => (dispatch, getState) => {
+export const writeComment = (id, comment) => (dispatch, getState) => {
     return api
-        .put(`/properties/comments/${id}`, { comment, userId: getState().user.logged.uid, nombre })
+        .post(`/properties/comments/${id}`, { comment, rating: 5 })
         // .put(`http://localhost:5000/ext-api/us-central1/app/api/properties/comments/${id}`, { comment, userId: getState().user.logged.uid, nombre })
         .then(res => dispatch(allComments(res.data)))
     // console.log({ comment, userId: getState().user.logged.uid, nombre })
 }
 
-export const writeResponse = (propertyId, commentIndex, response) => dispatch => {
+export const writeResponse = (propertyId, commentId, response) => dispatch => {
     return api
-        .put(`/properties/response?propertyId=${propertyId}&commentIndex=${commentIndex}`, { response })
-        // .put(`http://localhost:5000/ext-api/us-central1/app/api/properties/response?propertyId=${propertyId}&commentIndex=${commentIndex}`, { response })
-        .then(res => dispatch(allComments(res.data)))
+        .post(`/properties/comments/${propertyId}/${commentId}`, { comment: response })
+        .then(res => dispatch(fetchComments(propertyId)))
 }       

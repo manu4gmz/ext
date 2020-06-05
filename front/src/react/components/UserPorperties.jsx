@@ -35,8 +35,9 @@ const UserProperties = ({ propiedades, fetchProperties, user, navigation }) => {
 
   if (loading) return <Loading />
 
-  const verifiedSpaces = propiedades.filter(e => e.verified);
-  const nonVerifiedSpaces = propiedades.filter(e => !e.verified);
+  const verifiedSpaces = propiedades.filter(e => e.verified && e.enabled);
+  const nonVerifiedSpaces = propiedades.filter(e => !e.verified && e.enabled);
+  const pendingSpaces = propiedades.filter(e => !e.enabled );
 
   return (
     <View style={{height: "100%"}}>
@@ -51,7 +52,7 @@ const UserProperties = ({ propiedades, fetchProperties, user, navigation }) => {
       <Info/>
       <ScrollView>
         {
-          nonVerifiedSpaces.length ? 
+          verifiedSpaces.length ? 
           <Wrapper>
             <Subtitle>Espacios Verificados</Subtitle>
               {verifiedSpaces.map((espacio, index) => (
@@ -68,6 +69,18 @@ const UserProperties = ({ propiedades, fetchProperties, user, navigation }) => {
               {nonVerifiedSpaces.map((espacio, index) => (
                 <SpaceReducedCard key={index} {...({espacio, navigation, index, callInfo, hide})} />
                 ))}
+          </Wrapper>
+          : null
+        }
+        {
+          pendingSpaces.length ? 
+          <Wrapper>
+            <Subtitle>Espacios Pendientes</Subtitle>
+            <Description>Los siguientes espacios están esperando la aprobación del equipo de Espacio por Tiempo. Puede que alguno requiera de editar algunos datos para poder ser publicados</Description>
+
+              {pendingSpaces.map((espacio, index) => (
+                <SpaceReducedCard key={index} {...({espacio, navigation, index, callInfo, hide})} />
+              ))}
           </Wrapper>
           : null
         }

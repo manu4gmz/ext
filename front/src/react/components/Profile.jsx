@@ -132,9 +132,10 @@ const Wrapper = styled.View`
 `
 const ViewPrincipal = styled.View`
   justify-content: space-between;
-  margin: 0px 10px;
+  padding: 0px 12px;
   max-width: 500px;
   align-self: center;
+  width: 100%;
 
 `
 const Divider = styled.View`

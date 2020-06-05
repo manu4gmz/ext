@@ -97,7 +97,8 @@ router.get("/confirm-stay/:spaceid/:uid/:hash",(req,res,next) => {
 
                     db.collection("properties").doc(req.params.spaceid).collection("comments").add({
                         author: req.params.uid,
-                        comment: req.query.comment
+                        comment: req.query.comment,
+                        date: (new Date()).getTime()
                     });
                 }
                     

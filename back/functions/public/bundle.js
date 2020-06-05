@@ -89703,9 +89703,11 @@ var enableSpace = function enableSpace(id) {
     });
   };
 };
-var disableSpace = function disableSpace(id) {
+var disableSpace = function disableSpace(id, reason) {
   return function (dispatch) {
-    return _api__WEBPACK_IMPORTED_MODULE_0__["default"].put("/properties/disable/".concat(id)).then(function () {
+    return _api__WEBPACK_IMPORTED_MODULE_0__["default"].put("/properties/disable/".concat(id), {
+      reason: reason
+    }).then(function () {
       return dispatch(fetchSpace(id));
     });
   };
@@ -89927,8 +89929,8 @@ __webpack_require__.r(__webpack_exports__);
 var auth = _firebase__WEBPACK_IMPORTED_MODULE_2__["default"].auth();
 axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.request.use(function (config) {
   return new Promise(function (res, rej) {
-    if (config.url[0] == "/") config.url = "http://localhost:5000/ext-api/us-central1/app/api" + config.url;else return config; //if (config.url[0] == "/") config.url = "https://ext-api.web.app/api" + config.url;
-
+    //if (config.url[0] == "/") config.url = "http://localhost:5000/ext-api/us-central1/app/api" + config.url;
+    if (config.url[0] == "/") config.url = "https://ext-api.web.app/api" + config.url;else return config;
     if (!auth.currentUser) return config;
     var idToken = _index__WEBPACK_IMPORTED_MODULE_1__["default"].getState().users.logged.idToken;
 
@@ -90592,9 +90594,7 @@ export const history = createBrowserHistory({
 
 react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_redux__WEBPACK_IMPORTED_MODULE_5__["Provider"], {
   store: _redux__WEBPACK_IMPORTED_MODULE_4__["default"]
-}, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["BrowserRouter"], {
-  basename: "/ext-api/us-central1/app/admin"
-}, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+}, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["BrowserRouter"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
   path: "/",
   component: _App__WEBPACK_IMPORTED_MODULE_3__["default"]
 }))), document.getElementById('app'));
@@ -90615,8 +90615,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_redux__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
 /* harmony import */ var styled_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! styled-components */ "./node_modules/styled-components/dist/styled-components.browser.esm.js");
 /* harmony import */ var _redux_actions_spaces__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../redux/actions/spaces */ "./redux/actions/spaces.js");
-function _templateObject12() {
+function _templateObject13() {
   var data = _taggedTemplateLiteral(["\n    color: #AAA;\n    transition: color 300ms;\n    margin-right: 12px;\n    &:hover {\n        color: #555;\n    }\n"]);
+
+  _templateObject13 = function _templateObject13() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject12() {
+  var data = _taggedTemplateLiteral(["\n    background-color: #fff5e6;\n    padding: 12px;\n    border-radius: 3px;\n    border: solid 1px #ffaf36;\n    color: #ffaf36;\n"]);
 
   _templateObject12 = function _templateObject12() {
     return data;
@@ -90811,7 +90821,7 @@ var Details = function Details(_ref) {
   function disable() {
     setReason("");
     setAgreed(null);
-    disableSpace(match.params.id);
+    disableSpace(match.params.id, reason);
   }
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, space.title), space.photos && space.photos.length ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(HorizontalScroll, null, space.photos.map(function (img, key) {
@@ -90842,7 +90852,7 @@ var Details = function Details(_ref) {
     onClick: function onClick() {
       return setAgreed(false);
     }
-  }, "Deshabilitar espacio")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Confirmar espacio"), space.rejected ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Este espacio ha sido rechazado, \xBFaun as\xED considera que este espacio es aducuado seg\xFAn los est\xE1ndares de calidad de Espacio por Tiempo?") : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "\xBFConsidera que este espacio es aducuado seg\xFAn los est\xE1ndares de calidad de Espacio por Tiempo?"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
+  }, "Deshabilitar espacio")) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", null, "Confirmar espacio"), space.rejected && space.reason ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Warning, null, space.reason) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "\xBFConsidera que este espacio es aducuado seg\xFAn los est\xE1ndares de calidad de Espacio por Tiempo?"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Option, {
     onClick: function onClick() {
       return setAgreed(true);
     }
@@ -90918,7 +90928,8 @@ var Centered = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].div(_te
 var Textarea = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].textarea(_templateObject9());
 var Button = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].button(_templateObject10());
 var Option = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].label(_templateObject11());
-var Excuse = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].label(_templateObject12());
+var Warning = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].p(_templateObject12());
+var Excuse = styled_components__WEBPACK_IMPORTED_MODULE_2__["default"].label(_templateObject13());
 
 /***/ }),
 

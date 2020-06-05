@@ -1,38 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Text, View, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import Button from "../ui/Button";
+import FadeInView from "../components/FadeInView";
 
-export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser, redirectToLogin, handleResponseChange, handleResponse, comments, response, comment }) => {
+export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogin, handleResponseChange, handleResponse, comments, response, comment }) => {
   //Para saber si el usuario ya comento
-  let existe = false
+  let existe = false;
+  const scrollView = useRef(null);
+
+  function redirectToUser() {
+    scrollView.current.scrollToEnd({animated: true});
+  }
 
   if (space.userId == user.id && !comments.length) return <Centered><Tit>Todavia no hay comentarios!</Tit></Centered>;
 
   return (
-    <ScrollView style={{ height: "100%", backgroundColor: '#E9E9E9' }}>
+    <ScrollView style={{ height: "100%", backgroundColor: '#E9E9E9' }} >
       <View style={{marginBottom: 36}}>
         <View>
           {comments
-            ? comments.map((a, index) => {
-              if (a.userId === user.id) { existe = true }
+            ? comments.map((comment, index) => {
+              //if (a.userId === user.id) { existe = true }
               return (
-                <View key={index}>
+                <FadeInView key={index} order={index}>
                   <Card>
-                    <TouchableOpacity onPress={() => redirectToUser(a.userId)}>
-                      <OwnerLabel>{a.nombre || "Anonymous"}</OwnerLabel>
-                    </TouchableOpacity>
-                    <Text
-                    >
-                      {a.comment}
+                    {
+                      space.userId == user.id ?
+                      <TouchableOpacity onPress={() => redirectToUser(comment.userId)} ref={scrollView}>
+                        <OwnerLabel>{comment.name || "Anonymous"}</OwnerLabel>
+                      </TouchableOpacity>
+                      : <OwnerLabel>{comment.name || "Anonymous"}</OwnerLabel>
+                    }
+                    <Rating>{comment.rating || "-"}{" / 5"}</Rating>
+                    <Text>
+                      {comment.comment}
                     </Text>
 
                     {
-                      a.response ?
+                      comment.response ?
                       <Respuesta>
                         <RtaBorder/>
                         <Text style={{flex: 1}}>
-                          {a.response}
+                          {comment.response}
                         </Text>
                       </Respuesta>
                       :
@@ -42,16 +52,16 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser
                             <CommentInput
                               name="comment"
                               multiline={true}
-                              numberOfLines={response[index] ? 5 : 1}
+                              numberOfLines={response[comment.id] ? 5 : 1}
                               placeholder="Responder"
                               
-                              onChangeText={text => handleResponseChange(text, index)}
-                              value={response[index] || ""}
+                              onChangeText={text => handleResponseChange(text, comment.id)}
+                              value={response[comment.id] || ""}
                             />
                             {
-                              response[index] ?
+                              response[comment.id] ?
                               <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "flex-end" }}>
-                                <TouchableOpacity onPress={() => handleResponse(index)}>
+                                <TouchableOpacity onPress={() => handleResponse(comment.id)}>
                                   <SendResponse>Enviar Respuesta</SendResponse>
                                 </TouchableOpacity>
                               </View>
@@ -63,16 +73,16 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToUser
                     }
                   </Card>
 
-                </View>
+                </FadeInView>
               )
             })
             : null}
         </View>
         { 
-          space.userId !== user.id ?
-          (user.id ?
+          space.userId !== user.id  && (space.rents || []).includes(user.id) && (user.rented || []).includes(space.id) ?
+          (user.uid ?
             (
-              existe ?
+              false ?
                 (
                   <CommentsAlert>
                     <Text> Ya comentaste en esta publicación </Text>
@@ -179,4 +189,10 @@ const CommentsAlert = styled.View`
   background-color: #D9D5C8; 
   padding: 12px;
   margin-top: 12px;
+`
+
+const Rating = styled.Text`
+  color: #c1c1c1;
+  margin-bottom: 6px;
+  font-size: 16px;
 `
