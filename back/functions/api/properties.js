@@ -118,12 +118,10 @@ router.put("/confirm-stay/:id", validateUser(true), (req,res,next) => {
               <p>¿usted ha alquilado el espacio de ${space.title}?</p>
               
               <form method="GET" action="https://ext-api.web.app/confirm-stay/${req.params.id}/${req.body.uid}/${confirmHash}">
-                <input type="radio" id="yes-radio"
-                name="beenthere" value="true">
+                <input type="radio" id="yes-radio" required name="beenthere" value="true">
                 <label for="yes-radio">Si</label>
 
-                <input type="radio" id="no-radio"
-                name="beenthere" value="false">
+                <input type="radio" id="no-radio" name="beenthere" value="false">
                 <label for="no-radio">No he ido a ese lugar</label>
                 
                 <p>Si lo ha hecho recomendamos que puedas dejar su comentario para que los demás usarios conozcan su experiencia.</p>

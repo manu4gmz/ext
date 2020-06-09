@@ -84,10 +84,10 @@ router.get("/confirm-stay/:spaceid/:uid/:hash",(req,res,next) => {
             
             // /!\ esto hay que descomentar
             //db.collection("users").doc(req.params.uid).update({ confirmHash: user.confirmHash.filter(h=>h!=req.params.hash) });
-
+            
             if (req.query.beenthere == "true") {
                 db.collection("properties").doc(req.params.spaceid).update({ rents: [...(space.rents || []), req.params.uid] });
-
+                
                 db.collection("users").doc(req.params.uid).update({ 
                     rented: [...(user.rented || []), req.params.spaceid], 
                     confirmHash: user.confirmHash.filter(h=>h!=req.params.hash) 
@@ -98,23 +98,31 @@ router.get("/confirm-stay/:spaceid/:uid/:hash",(req,res,next) => {
                     db.collection("properties").doc(req.params.spaceid).collection("comments").add({
                         author: req.params.uid,
                         comment: req.query.comment,
+                        rating: req.query.rating || undefined,
                         date: (new Date()).getTime()
                     });
                 }
+                
+                res.send(`<center>
+                    <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
+                        <h3>Muchas gracias por compartir tu  experiencia</h3>
+                    </div>
+                </center>`);
                     
             } else {
                 db.collection("users").doc(req.params.uid).update({ 
                     confirmHash: user.confirmHash.filter(h=>h!=req.params.hash) 
                 });
+
+                res.send(`<center>
+                    <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
+                        <h3>Muchas gracias.</h3>
+                        <p>Has confimado que no asististe a <strong>${space.title}</strong></p>
+                    </div>
+                </center>`);
             }
 
 
-            
-            res.send(`<center>
-                <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
-                    <h3>Muchas gracias por compartir tu  experiencia</h3>
-                </div>
-            </center>`);
 
             
         

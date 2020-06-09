@@ -99,11 +99,11 @@ export const fetchComments = id => (dispatch) => {
         .then(data => dispatch(allComments(data)))
 }
 
-export const writeComment = (id, comment) => (dispatch, getState) => {
+export const writeComment = (id, comment, rating) => (dispatch, getState) => {
     return api
-        .post(`/properties/comments/${id}`, { comment, rating: 5 })
+        .post(`/properties/comments/${id}`, { comment, rating })
         // .put(`http://localhost:5000/ext-api/us-central1/app/api/properties/comments/${id}`, { comment, userId: getState().user.logged.uid, nombre })
-        .then(res => dispatch(allComments(res.data)))
+        .then(res => dispatch(fetchComments(id)))
     // console.log({ comment, userId: getState().user.logged.uid, nombre })
 }
 

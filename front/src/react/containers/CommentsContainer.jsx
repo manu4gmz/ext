@@ -6,6 +6,7 @@ import Loading from "../components/Loading";
 
 const CommentsContainer = ({ space, fetchSpace, id, writeComment, route, user, navigation, fetchComments, comments, writeResponse }) => {
   const [loading, setLoading] = useState(true);
+  const [rating, setRating] = useState(5);
   
   useEffect(() => {
     fetchSpace(route.params.propertyId);
@@ -14,15 +15,28 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment, route, user, n
   }, [route.params.propertyId]);
 
   const [comment, setComment] = useState("");
-  const [response, setResponse] = useState([])
+  const [response, setResponse] = useState({})
 
-  function handleCommentChange(e) {
-    setComment(e);
+  function handleCommentChange(text) {
+    if (response.id) {
+      setResponse({...response, response: text});
+    }
+    else { 
+      setComment(text);
+    }
+    
   }
 
   function handleSubmit() {
     //Le mando el nombre y apellido del usuario loggeado para guardarlo como info en el comment
-    writeComment(route.params.propertyId, comment, `${user.firstName} ${user.lastName}`)
+    if (response.id) {
+      writeResponse(route.params.propertyId, response.id, response.response)
+      .then(()=> setResponse({}))
+    }
+    else { 
+      writeComment(route.params.propertyId, comment, rating)
+      .then(()=> setComment(""))
+    }
   }
 
   function handleResponseChange(e,index) {
@@ -41,6 +55,10 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment, route, user, n
     return navigation.navigate(`Login`)
   }
 
+  function setResponseComment(comment) {
+    setResponse(comment);
+  }
+
   if (loading) return <Loading/>;
 
   return (
@@ -54,7 +72,10 @@ const CommentsContainer = ({ space, fetchSpace, id, writeComment, route, user, n
       handleResponse={handleResponse}
       redirectToLogin={redirectToLogin}
       response={response}
+      setResponseComment={setResponseComment}
       user={user}
+      setRating={setRating}
+      rating={rating}
     />
   );
 };

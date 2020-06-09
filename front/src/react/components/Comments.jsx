@@ -3,53 +3,70 @@ import { Text, View, ScrollView, TextInput, TouchableOpacity } from "react-nativ
 import styled from "styled-components/native";
 import Button from "../ui/Button";
 import FadeInView from "../components/FadeInView";
+import { Rating } from 'react-native-elements';
 
-export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogin, handleResponseChange, handleResponse, comments, response, comment }) => {
+export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogin, handleResponseChange, handleResponse, comments, response, comment, setResponseComment, setRating, rating }) => {
   //Para saber si el usuario ya comento
   let existe = false;
   const scrollView = useRef(null);
 
-  function redirectToUser() {
-    scrollView.current.scrollToEnd({animated: true});
+  function handleClickComment(comment) {
+    setResponseComment(comment);
+    setTimeout(()=>scrollView.current.scrollToEnd({animated: true}), 100);
   }
 
-  if (space.userId == user.id && !comments.length) return <Centered><Tit>Todavia no hay comentarios!</Tit></Centered>;
+
+  //if (space.userId == user.id && !comments.length) return <Centered><Tit>Todavia no hay comentarios!</Tit></Centered>;
 
   return (
-    <ScrollView style={{ height: "100%", backgroundColor: '#E9E9E9' }} >
+    <ScrollView style={{ height: "100%", backgroundColor: '#E9E9E9' }} ref={scrollView}>
       <View style={{marginBottom: 36}}>
         <View>
-          {comments
-            ? comments.map((comment, index) => {
-              //if (a.userId === user.id) { existe = true }
+          {comments && comments.length ? 
+            comments.map((comment, index) => {
+              if (comment.author === user.id) existe = true;
               return (
-                <FadeInView key={index} order={index}>
+                <FadeInView key={index} order={index/2}>
                   <Card>
                     {
-                      space.userId == user.id ?
-                      <TouchableOpacity onPress={() => redirectToUser(comment.userId)} ref={scrollView}>
+                      space.userId == user.id && !comment.response?
+                      <TouchableOpacity onPress={() => handleClickComment(comment)}>
                         <OwnerLabel>{comment.name || "Anonymous"}</OwnerLabel>
                       </TouchableOpacity>
                       : <OwnerLabel>{comment.name || "Anonymous"}</OwnerLabel>
                     }
-                    <Rating>{comment.rating || "-"}{" / 5"}</Rating>
+                    {
+                      !isNaN(comment.rating) ?
+                      <Rating
+                      readonly
+                      imageSize={14}
+                      type='custom'
+                      ratingColor={"#4a94ea"}
+                      tintColor={"#FFFFFF"}
+                      startingValue={ Number(comment.rating)}
+                      style={{ paddingVertical: 10, alignItems: "flex-start" }}
+                      />
+                      : null
+                    }
                     <Text>
                       {comment.comment}
                     </Text>
 
                     {
-                      comment.response ?
-                      <Respuesta>
-                        <RtaBorder/>
-                        <Text style={{flex: 1}}>
-                          {comment.response}
-                        </Text>
-                      </Respuesta>
+                      comment.response ? <View>
+                        <Bold style={{marginTop: "12px"}}>Respuesta del dueño</Bold>
+                        <Respuesta>
+                          <RtaBorder/>
+                          <Text style={{flex: 1}}>
+                            {comment.response}
+                          </Text>
+                        </Respuesta>
+                      </View>
                       :
                       (
                         space.userId === user.id ?
                           <View>
-                            <CommentInput
+                            {/* <CommentInput
                               name="comment"
                               multiline={true}
                               numberOfLines={response[comment.id] ? 5 : 1}
@@ -60,13 +77,13 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogi
                             />
                             {
                               response[comment.id] ?
-                              <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "flex-end" }}>
+                              <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "flex-start" }}>
                                 <TouchableOpacity onPress={() => handleResponse(comment.id)}>
                                   <SendResponse>Enviar Respuesta</SendResponse>
                                 </TouchableOpacity>
                               </View>
                               : null
-                            }
+                            } */}
                           </View>
                           : null
                       )
@@ -76,13 +93,16 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogi
                 </FadeInView>
               )
             })
-            : null}
+            : <Centered>
+                <Tit>Todavia no hay comentarios!</Tit>
+              </Centered>
+          }
         </View>
         { 
-          space.userId !== user.id  && (space.rents || []).includes(user.id) && (user.rented || []).includes(space.id) ?
+          (space.userId !== user.id  && (space.rents || []).includes(user.id) && (user.rented || []).includes(space.id)) || response.id ?
           (user.uid ?
             (
-              false ?
+              false && !response.id ?
                 (
                   <CommentsAlert>
                     <Text> Ya comentaste en esta publicación </Text>
@@ -92,16 +112,38 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogi
                 (
                   <Card>
                     <View>
-                      
+                      {
+                        response.id ? <View>
+                          <Text>En respuesta a "{response.comment}"</Text>
+                        </View>
+                        : (
+                          comment ?
+                          <Rating
+                            imageSize={25}
+                            minValue={1}
+                            type='custom'
+                            ratingColor={"#4a94ea"}
+                            tintColor={"#FFFFFF"}
+                            onFinishRating={setRating}
+                            style={{ paddingVertical: 10, alignItems: "flex-start" }}
+                          />
+                          : null
+                        )
+                      }
                       <CommentInput
                         name="comment"
                         multiline={true}
-                        placeholder="Escribe una opinión"
-                        numberOfLines={comment ? 5 : 1}
-                        value={comment}
+                        placeholder={response.id ? "Escriba su respuesta" : "Escribe una opinión" }
+                        numberOfLines={(comment || response.response) ? 5 : 1}
+                        value={response.id ? response.response : comment }
                         onChangeText={text => handleCommentChange(text)}
                       />
-                      <Button mt="12px" onPress={() => handleSubmit()}>Enviar</Button>
+                      {
+                        
+                        (comment && rating) || (response.id && response.response) ? 
+                          <Button mt="12px" onPress={() => handleSubmit()}>Enviar</Button>
+                          : <Button mt="12px">Enviar</Button>
+                      }
                     </View>
                   </Card>
                 )
@@ -119,21 +161,22 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogi
 };
 
 const Card = styled.View`
-  background-color: #F7F7F7;
+  background-color: #FFFFFF;
   margin: 6px 24px;
   border-radius: 5px;
   padding: 12px;
   box-shadow: 0px 5px 5px #c2c2c2;
 `
 const Respuesta = styled.View`
-
-  margin-top: 5px;
-  margin-top: 12px;
   padding: 6px 0px;
   flex-direction: row;
   align-items: center;
   width: 100%;
 `
+
+const Bold = styled.Text`
+  font-weight: 500;
+` 
 
 const OwnerLabel = styled.Text`
   color: #4a94ea;
@@ -155,7 +198,7 @@ const SendResponse = styled.Text`
 
 const CommentInput = styled.TextInput`
   margin-top: 6px;
-  background-color: #f7f7f7;
+  background-color: #FFFFFF;
   border-bottom-width: 2px;
   border-bottom-color: #b8b8b8;
   padding: 2px;
@@ -191,7 +234,7 @@ const CommentsAlert = styled.View`
   margin-top: 12px;
 `
 
-const Rating = styled.Text`
+const RatingLabel = styled.Text`
   color: #c1c1c1;
   margin-bottom: 6px;
   font-size: 16px;

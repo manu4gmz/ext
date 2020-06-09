@@ -11,7 +11,7 @@ import { fetchFavs } from "../../redux/actions/user"
 import { connect } from "react-redux";
 import Axios from "axios";
 import FavoriteButton from "../components/FavoriteButton";
-
+import SpaceCard from "../components/SpaceCard";
 
 function Favorites({ user, fetchFavs, spaces, navigation }) {
   //const navigation = useNavigation();
@@ -36,7 +36,21 @@ function Favorites({ user, fetchFavs, spaces, navigation }) {
         
         !loading ?
           <Wrapper>
-            {spaces.map((espacio, index) => {
+            {
+              spaces.map((espacio, index) => <SpaceCard key={index} espacio={espacio} index={index} user={user} navigation={navigation}/>)
+            }
+          </Wrapper>
+          : <Loading />
+      ):(
+        !loading ? ( <Centered><Tit>Todavia no tenes favoritos!</Tit></Centered>):(<Loading />)
+       
+      )}
+      
+    </ScrollView>
+  )
+}
+
+/*            {spaces.map((espacio, index) => {
               return (
                 <FadeInView key={index} order={index}>
                   <StyledView
@@ -109,17 +123,7 @@ function Favorites({ user, fetchFavs, spaces, navigation }) {
                   </StyledView>
                 </FadeInView>
               );
-            })}
-          </Wrapper>
-          : <Loading />
-      ):(
-        !loading ? ( <Centered><Tit>Todavia no tenes favoritos!</Tit></Centered>):(<Loading />)
-       
-      )}
-      
-    </ScrollView>
-  )
-}
+            })}*/
 
 const StyledView = styled.View`
   margin: 10px 5px;

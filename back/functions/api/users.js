@@ -165,7 +165,7 @@ router.get('/favorites/:id', validateUser(false), (req, res, next) => {
       
       Promise.all(user.favoritos.map(uid =>
         db.collection("properties").doc(uid).get()
-        .then(data => data.data())
+        .then(data => ({...data.data(), id: data.id}))
 
       )).then(arr =>{
         res.json(arr);
