@@ -6,7 +6,7 @@ import { Alert } from "react-native";
 
 const storage = firebase.storage();
 
-export const uploadFiles = (files, propId = 1, progessCb) => (dispatch, getState) => {
+export const uploadFiles = (files, progessCb) => (dispatch, getState) => {
 	const user = getState().user.logged;
 	const uid = user.uid;
 
@@ -14,13 +14,15 @@ export const uploadFiles = (files, propId = 1, progessCb) => (dispatch, getState
 
 	let progress = [];
 
+	const timestamp = (new Date().getTime());
+
 	return Bluebird.all(
 		files.map((file, i) => {
 
 			return fetch(file.uri)
 				.then(response => response.blob())
 				.then(blob => {
-					const ref = storage.ref(`/images/${uid}/${propId}/${(new Date()).getTime()}`);
+					const ref = storage.ref(`/images/${uid}/${timestamp}/${i}`);
 					const uploadTask = ref.put(blob);
 
 					return new Promise((res, rej) => {

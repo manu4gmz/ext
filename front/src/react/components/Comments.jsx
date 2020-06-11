@@ -36,6 +36,19 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogi
                       : <OwnerLabel>{comment.name || "Anonymous"}</OwnerLabel>
                     }
                     {
+                      comment.date ?
+                      <Text style={{fontSize: 12, color: "#AAA", marginBottom: 6}}>
+                        {
+                          (()=>{
+                            let date = new Date(comment.date);
+
+                            return `${date.getDate()}/${date.getMonth()}` + (date.getFullYear() != new Date().getFullYear() ? `/${date.getFullYear}` : "" )
+                          })()
+                        }
+                      </Text>
+                      : null
+                    }
+                    {
                       !isNaN(comment.rating) ?
                       <Rating
                       readonly
@@ -48,19 +61,16 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogi
                       />
                       : null
                     }
-                    <Text>
+                    <Text style={{fontSize: 16}}>
                       {comment.comment}
                     </Text>
 
                     {
                       comment.response ? <View>
-                        <Bold style={{marginTop: "12px"}}>Respuesta del dueño</Bold>
-                        <Respuesta>
-                          <RtaBorder/>
-                          <Text style={{flex: 1}}>
-                            {comment.response}
-                          </Text>
-                        </Respuesta>
+                        <Bold style={{marginTop: "24px"}}>Respuesta del dueño</Bold>
+                        <Text style={{flex: 1, paddingTop: 6, paddingBottom: 0 }}>
+                          {comment.response}
+                        </Text>
                       </View>
                       :
                       (
@@ -102,7 +112,7 @@ export default ({ space, handleCommentChange, handleSubmit, user, redirectToLogi
           (space.userId !== user.id  && (space.rents || []).includes(user.id) && (user.rented || []).includes(space.id)) || response.id ?
           (user.uid ?
             (
-              false && !response.id ?
+              existe && !response.id ?
                 (
                   <CommentsAlert>
                     <Text> Ya comentaste en esta publicación </Text>
@@ -167,19 +177,14 @@ const Card = styled.View`
   padding: 12px;
   box-shadow: 0px 5px 5px #c2c2c2;
 `
-const Respuesta = styled.View`
-  padding: 6px 0px;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-`
+
 
 const Bold = styled.Text`
   font-weight: 500;
 ` 
 
 const OwnerLabel = styled.Text`
-  color: #4a94ea;
+  /* color: #4a94ea; */
   font-weight: 700;
   margin-bottom: 2px;
 `
@@ -204,15 +209,6 @@ const CommentInput = styled.TextInput`
   padding: 2px;
 `
 
-const RtaBorder = styled.View`
-  background-color: #4a94ea;
-  width: 3px;
-  height: 100%;
-  margin-right: 12px;
-  border-radius: 3px;
-  min-height: 36px;
-  align-self: flex-start;
-`
 
 const Centered = styled.View`
   flex-direction: row;

@@ -6,7 +6,7 @@ import Loading from "../components/Loading";
 
 const CommentsContainer = ({ space, fetchSpace, id, writeComment, route, user, navigation, fetchComments, comments, writeResponse }) => {
   const [loading, setLoading] = useState(true);
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(null);
   
   useEffect(() => {
     fetchSpace(route.params.propertyId);

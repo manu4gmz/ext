@@ -5,6 +5,21 @@ const { validateUser, validateAdmin } = require("../authenticate");
 const crypto = require("crypto");
 const Promise = require("bluebird");
 
+const fs = require("fs");
+const path = require("path");
+
+function getHtml(view) {
+    return new Promise((res,rej)=>{
+        fs.readFile(path.join(__dirname, "../views/"+view+".html"), "utf8", function (err, html) {
+            if (err) {
+                console.log(err);
+                rej(err);
+            }
+            res(html);
+        });
+    })
+}
+
 const dataTypes = {
   neighborhood: "string",
   province: "string",
@@ -182,21 +197,30 @@ router.post("/createSpace", validateUser(true), (req, res, next) => {
   db.collection("properties").add(obj)
     .then((data) => {
 
-      const mailOptions = {
-        from: process.env.EMAIL,
-        to: "manuel4gmz@gmail.com",
-        subject: 'Nueva publicación',
-        text: `${req.user.firstName} ${req.user.lastName} acaba de crear una publicación.\
-\nLink de la publicación:\nhttps://ext-api.web.app/admin/spaces/details/${data.id}`
-      }; 
+      getHtml("created-space")
+      .then(html => {
+        const mailOptions = {
+          from: process.env.EMAIL,
+          to: "manuel4gmz@gmail.com",
+          subject: 'Nuevo Espacio',
+          html: html
+            .replace("{{title}}", obj.title)
+            .replace("{{name}}", `${req.user.firstName} ${req.user.lastName}`)
+            .replace("{{images}}", (obj.photos || []).map(src => `<img style="height: 240px;margin: 6px; border-radius: 3px;" src="${src}">`))
+            .replace("{{imagesLength}}", (obj.photos || []).length)
+            .replace("{{link}}", `https://ext-api.web.app/admin/spaces/details/${data.id}`)
+        }; 
+  
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) return res.status(401).send({msg:"Invalid email"})
+        });
 
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) return res.status(401).send({msg:"Invalid email"})
-      });
+      })
 
       res
         .status(201)
         .json(data.id)
+
     })
     .catch(next);
 })
@@ -433,16 +457,18 @@ router.get('/comments/:id', (req, res, next) => {
     .then(comments => {
       //let comentarios = data.data().comments;
       return Promise.all(
-        comments.filter(a=>a.data().author).map(commentData => {
-          const comment = commentData.data();
-          return db.collection("users").doc(comment.author).get()
-            .then(rta => rta.data())
-            .then(user => ({ name: user.firstName + " " + user.lastName, ...comment, id: commentData.id }) )
-        })
+        comments
+          .filter(a=>a.data().author)
+          .map(commentData => {
+            const comment = commentData.data();
+            return db.collection("users").doc(comment.author).get()
+              .then(rta => rta.data())
+              .then(user => ({ name: user.firstName + " " + user.lastName, ...comment, id: commentData.id }) )
+          })
       )
       .then(comments => {
-
-        res.status(200).json(comments)
+      
+        res.status(200).json(comments.sort((a,b) => b.date - a.date))
       })
     })
     .catch(next)
@@ -464,24 +490,31 @@ router.post('/comments/:id', validateUser(false), (req, res, next) => {
       const rating = Number(req.body.rating);
       if (isNaN(rating) || rating > 5 || rating < 1) return res.status(400).send({ msg: "Rating invalido" });
 
-      
+      db.collection("properties").doc(req.params.id).collection("comments").where("author","==",req.userId).get()
+      .then((data)=>data.docs)
+      .then((comments) => {
+        if (comments && comments.length) {
+          console.log(comments);
+          return res.status(401).send({ msg: "Ya comentaste en este lugar" });
+        }
+        db.collection("properties").doc(req.params.id).collection("comments").add({
+          author: req.userId,
+          comment: req.body.comment,
+          rating: req.body.rating,
+          date: (new Date()).getTime()
+        })
+        .then(()=>{
+          res.send({
+            msg: "Agregado tu comentario correctamente"
+          })
+        })
+        .catch(()=>{
+          res.status(500).send({
+            msg: "hubo un error interno"
+          })
+        })
+      })      
 
-      db.collection("properties").doc(req.params.id).collection("comments").add({
-        author: req.userId,
-        comment: req.body.comment,
-        rating: req.body.rating,
-        date: (new Date()).getTime()
-      })
-      .then(()=>{
-        res.send({
-          msg: "Agregado tu comentario correctamente"
-        })
-      })
-      .catch(()=>{
-        res.status(500).send({
-          msg: "hubo un error interno"
-        })
-      })
       
       // comentarios.push(newComment)
       // db.collection('properties').doc(id).update({ comments: comentarios })
@@ -536,28 +569,54 @@ router.get("/:page", (req, res) => {
     .then(properties => {
       const maxPage = Math.ceil(properties.length / pagesCount);
       let page = ((req.params.page - 1) % maxPage) + 1;
+      // const spaces = properties
+      // .slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount)
+      // .map(space => ({
+      //   title: space.title,
+      //   photos: space.photos,
+      //   id: space.id,
+      //   price: space.price,
+      //   size: space.size,
+      //   neighborhood: space.neighborhood,
+      //   province: space.province,
+      //   createdAt: space.createdAt,
+      //   updatedAt: space.updatedAt
+      // }))
+      Promise.all(
+        properties
+          .slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount)
+          .map((space)=>{
+            return db.collection("properties").doc(space.id).collection("comments").get()
+              .then(comments => comments.docs)
+              .then(comments => {
+                return {
+                  title: space.title,
+                  photos: space.photos,
+                  id: space.id,
+                  price: space.price,
+                  size: space.size,
+                  neighborhood: space.neighborhood,
+                  province: space.province,
+                  createdAt: space.createdAt,
+                  updatedAt: space.updatedAt,
+                  comments: comments.length,
+                  rating: Math.round(comments.filter(c => !isNaN(c.data().rating)).reduce((acc, c) => acc+Number(c.data().rating), 0) / comments.length) || undefined
+                }
+              })
+          })
+        
+      )
+      .then(spaces => {
 
-      const spaces = properties
-      .slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount)
-      .map(space => ({
-        title: space.title,
-        photos: space.photos,
-        id: space.id,
-        price: space.price,
-        size: space.size,
-        neighborhood: space.neighborhood,
-        province: space.province,
-        createdAt: space.createdAt,
-        updatedAt: space.updatedAt
-      }))
-
-      res.status(200).json({
-        properties: spaces,
-        pages: maxPage,
-        total: properties.length,
-        markers: properties.filter(a => a.location && a.location[0]).map(a => ({...a.location[0], id: a.id})),
+        
+        res.status(200).json({
+          properties: spaces,
+          pages: maxPage,
+          total: properties.length,
+          markers: properties.filter(a => a.location && a.location[0]).map(a => ({...a.location[0], id: a.id})),
+        })
+        
       })
-
     })
 
     .catch(err => {
@@ -569,5 +628,8 @@ router.get("/:page", (req, res) => {
     })
 })
 
+router.get("/", (req, res) => {
+  res.redirect("1");
+});
 
 module.exports = router;

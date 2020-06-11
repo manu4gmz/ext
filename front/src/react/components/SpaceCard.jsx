@@ -5,6 +5,7 @@ import Carousel from "./Carousel";
 import { View, TouchableOpacity, Text, Image } from "react-native";
 import Boton from "../ui/Button";
 import FavoriteButton from "./FavoriteButton";
+import { Rating } from 'react-native-elements';
 
 export default function SpaceCard ({espacio, index, user, navigation}) {
 
@@ -45,9 +46,22 @@ export default function SpaceCard ({espacio, index, user, navigation}) {
             </View>
             <View style={{ margin: 0, alignItems: "flex-start", marginLeft: 2 }}>
                 <TouchableOpacity onPress={() => navigation.push("Comments", {propertyId: espacio.id})}>
-                <Text
-                    style={{ color: "grey", fontWeight: "bold", paddingLeft: 0, paddingTop: 10, paddingBottom: 10 }}
-                    >({(espacio.comments || "").length || 0})  Ver comentarios</Text>
+                {
+                    espacio.rating ? 
+                    <Rating
+                        readonly
+                        imageSize={14}
+                        type='custom'
+                        ratingColor={"#4a94ea"}
+                        tintColor={"#FFFFFF"}
+                        startingValue={ Number(espacio.rating)}
+                        style={{ paddingTop: 10, alignItems: "flex-start" }}
+                    />
+                    : null
+                }
+                <Text style={{ color: "grey", fontWeight: "bold", paddingLeft: 0, paddingTop: 10, paddingBottom: 10 }}>
+                    ({(espacio.comments || 0)}) Ver comentarios
+                </Text>
                 </TouchableOpacity>
             </View>
             <View style={{ flexDirection: "row" }}>
@@ -97,7 +111,7 @@ const Titulo = styled.Text`
 
 const StyledView = styled.View`
   margin: 10px 5px;
-  background-color: #F7F7F7;
+  background-color: #FFFFFF;
   padding : 0;
   border-radius: 10px;
 `

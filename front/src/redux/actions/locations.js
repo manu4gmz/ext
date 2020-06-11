@@ -21,12 +21,13 @@ export const fetchLocalidades = (val, id) => dispatch => {
 
 
 
-export const fetchCoords = (dir, idSpace) => dispatch => {
+export const fetchCoords = (dir) => dispatch => {
 	return api.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${dir.n},${dir.s} ${dir.sn},${dir.p}&key=${DATA}`, {withCredentials:false})
 		.then((res) => {
 			const coordenadas = res.data.results[0].geometry.location
-			const arreglo = [coordenadas]
-			return api.put(`/properties/coordenadas/${idSpace}`, arreglo)
+			const arreglo = [coordenadas];
+			return arreglo;
+			//return api.put(`/properties/coordenadas/${idSpace}`, arreglo)
 		})
 }
 

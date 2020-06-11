@@ -8,10 +8,9 @@ import AddPhotos from "../components/AddPhotos";
 import GenericForm from '../components/GenericForm';
 
 import { fetchProvincias, fetchLocalidades, fetchCoords } from "../../redux/actions/locations";
-import { addSpace } from '../../redux/actions/spaces'
 import { connect } from 'react-redux'
 
-const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, fetchProvincias, fetchCoords }) => {
+const SpaceForm = ({ navigation, uploadFiles, user, fetchLocalidades, fetchProvincias, fetchCoords }) => {
   const Type = Picker(useState(false), useState(""));
   const Services = Picker(useState(false), useState([]));
   const Observation = TextPrompt(useState(false), useState(""));
@@ -66,20 +65,21 @@ const SpaceForm = ({ navigation, uploadFiles, addSpace, user, fetchLocalidades, 
     };
 
     //navigation.navigate("PreviewSpace", { space: datosSpace })
-    const coords = {
+    const mapsData = {
       p: datosSpace.province,
       n: datosSpace.neighborhood,
       s: datosSpace.street,
       sn: datosSpace.streetNumber
     }
-    addSpace(datosSpace)
-      .then((propertyId) => {
-        fetchCoords(coords, propertyId, region)
-          .then((data) =>
-            navigation.navigate("Payment", { space: datosSpace, propertyId })
-          )
+    //addSpace(datosSpace)
+    //  .then((propertyId) => {
+        fetchCoords(mapsData)
+          .then((coordinates) =>{
+            datosSpace.location = coordinates;
+            navigation.navigate("Payment", { space: datosSpace })
+          })
 
-      })
+    //  })
 
   }
 
@@ -267,7 +267,6 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  addSpace: (body) => dispatch(addSpace(body)),
   fetchProvincias: (val) => dispatch(fetchProvincias(val)),
   fetchLocalidades: (val, id) => dispatch(fetchLocalidades(val, id)),
   fetchCoords: (coordenadas, id, region) => dispatch(fetchCoords(coordenadas, id, region)),

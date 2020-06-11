@@ -3,58 +3,64 @@ const router = express.Router();
 const fb = require("../services/firebase").admin;
 const db = fb.firestore();
 const path = require("path");
+const fs = require("fs");
+const Bluebird = require("bluebird");
 
-
-function retrieveUserFromToken(text) {
-  return (new Buffer(text, "base64")).toString('ascii');
+function getHtml(view) {
+    return new Bluebird((res,rej)=>{
+        fs.readFile(path.join(__dirname, "../views/"+view+".html"), "utf8", function (err, html) {
+            if (err) {
+                console.error(err);
+                rej(err);
+            }
+            res(html);
+        });
+    })
 }
 
 router.get("/verify-email/:uid/:hash",(req,res) => {
     db.collection("users").doc(req.params.uid).get()
     .then(rta => rta.data())
     .then(user => {
-        if (user.emailHash == req.params.hash) {
-
+        if (user && user.emailHash == req.params.hash) {
             if (!user.emailVerified) db.collection("users").doc(req.params.uid).set({emailVerified: true}, { merge: true });
 
-            res.send(`<center>
-            <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
-                <h3>Hola, ${user.firstName}!</h3>
-                <h4>${user.email}</h4>
-                <p>${user.emailVerified ? "Tu email ya está verificado" : "Muchas gracias por verificar tu email!"}</p>
-            </div>
-        </center>`)
-        }else {
-            res.send(`<center>
-            <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
-                <h3>Hola, desconocido</h3>
-                <h4>¿Que flasheaste?</h4>
-                <p>Sali de aca papu</p>
-            </div>
-        </center>`)
+            getHtml("confirmed-email")
+            .then(html => res.send(html.replace("{{title}}", !user.emailVerified ? `¡Gracias ${user.firstName} por verificar tu mail!` : `Tu email ya ha sido verificado`)))
+            .catch(()=>res.status(500).send("Hubo un error encontrando esta página"))
+
+        } else {
+            getHtml("error")
+            .then(html => res.send(
+                html
+                .replace("{{title}}","Link de la página incorrecto")
+                .replace("{{description}}","Parece que has intentado ingresar a esta página por un URL equivocado.")
+            ))
+            .catch(()=>res.status(500).send("Hubo un error encontrando esta página"))
+
         }
     });
 });
 
-router.get("/verify-email/:token",(req,res) => {
+// router.get("/verify-email/:token",(req,res) => {
 
-    const uid = retrieveUserFromToken(req.params.token);
+//     const uid = retrieveUserFromToken(req.params.token);
 
-    db.collection("users").doc(uid).get()
-    .then(rta => rta.data())
-    .then(user => {
-        if (!user.emailVerified) db.collection("users").doc(uid).set({emailVerified: true}, { merge: true });
+//     db.collection("users").doc(uid).get()
+//     .then(rta => rta.data())
+//     .then(user => {
+//         if (!user.emailVerified) db.collection("users").doc(uid).set({emailVerified: true}, { merge: true });
 
-        res.send(`<center>
-            <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
-                <h3>Hola, ${user.firstName}!</h3>
-                <h4>${user.email}</h4>
-                <p>Muchas gracias por verificar tu email!</p>
-            </div>
-        </center>`)
-    })
+//         res.send(`<center>
+//             <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
+//                 <h3>Hola, ${user.firstName}!</h3>
+//                 <h4>${user.email}</h4>
+//                 <p>Muchas gracias por verificar tu email!</p>
+//             </div>
+//         </center>`)
+//     })
 
-})
+// })
 
 router.get("/confirm-stay/:spaceid/:uid/:hash",(req,res,next) => {
     db.collection("users").doc(req.params.uid).get()

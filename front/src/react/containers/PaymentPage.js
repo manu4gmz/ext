@@ -7,7 +7,7 @@ import Button from "../ui/Button";
 
 export default ({navigation, route}) => {
   function freePayment () {
-    navigation.replace("PreviewSpace", route.params)
+    navigation.push("PreviewSpace", route.params)
   }
 
   return (

@@ -2,23 +2,23 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, TextInput, Button, ImageBackground, Alert } from 'react-native'
 import styled from "styled-components/native"
 import { uploadFiles } from "../../redux/actions/files";
-import { addPhotos, editSpace } from '../../redux/actions/spaces'
+import { addPhotos, addSpace } from '../../redux/actions/spaces'
 import { connect } from "react-redux";
 
-const LoadingView = ({ navigation, route, uploadFiles, editSpace }) => {
+const LoadingView = ({ navigation, route, uploadFiles, addSpace }) => {
 	const [progress, setProgress] = useState(0);
 
 	useEffect(() => {
-		const { images, propertyId, otherImages } = route.params;
+		const { space, otherImages } = route.params;
 
-		uploadFiles(images, propertyId, setProgress)
+		uploadFiles(space.photos, setProgress)
 			.then((files) => {
 				const totalImages = files.concat(otherImages || []);
 
 				//console.log("-------------------------------------\n\nPHOTOS QUE UPLOADEA\n\n",totalImages);
 				
-				editSpace(propertyId, { photos: totalImages, visible: true })
-					.then(() => {
+				addSpace({ ...space, photos: totalImages, visible: true })
+					.then((propertyId) => {
 						navigation.replace("SingleView", { propertyId })
 					})
 			})
@@ -48,7 +48,7 @@ const LoadingView = ({ navigation, route, uploadFiles, editSpace }) => {
 
 const mapDispatchToProps = (dispatch) => ({
 	uploadFiles: (...params) => dispatch(uploadFiles(...params)),
-	editSpace: (id, body) => dispatch(editSpace(id, body))
+	addSpace: (body) => dispatch(addSpace(body))
 
 })
 
@@ -70,7 +70,7 @@ const Logo = styled.Image`
     width: 150px;
 `
 const Background = styled.ImageBackground`
-	backgroundColor: #ccc;
+	/*background-color: #ccc;*/
 	justify-content: center;
 	flex: 1;
 	position: absolute;

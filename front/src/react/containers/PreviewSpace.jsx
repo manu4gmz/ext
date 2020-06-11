@@ -21,11 +21,11 @@ import SingleView from "../components/SingleView";
 
 const PreviewSpace = ({route, navigation, addSpace}) => {
     
-    const { space, propertyId } = route.params;
+    const { space } = route.params;
 
     function onSubmit () {
         navigation.popToTop();
-        navigation.navigate("UploadingFiles", { images: space.photos, propertyId });
+        navigation.navigate("UploadingFiles", { space });
     }
 
     return (

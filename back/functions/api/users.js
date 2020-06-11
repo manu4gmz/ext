@@ -1,7 +1,8 @@
 const router = require('express').Router()
 const fb = require("../services/firebase").admin;
 const crypto = require("crypto");
-
+const fs = require("fs");
+const path = require("path");
 const db = fb.firestore();
 
 const { validateUser, validateAdmin } = require("../authenticate");
@@ -22,7 +23,17 @@ function getUserToken(uid) {
   return (new Buffer(uid)).toString('base64');
 }
 
-
+function getHtml(view) {
+    return new Promise((res,rej)=>{
+        fs.readFile(path.join(__dirname, "../views/"+view+".html"), "utf8", function (err, html) {
+            if (err) {
+                console.log(err);
+                rej(err);
+            }
+            res(html);
+        });
+    })
+}
 
 //* agregar un user
 router.post('/register', (req, res, next) => {
@@ -125,34 +136,46 @@ router.put("/ownerForm/:id", validateUser(true), (req, res, next) => {
 
   if (req.user.id !== id) return res.status(401).send({msg:"Not your user"});
 
-  if (data.email !== req.user.email) {
+  if (data.email && data.email !== req.user.email) {
     data.emailVerified = false;
 
     data.emailHash = crypto.randomBytes(3).toString('hex').toUpperCase();
 
-  
-  
-    const mailOptions = {
-      from: process.env.EMAIL,
-      to: data.email,
-      subject: 'Bienvenido a Espacio por Tiempo',
-      text: `Verifica el mail de tu cuenta para que los usuarios puedan contactarte! Entra en este link http://ext-api.web.app/verify-email/${getUserToken(req.user.id)} o alternativa mente este link que es mucho mejor http://ext-api.web.app/verify-email/${req.user.id}/${data.emailHash}`
-    }; 
-  
-    //console.log(process.env.EMAIL, process.env.EMAIL_PASSWORD)
-  
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) return res.status(401).send({msg:"Invalid email"})
-    });
-  
+    console.log("lo cambio jeje");
+
+    getHtml("confirm-email")
+    .then(html=> {
+      const mailOptions = {
+        from: process.env.EMAIL,
+        to: data.email,
+        subject: 'Bienvenido a Espacio por Tiempo',
+        html: html.replace("{{link}}", `http://ext-api.web.app/verify-email/${req.user.id}/${data.emailHash}`)
+      }; 
+      
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) return res.status(401).send({msg:"Invalid email"})
+
+        db.collection("users").doc(id).update(data)
+        .then((data) => {
+          res.status(201).send({msg: "Editado perfectamente"});
+        })
+        .catch(next)
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      return res.status(500).send({msg: "No se pudo generar el contenido del mail"});
+    })
+  }
+  else {
+    db.collection("users").doc(id).update(data)
+        .then((data) => {
+          res.status(201).send({msg: "Editado perfectamente"});
+        })
+        .catch(next)
   }
 
-  db.collection("users").doc(id).update(data)
-    .then((data) => {
-      res.status(201).send({msg: "Editado perfectamente"})
 
-    })
-    .catch(next)
 
 })
 
