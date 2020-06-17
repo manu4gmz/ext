@@ -1,5 +1,5 @@
 import api from "../api"
-import { SPACE, ALLSPACES, IDSPACE, PORPERTIESID, ALLCOMMENTS, PROPIETARIO } from "../constants";
+import { SPACE, ALLSPACES, IDSPACE, PORPERTIESID, ALLCOMMENTS, PROPIETARIO, MORESPACES } from "../constants";
 
 
 
@@ -48,15 +48,34 @@ export const fetchSpace = (spaceId) => dispatch => {
         })
 }
 
-export const fetchSpaces = (datosSpace, page = 1) => dispatch => {
+export const fetchSpaces = (datosSpace) => dispatch => {
     const queries = Object.keys(datosSpace).map(key => key + "=" + datosSpace[key]).join("&");
-    return api.get(`/properties/${page}${queries ? "?" + queries : ""}`)
+    return api.get(`/properties/1${queries ? "?" + queries : ""}`)
         .then(res => res.data)
         .then(data => {
             dispatch(allSpaces(data))
             return data;
         })
 }
+
+const setMoreSpaces = (result) => ({
+    type: MORESPACES,
+    result
+})
+
+
+export const fetchMoreSpaces = (datosSpace, page) => dispatch => {
+    const queries = Object.keys(datosSpace).map(key => key + "=" + datosSpace[key]).join("&");
+    return api.get(`/properties/${page}${queries ? "?" + queries : ""}`)
+        .then(res => res.data)
+        .then(data => {
+            console.log("Found " + data.properties.length + " more spaces!")
+            
+            dispatch(setMoreSpaces(data))
+            return data;
+        })
+}
+
 export const fetchId = (id) => dispatch => {
     return dispatch(captureId(id))
 }

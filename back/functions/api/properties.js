@@ -120,44 +120,26 @@ router.put("/confirm-stay/:id", validateUser(true), (req,res,next) => {
       
       return db.collection("users").doc(req.body.uid).update({confirmHash: [...(user.confirmHash || []), confirmHash]})
       .then(()=> {
+        getHtml("confirm-stay")
+        .then(html => {
+          const mailOptions = {
+            from: process.env.EMAIL,
+            to: user.email,
+            subject: 'Confirmar estadía',
+            html: html
+              .replace("{{title}}", space.title)
+              .replace("{{link}}", `https://ext-api.web.app/confirm-stay/${req.params.id}/${req.body.uid}/${confirmHash}`)
+          }; 
         
-        
-        const mailOptions = {
-          from: process.env.EMAIL,
-          to: user.email,
-          subject: 'Confirmar estadía',
-          text: `Hola ${user.firstName}, ¿usted ha alquilado el espacio de ${space.title}?\nSi lo ha hecho recomendamos que puedas dejar su comentario para que los demás usarios conozcan su experiencia.`,
-          html: `
-          <div>
-              <p>Hola ${user.firstName},</p>
-              <p>¿usted ha alquilado el espacio de ${space.title}?</p>
-              
-              <form method="GET" action="https://ext-api.web.app/confirm-stay/${req.params.id}/${req.body.uid}/${confirmHash}">
-                <input type="radio" id="yes-radio" required name="beenthere" value="true">
-                <label for="yes-radio">Si</label>
 
-                <input type="radio" id="no-radio" name="beenthere" value="false">
-                <label for="no-radio">No he ido a ese lugar</label>
-                
-                <p>Si lo ha hecho recomendamos que puedas dejar su comentario para que los demás usarios conozcan su experiencia.</p>
-                <input type="number" name="rating" max=5 min=0>
-                <input type="textarea" placeholder="Escriba su experiencia aquí" name="comment">
-                <br>
-                <input type="submit">
-                </form>
-            </div>
-          
-            `
-      }; 
-      
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) return res.status(401).send({msg:"Invalid email"})
-        else {
-          res.status(200).send({msg:"Confirmación enviada correctamente"});
-          
-        }
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) return res.status(401).send({msg:"Invalid email"})
+          else {
+            res.status(200).send({msg:"Confirmación enviada correctamente"});
+            
+          }
+        });
       });
-      
     })
     .catch(err => res.status(500).send({msg:"Error getting user"}) )
   })
@@ -550,8 +532,10 @@ router.get("/:page", (req, res) => {
         }
       })
 
+      const suggested = [];
+
       const filtrado = arr.filter(propiedad => {
-        return ((!condicion.n || propiedad.neighborhood == condicion.n)
+        if (((!condicion.n || propiedad.neighborhood == condicion.n)
           && (!condicion.p || propiedad.province == condicion.p)
           && (!condicion.t || propiedad.type == condicion.t)
           && (!condicion.max || Number(propiedad.price) <= Number(condicion.max))
@@ -560,15 +544,27 @@ router.get("/:page", (req, res) => {
           && (!condicion.photos || (propiedad.photos || []).length > 0))
           && (propiedad.visible != false)
           && ((propiedad.enabled == true && !condicion.enabled) || (!propiedad.enabled && (condicion.enabled || condicion.rejected )))
-          && ((!propiedad.rejected && !condicion.rejected) || (propiedad.rejected && condicion.rejected))
+          && ((!propiedad.rejected && !condicion.rejected) || (propiedad.rejected && condicion.rejected)))
+            return true;
+        else if (
+          !condicion.enabled && !condicion.rejected && propiedad.visible != false && propiedad.enabled == true
+          && (!condicion.t || propiedad.type == condicion.t) && Object.keys(condicion).length
+
+        ) suggested.push(propiedad);
+        else return false;
       })
-      if (condicion.enabled) return filtrado.sort((a,b) => (b.updatedAt || 0 ) - (a.updatedAt || 0 ));
-      return filtrado.sort((a, b) => (a.verified === b.verified) ? 0 : a.verified ? -1 : 1 )
-     
+      if (condicion.enabled) return [filtrado.sort((a,b) => (b.updatedAt || 0 ) - (a.updatedAt || 0 ))];
+      return [
+        filtrado.sort((a, b) => (a.verified === b.verified) ? 0 : a.verified ? -1 : 1 ),
+        suggested
+      ]
+      
     })
-    .then(properties => {
+    .then(([properties, suggested]) => {
       const maxPage = Math.ceil(properties.length / pagesCount);
-      let page = ((req.params.page - 1) % maxPage) + 1;
+      let page = req.params.page || 1;
+      
+      
       // const spaces = properties
       // .slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount)
       // .map(space => ({
@@ -582,24 +578,32 @@ router.get("/:page", (req, res) => {
       //   createdAt: space.createdAt,
       //   updatedAt: space.updatedAt
       // }))
+
+
+      function mapReducedSpace (space) {
+        return {
+          title: space.title,
+          photos: space.photos,
+          id: space.id,
+          size: space.size,
+          neighborhood: space.neighborhood,
+          province: space.province,
+          createdAt: space.createdAt,
+          updatedAt: space.updatedAt,
+        }
+      }
+
       Promise.all(
         properties
           .slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount)
           .map((space)=>{
+      //console.log(space.type);
+
             return db.collection("properties").doc(space.id).collection("comments").get()
               .then(comments => comments.docs)
               .then(comments => {
                 return {
-                  title: space.title,
-                  photos: space.photos,
-                  id: space.id,
-                  price: space.price,
-                  size: space.size,
-                  neighborhood: space.neighborhood,
-                  province: space.province,
-                  createdAt: space.createdAt,
-                  updatedAt: space.updatedAt,
-                  comments: comments.length,
+                  ...mapReducedSpace(space),
                   rating: Math.round(comments.filter(c => !isNaN(c.data().rating)).reduce((acc, c) => acc+Number(c.data().rating), 0) / comments.length) || undefined
                 }
               })
@@ -607,11 +611,30 @@ router.get("/:page", (req, res) => {
         
       )
       .then(spaces => {
+        //console.log(suggested)
+
+        if (spaces.length >= pagesCount || suggested.length == 0) return [spaces, []];
+        let complement = pagesCount - (properties.length % pagesCount);
+        console.log(complement);
+
+        const x = (page - 1 - Math.ceil(properties.length/pagesCount))*pagesCount + complement;
+
+        //if (Math.ceil((properties.length+suggested.length)/pagesCount) < page) return [[], []];
+        console.log(x, x+pagesCount)
+
+        return [
+          spaces, 
+          suggested.slice(x > 0 ? x : 0, x+pagesCount).map(mapReducedSpace)
+        ]
+
+      })
+      .then(([spaces, suggestions]) => {
 
         
         res.status(200).json({
           properties: spaces,
-          pages: maxPage,
+          suggestions,
+          pages: Math.ceil((properties.length+suggested.length)/pagesCount),
           total: properties.length,
           markers: properties.filter(a => a.location && a.location[0]).map(a => ({...a.location[0], id: a.id})),
         })

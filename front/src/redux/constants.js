@@ -18,3 +18,4 @@ export const DELFAV = "DELFAV"
 export const DELFAVS = "DELFAVS"
 export const ADDFAVORITE = "ADDFAVORITE"
 export const PROPIETARIO = 'PROPIETARIO'
+export const MORESPACES = 'MORESPACES'

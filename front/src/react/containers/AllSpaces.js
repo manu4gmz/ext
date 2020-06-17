@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import { connect } from "react-redux";
-import BackgroundAllSpaces from "../components/backgroundAllSpaces";
-import { fetchSpaces } from "../../redux/actions/spaces";
+import BackgroundAllSpaces from "../components/AllSpacesMosaic";
+//import BackgroundAllSpaces from "../components/backgroundAllSpaces";
+import { fetchSpaces, fetchMoreSpaces } from "../../redux/actions/spaces";
 
-function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, route, fetchSpaces,state,fetchFavs }) {
+function AllSpaces({ spaces, user, navigation,deleteFav,addFav, deleteFavs, route, fetchSpaces,state,fetchFavs, fetchMoreSpaces }) {
 
   const scrollView = useRef(null);
-  const [loading, setLoading] = useState(true)
-  const [spaces, setSpaces] = useState({ properties: [], total: 0, pages: 0 });
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(2);
+  //const [spaces, setSpaces] = useState({ properties: [], total: 0, pages: 0 });
 
   useEffect(() => {
-    fetchSpaces(route.params.query, route.params.index)
+    fetchSpaces(route.params.query)
     .then(data => {
-      setSpaces(data);
       setLoading(false);
     });
   }, [])
@@ -30,7 +31,11 @@ function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, r
     return navigation.navigate(`Comments`, { propertyId: id })
   }
 
-
+  function endlessScrolling () {
+    if (page > spaces.pages) return;
+    fetchMoreSpaces(route.params.query, page);
+    setPage(i => i+1);
+  }
 
   function removeFilter(key) {
     const { query } = route.params;
@@ -61,6 +66,8 @@ function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, r
       removeFilter={removeFilter}
       loading={loading}
       showComments={showComments}
+      onReachedEnd={endlessScrolling}
+      suggestions={spaces.suggestions}
     />
   );
 }  
@@ -69,7 +76,7 @@ function AllSpaces({ allSpaces, user, navigation,deleteFav,addFav, deleteFavs, r
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    allSpaces: state.spaces.allSpaces,
+    spaces: state.spaces.allSpaces,
     user: state.user.logged,
     state
   }
@@ -77,7 +84,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetchSpaces: (query, index) => (dispatch(fetchSpaces(query, index)))
+    fetchSpaces: (query, index) => (dispatch(fetchSpaces(query, index))),
+    fetchMoreSpaces: (query, index) => (dispatch(fetchMoreSpaces(query, index)))
   }
 }
 

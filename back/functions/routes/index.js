@@ -79,13 +79,16 @@ router.get("/confirm-stay/:spaceid/:uid/:hash",(req,res,next) => {
             `);
 
 
-            if (!user.confirmHash.includes(req.params.hash)) return res.send(`
-            <center>
-                <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
-                    <p>Mepa que flasheaste</p>
-                </div>
-            </center>
-            `);
+            if (!user.confirmHash.includes(req.params.hash)) return getHtml("error")
+            .then(html => {
+                res.send(
+                    html
+                    .replace("{{title}}","Error con la confirmación")
+                    .replace("{{description}}","Has ingresado a este link con un URL incorrecto. Verifique el enlace del correo correo")
+                );
+
+            })
+        
 
             
             // /!\ esto hay que descomentar
@@ -109,11 +112,17 @@ router.get("/confirm-stay/:spaceid/:uid/:hash",(req,res,next) => {
                     });
                 }
                 
-                res.send(`<center>
-                    <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
-                        <h3>Muchas gracias por compartir tu  experiencia</h3>
-                    </div>
-                </center>`);
+                getHtml("confirmed-stay")
+                .then(html => {
+                    res.send(
+                        html
+                        .replace("{{rating}}",req.query.rating)
+                        .replace("{{comment}}",req.query.comment)
+                        .replace("{{title}}",space.title)
+                    );
+
+                })
+
                     
             } else {
                 db.collection("users").doc(req.params.uid).update({ 
@@ -136,11 +145,15 @@ router.get("/confirm-stay/:spaceid/:uid/:hash",(req,res,next) => {
     })
     .catch((err)=>{
         console.log(err);
-        res.send(`<center>
-            <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
-                <p>Hubo un erro rarisimo</p>
-            </div>
-        </center>`);
+        return getHtml("error")
+            .then(html => {
+                res.send(
+                    html
+                    .replace("{{title}}","Error con la confirmación")
+                    .replace("{{description}}","Has ingresado a este link con un URL incorrecto. Verifique el enlace del correo correo")
+                );
+
+            })
     })
 
 
