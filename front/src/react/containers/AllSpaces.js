@@ -68,6 +68,7 @@ function AllSpaces({ spaces, user, navigation,deleteFav,addFav, deleteFavs, rout
       showComments={showComments}
       onReachedEnd={endlessScrolling}
       suggestions={spaces.suggestions}
+      advertisements={spaces.ads}
     />
   );
 }  

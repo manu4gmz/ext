@@ -48,6 +48,10 @@ function reducer (state = initialCartState, action) {
                     suggestions: [ 
                         ...state.allSpaces.suggestions, 
                         ...action.result.suggestions
+                    ], 
+                    ads: [ 
+                        ...state.allSpaces.ads, 
+                        ...action.result.ads
                     ] 
                 } 
             }

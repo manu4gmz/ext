@@ -54,7 +54,7 @@ function mapBadge(filter, remove) {
 
 }
 
-export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, filter, removeFilter, loading, showComments, markers, onReachedEnd, suggestions }) => {
+export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollView, index, sendId, filter, removeFilter, loading, showComments, markers, onReachedEnd, suggestions, advertisements }) => {
   const [mode, setMode] = useState(false);
   
   const star = require("../../public/icons/star.png");
@@ -62,20 +62,21 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
 
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     //const paddingToBottom = 20;
-    if (allSpaces.length > 9 && layoutMeasurement.height + contentOffset.y >= contentSize.height - 400) {
+    if ((allSpaces.length+suggestions.length) > 9 && layoutMeasurement.height + contentOffset.y >= contentSize.height - 400) {
       onReachedEnd();
     }
   };
 
   function mapSpaces (spaces) {
     return spaces.map(space => 
+      space.type != "ad" ?
     <TouchableWithoutFeedback key={space.id} onPress={() => navigation.push("SingleView", {propertyId: space.id})}>
       <Card>
         <CardBackground source={{uri:(space.photos || [])[0]}}>
           {
             space.verified ? 
-            <View style={{ position: "absolute", top: 5, right: 5, zIndex: 9 }}>
-              <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 40, height: 40 }} />
+            <View style={{ position: "absolute", top: 2, right: 2, zIndex: 9 }}>
+              <Image source={require("../../public/icons/verificado-ve.png")} style={{ width: 32, height: 32 }} />
             </View>
             : null
           }
@@ -102,6 +103,17 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
         </CardBackground>
       </Card>
     </TouchableWithoutFeedback>
+    :
+    <TouchableWithoutFeedback>
+      <Card>
+        <AdBackground source={{uri:space.photo }}>
+          <CardContent>
+            <Title>{space.title}</Title>
+          </CardContent>
+        </AdBackground>
+      </Card>
+    </TouchableWithoutFeedback>
+
     )
   }
   // console.log("favs", favs)
@@ -128,56 +140,69 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
 
           !mode ? 
           <View style={{flex: 1}}>
-          <Wrapper>
+          <ColumnsWrapper>
             <Column>
             {
               mapSpaces((()=>{
                 let spaces = [];
-                for (let i = 0; i < allSpaces.length; i+=2) spaces.push(allSpaces[i]);
+                for (let i = 0; i < allSpaces.length; i+=2) {
+                  spaces.push(allSpaces[i]);
+                  if ((i+3)%5 == 0) spaces.push({ ...advertisements[2*((i+3)/5)-1], type: "ad" });
+                }
                 return spaces;
               })())
               
             }
             </Column>
             <Column>
-            <Adv/>
 
             {
               mapSpaces((()=>{
                 let spaces = [];
-                for (let i = 1; i < allSpaces.length; i+=2) spaces.push(allSpaces[i]);
+                for (let i = 1; i < allSpaces.length; i+=2) {
+                  if (i%5 == 0) spaces.push({ ...advertisements[2*(i/5)], type: "ad" });
+                  spaces.push(allSpaces[i]);
+                }
                 return spaces;
               })())
             }
             </Column>
-          </Wrapper>
+          </ColumnsWrapper>
           {
             suggestions.length ?
-            <Wrapper style={{width: "100%"}}>
-              <Text>Otros espacios que podrían interesarte</Text>
+            <View style={{flex: 1, flexDirection: "column"}}>
+              <SuggestedTitle>Otros espacios que podrían interesarte</SuggestedTitle>
 
-              <Column>
-              {
-                mapSpaces((()=>{
-                  let spaces = [];
-                  for (let i = 0; i < suggestions.length; i+=2) spaces.push(suggestions[i]);
-                  return spaces;
-                })())
-                
-              }
-              </Column>
-              <Column>
-              <Adv/>
+              <ColumnsWrapper>
 
-              {
-                mapSpaces((()=>{
-                  let spaces = [];
-                  for (let i = 1; i < suggestions.length; i+=2) spaces.push(suggestions[i]);
-                  return spaces;
-                })())
-              }
-              </Column>
-            </Wrapper>
+                <Column>
+                {
+                  mapSpaces((()=>{
+                    let spaces = [];
+                    for (let i = 0; i < suggestions.length; i+=2) {
+                      spaces.push(suggestions[i]);
+                      if (((i+allSpaces.length)+3)%5 == 0) spaces.push({ ...advertisements[2*(((i+allSpaces.length)+3)/5)-1], type: "ad" });
+                    }
+                    return spaces;
+                  })())
+                  
+                }
+                </Column>
+                <Column>
+
+                {
+                  mapSpaces((()=>{
+                    let spaces = [];
+                    for (let i = 1; i < suggestions.length; i+=2) {
+                      if ((i+allSpaces.length)%5 == 0) spaces.push({ ...advertisements[2*((i+allSpaces.length)/5)], type: "ad" });
+                      spaces.push(suggestions[i]);
+                    }
+                    return spaces;
+                  })())
+                }
+                </Column>
+              </ColumnsWrapper>
+            </View>
             : null
           }
           </View>
@@ -192,8 +217,7 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
 
 
 
-const Wrapper = styled.View`
-  flex: 1;
+const ColumnsWrapper = styled.View`
   margin: 0px auto;
   width: 100%;
   padding: 0 8px;
@@ -223,10 +247,23 @@ const Adv = styled.View`
 
 `
 
+const SuggestedTitle = styled.Text`
+  font-weight: 300;
+  font-size: 18px;
+  margin: 36px 12px 24px;
+`
 
 const CardBackground = styled.ImageBackground`
   width: 100%;
   height: 240px;
+  flex-direction: column;
+  justify-content: flex-end;
+
+`
+
+const AdBackground = styled.ImageBackground`
+  width: 100%;
+  height: 120px;
   flex-direction: column;
   justify-content: flex-end;
 
@@ -280,6 +317,8 @@ const Lista = styled.Text`
 
 
 const Star = styled.Image`
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
+  margin: 2px;
+  margin-left: 0px;
 `

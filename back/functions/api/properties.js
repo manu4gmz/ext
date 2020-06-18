@@ -518,7 +518,15 @@ router.post('/comments/:id', validateUser(false), (req, res, next) => {
 router.get("/:page", (req, res) => {
   const pagesCount = 10;
 
-  const condicion = req.query
+  const condicion = req.query;
+
+  /************************
+   * 
+   *  Temporal
+   * 
+   *************************/
+
+  condicion.type = condicion.t;
 
   if (isNaN(req.params.page)) res.status(401).json({ msg: "Page must be a number" })
 
@@ -556,11 +564,33 @@ router.get("/:page", (req, res) => {
       if (condicion.enabled) return [filtrado.sort((a,b) => (b.updatedAt || 0 ) - (a.updatedAt || 0 ))];
       return [
         filtrado.sort((a, b) => (a.verified === b.verified) ? 0 : a.verified ? -1 : 1 ),
-        suggested
+        suggested.sort((a, b) => (a.verified === b.verified) ? 0 : a.verified ? -1 : 1 ),
       ]
       
     })
-    .then(([properties, suggested]) => {
+    .then(results => {
+      return db.collection("advertisements").get()
+      .then(rta => rta.docs.map(data => data.data()))
+      .then(ads => {
+        return ads.map(ad => {
+          let scoring = 0;
+
+          if (ad.tags && typeof ad.tags == "object") {
+            Object.keys(ad.tags).forEach((key)=>{
+              console.log(key, condicion[key], ad.tags[key])
+              if (condicion[key] == ad.tags[key]) scoring += 1;
+            })
+          }
+
+          return { ...ad, scoring};
+        })
+        .sort((a,b) => a.scoring - b.scoring);
+
+      })
+      .then(ads => [...results, ads])
+
+    })
+    .then(([properties, suggested, ads]) => {
       const maxPage = Math.ceil(properties.length / pagesCount);
       let page = req.params.page || 1;
       
@@ -585,6 +615,7 @@ router.get("/:page", (req, res) => {
           title: space.title,
           photos: space.photos,
           id: space.id,
+          verified: space.verified,
           size: space.size,
           neighborhood: space.neighborhood,
           province: space.province,
@@ -613,7 +644,7 @@ router.get("/:page", (req, res) => {
       .then(spaces => {
         //console.log(suggested)
 
-        if (spaces.length >= pagesCount || suggested.length == 0) return [spaces, []];
+        if (spaces.length >= pagesCount || suggested.length == 0) return [spaces, [], [ads[(page*2) % ads.length], ads[(page*2 + 1) % ads.length]]];
         let complement = pagesCount - (properties.length % pagesCount);
         console.log(complement);
 
@@ -624,16 +655,18 @@ router.get("/:page", (req, res) => {
 
         return [
           spaces, 
-          suggested.slice(x > 0 ? x : 0, x+pagesCount).map(mapReducedSpace)
+          suggested.slice(x > 0 ? x : 0, x+pagesCount).map(mapReducedSpace),
+          [ads[(page*2) % ads.length], ads[(page*2 + 1) % ads.length]]
         ]
 
       })
-      .then(([spaces, suggestions]) => {
+      .then(([spaces, suggestions, ads]) => {
 
         
         res.status(200).json({
           properties: spaces,
           suggestions,
+          ads,
           pages: Math.ceil((properties.length+suggested.length)/pagesCount),
           total: properties.length,
           markers: properties.filter(a => a.location && a.location[0]).map(a => ({...a.location[0], id: a.id})),

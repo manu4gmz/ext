@@ -115,7 +115,6 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         <View style={{ flex: 1 }}>
             <Province.Modal title={"Caracteristicas y servicios*"} options={["Buenos Aires", "Córdoba", "San Luis"]} />
             <Type.Modal title={"Tipo de Espacio*"} options={["Casa", "Depósito", "Habitación", "Oficina", "Quinta", "Salón", "Terreno"]} />
-            <Services.Modal title={"Caracteristicas y servicios*"} options={["Aire Acondicionado", "Wifi", "LCD", "Cafe/Infusiones", "Snacks", "Música", "Vajilla"]} />
             <Form
                 name="search"
                 onSubmit={onSubmit}
@@ -166,3 +165,4 @@ const CheckBoxWrapper = styled.View`
     flex-direction: row;
     justify-content: center;
 `
+
