@@ -11,25 +11,43 @@ import { fetchProvincias, fetchLocalidades, setCentroide } from "../../redux/act
 import { connect } from 'react-redux'
 import Form from '../components/Form';
 
+const fields = [
+    "Casa",
+    "Quinta",
+    "Depósito",
+    "Habitación",
+    "Oficina",
+    "Salón",
+    "Terreno" 
+  ]
+
+function getQuery(options) {
+    let queryCode = 0;
+    fields.map((key,i) => {
+        queryCode += Number(options.includes(key))*(2**i)
+    })
+    return queryCode;
+}
+
 const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias, setCentroide }) => {
 
     const Province = Picker(useState(false), useState(""));
-    const Type = Picker(useState(false), useState(""));
+    const Type = Picker(useState(false), useState([]));
     const Services = Picker(useState(false), useState([]));
 
     const [Verificado, setVerificado] = useState(false);
     const [ConFotos, setConFotos] = useState(false);
 
-    //const [provincias, setProvincias] = useState([])
-    //const [localidades, setLocalidades] = useState([])
-    const [province, setProvince] = useState({})
-    const [localidad, setLocalidad] = useState({})
+    //const [provincias, setProvincias] = useState([]);
+    //const [localidades, setLocalidades] = useState([]);
+    const [province, setProvince] = useState({});
+    const [localidad, setLocalidad] = useState({});
 
     const onSubmit = function (form) {
         let filter = {};
         if (form["Provincia*"] && province.id && form["Provincia*"].value) filter.p = form["Provincia*"].value;
         if (form["Barrio"] && province.id && form["Barrio"].value) filter.n = form["Barrio"].value;
-        if (form["Tipo de Espacio"] && form["Tipo de Espacio"].value) filter.t = form["Tipo de Espacio"].value;
+        if (form["Tipo de Espacio"] && form["Tipo de Espacio"].value) filter.t = getQuery(form["Tipo de Espacio"].value);
         if (form["Valor min ($)"] && form["Valor min ($)"].value) filter.min = form["Valor min ($)"].value;
         if (form["Valor max ($)"] && form["Valor max ($)"].value) filter.max = form["Valor max ($)"].value;
         if (Verificado) filter.v = Verificado;

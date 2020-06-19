@@ -513,18 +513,32 @@ router.post('/comments/:id', validateUser(false), (req, res, next) => {
     })
 })
 
+const fields = [
+  "Casa",
+  "Quinta",
+  "Depósito",
+  "Habitación",
+  "Oficina",
+  "Salón",
+  "Terreno" 
+]
 
+function fromQuery(num) {
+  const valid = [];        
+  for (let n = num, i = 0; n > 0; i++, n = Math.floor(n/2)) if (n%2 == 1) valid.push(fields[i]);
+  return valid;
+}
 
 router.get("/:page", (req, res) => {
   const pagesCount = 10;
 
   const condicion = req.query;
 
-  /************************
+  /****************
    * 
-   *  Temporal
+   *   Temporal
    * 
-   *************************/
+   ****************/
 
   condicion.type = condicion.t;
 
@@ -540,15 +554,20 @@ router.get("/:page", (req, res) => {
         }
       })
 
+      if (condicion.t) {
+        condicion.type = fromQuery(condicion.t);
+        console.log(condicion.type);
+      }
+
       const suggested = [];
 
       const filtrado = arr.filter(propiedad => {
-        if (((!condicion.n || propiedad.neighborhood == condicion.n)
-          && (!condicion.p || propiedad.province == condicion.p)
-          && (!condicion.t || propiedad.type == condicion.t)
-          && (!condicion.max || Number(propiedad.price) <= Number(condicion.max))
-          && (!condicion.min || Number(propiedad.price) >= Number(condicion.min))
-          && (!condicion.v || propiedad.verified == true)
+        if (((!condicion.n      || propiedad.neighborhood == condicion.n)
+          && (!condicion.p      || propiedad.province == condicion.p)
+          && (!condicion.type   || (typeof condicion.type == "object" && condicion.type.includes(propiedad.type)))
+          && (!condicion.max    || Number(propiedad.price) <= Number(condicion.max))
+          && (!condicion.min    || Number(propiedad.price) >= Number(condicion.min))
+          && (!condicion.v      || propiedad.verified == true)
           && (!condicion.photos || (propiedad.photos || []).length > 0))
           && (propiedad.visible != false)
           && ((propiedad.enabled == true && !condicion.enabled) || (!propiedad.enabled && (condicion.enabled || condicion.rejected )))
@@ -556,8 +575,7 @@ router.get("/:page", (req, res) => {
             return true;
         else if (
           !condicion.enabled && !condicion.rejected && propiedad.visible != false && propiedad.enabled == true
-          && (!condicion.t || propiedad.type == condicion.t) && Object.keys(condicion).length
-
+          && (!condicion.type   || (typeof condicion.type == "object" && condicion.type.includes(propiedad.type))) && Object.keys(condicion).length
         ) suggested.push(propiedad);
         else return false;
       })
@@ -578,7 +596,12 @@ router.get("/:page", (req, res) => {
           if (ad.tags && typeof ad.tags == "object") {
             Object.keys(ad.tags).forEach((key)=>{
               console.log(key, condicion[key], ad.tags[key])
-              if (condicion[key] == ad.tags[key]) scoring += 1;
+              if (condicion[key] == ad.tags[key] || 
+                (typeof condicion[key] == "object" && 
+                  condicion[key]
+                  .some(val => val == ad.tags[key] || (typeof ad.tags == "object" && ad.tags[key].includes(val))))
+                ) scoring += 1;
+              console.log (scoring == 1)
             })
           }
 
@@ -594,7 +617,6 @@ router.get("/:page", (req, res) => {
       const maxPage = Math.ceil(properties.length / pagesCount);
       let page = req.params.page || 1;
       
-      
       // const spaces = properties
       // .slice(pagesCount * (page - 1), pagesCount * (page - 1) + pagesCount)
       // .map(space => ({
@@ -609,7 +631,6 @@ router.get("/:page", (req, res) => {
       //   updatedAt: space.updatedAt
       // }))
 
-
       function mapReducedSpace (space) {
         return {
           title: space.title,
@@ -621,6 +642,7 @@ router.get("/:page", (req, res) => {
           province: space.province,
           createdAt: space.createdAt,
           updatedAt: space.updatedAt,
+          type: space.type
         }
       }
 

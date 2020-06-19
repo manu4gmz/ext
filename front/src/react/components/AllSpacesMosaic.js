@@ -71,7 +71,7 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
     return spaces.map(space => 
       space.type != "ad" ?
     <TouchableWithoutFeedback key={space.id} onPress={() => navigation.push("SingleView", {propertyId: space.id})}>
-      <Card>
+      <Card style={{shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6}}>
         <CardBackground source={{uri:(space.photos || [])[0]}}>
           {
             space.verified ? 
@@ -105,17 +105,23 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
     </TouchableWithoutFeedback>
     :
     <TouchableWithoutFeedback>
-      <Card>
+      <Ad>
         <AdBackground source={{uri:space.photo }}>
-          <CardContent>
+          <AdContent>
             <Title>{space.title}</Title>
-          </CardContent>
+            <AdSubtitle>
+              {space.subtitle}
+            </AdSubtitle>
+          </AdContent>
         </AdBackground>
-      </Card>
+      </Ad>
     </TouchableWithoutFeedback>
 
     )
   }
+
+  let usedAds = 0;
+  console.log(advertisements);
   // console.log("favs", favs)
   return (
     <ScrollView ref={scrollView} 
@@ -146,8 +152,11 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
               mapSpaces((()=>{
                 let spaces = [];
                 for (let i = 0; i < allSpaces.length; i+=2) {
+                  if ((i+4)%5 == 0 && advertisements[usedAds]) {
+                    spaces.push({ ...advertisements[usedAds], type: "ad" });
+                    usedAds++;
+                  }
                   spaces.push(allSpaces[i]);
-                  if ((i+3)%5 == 0) spaces.push({ ...advertisements[2*((i+3)/5)-1], type: "ad" });
                 }
                 return spaces;
               })())
@@ -155,12 +164,14 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
             }
             </Column>
             <Column>
-
             {
               mapSpaces((()=>{
                 let spaces = [];
                 for (let i = 1; i < allSpaces.length; i+=2) {
-                  if (i%5 == 0) spaces.push({ ...advertisements[2*(i/5)], type: "ad" });
+                  if ((i-1)%5 == 0 && advertisements[usedAds]) {
+                    spaces.push({ ...advertisements[usedAds], type: "ad" });
+                    usedAds++;
+                  }
                   spaces.push(allSpaces[i]);
                 }
                 return spaces;
@@ -180,12 +191,14 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
                   mapSpaces((()=>{
                     let spaces = [];
                     for (let i = 0; i < suggestions.length; i+=2) {
+                      if ((i+4)%5 == 0 && advertisements[usedAds]) {
+                        spaces.push({ ...advertisements[usedAds], type: "ad" });
+                        usedAds++;
+                      }
                       spaces.push(suggestions[i]);
-                      if (((i+allSpaces.length)+3)%5 == 0) spaces.push({ ...advertisements[2*(((i+allSpaces.length)+3)/5)-1], type: "ad" });
                     }
                     return spaces;
                   })())
-                  
                 }
                 </Column>
                 <Column>
@@ -194,7 +207,10 @@ export default ({ allSpaces, navigation, total, pages, user, setIndex, scrollVie
                   mapSpaces((()=>{
                     let spaces = [];
                     for (let i = 1; i < suggestions.length; i+=2) {
-                      if ((i+allSpaces.length)%5 == 0) spaces.push({ ...advertisements[2*((i+allSpaces.length)/5)], type: "ad" });
+                      if ((i-1)%5 == 0 && advertisements[usedAds]) {
+                        spaces.push({ ...advertisements[usedAds], type: "ad" });
+                        usedAds++;
+                      }
                       spaces.push(suggestions[i]);
                     }
                     return spaces;
@@ -238,15 +254,6 @@ const Card = styled.View`
   overflow: hidden;
 `
 
-const Adv = styled.View`
-  margin: 6px;
-  border-radius: 12px;
-  overflow: hidden;
-  height: 120px;
-  border: solid 3px #4a94ea;
-
-`
-
 const SuggestedTitle = styled.Text`
   font-weight: 300;
   font-size: 18px;
@@ -261,13 +268,7 @@ const CardBackground = styled.ImageBackground`
 
 `
 
-const AdBackground = styled.ImageBackground`
-  width: 100%;
-  height: 120px;
-  flex-direction: column;
-  justify-content: flex-end;
 
-`
 
 const CardContent = styled.View`
   align-self: flex-end;
@@ -279,7 +280,7 @@ const CardContent = styled.View`
 const Title = styled.Text`
   color: white;
   text-align: left;
-  font-size: 16px;
+  font-size: 15px;
   text-shadow: -1px 1px 5px rgba(0, 0, 0, 0.75);
 
 `
@@ -314,11 +315,39 @@ const Lista = styled.Text`
   width: 50%;
 `
 
-
-
 const Star = styled.Image`
   width: 14px;
   height: 14px;
   margin: 2px;
   margin-left: 0px;
+`
+
+const Ad = styled.View`
+  margin: 6px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: solid 4px #4a94ea;
+`
+
+
+const AdBackground = styled.ImageBackground`
+  width: 100%;
+  height: 120px;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex-direction: row;
+  align-items: center;
+`
+
+const AdContent = styled.View`
+  background-color: #1116289e;
+  padding: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+`
+
+const AdSubtitle = styled.Text`
+  font-size: 12px;
+  color: white;
+  margin-top: 12px;
 `
