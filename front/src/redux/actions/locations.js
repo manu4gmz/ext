@@ -33,5 +33,5 @@ export const fetchCoords = (dir) => dispatch => {
 
 export const setCentroide = (centroide) => ({
 	type: SET_CENTROIDE,
-	centroide: centroide || { lat: -34.6144934119689, lon: -58.4458563545429 }
+	centroide
 })

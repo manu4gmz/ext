@@ -4,12 +4,15 @@ import Icon from "../ui/Icon";
 import { Text, Image, View, TouchableOpacity } from 'react-native'
 import AddSpaceFormProgress from "../components/AddSpaceFormProgress";
 import Picker from "../components/Picker";
+import TypeaheadPicker from "../components/TypeaheadPicker";
 import TextPrompt from "../components/TextPrompt";
 import styled from "styled-components/native";
 import Typeahead from "../components/GenericTypeahead";
 import { fetchProvincias, fetchLocalidades, setCentroide } from "../../redux/actions/locations";
 import { connect } from 'react-redux'
 import Form from '../components/Form';
+
+import neighborhoods from "../../public/lib/neighborhoods";
 
 const fields = [
     "Casa",
@@ -34,6 +37,8 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     const Province = Picker(useState(false), useState(""));
     const Type = Picker(useState(false), useState([]));
     const Services = Picker(useState(false), useState([]));
+
+    const Neighbordhood = TypeaheadPicker(useState(false), useState([]));
 
     const [Verificado, setVerificado] = useState(false);
     const [ConFotos, setConFotos] = useState(false);
@@ -107,6 +112,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         /> : null, 11],
 
         //["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
+        [({ onChange }) => <Neighbordhood.Input onChange={onChange} title={"Barrios"} placeholder="Selecciona el barrio." />],
         [({ onChange }) => <Type.Input onChange={onChange} title={"Tipo de Espacio"} placeholder="Selecciona el espacio que ofrece." />],
         [
             ["Valor min ($)", "$180"],
@@ -131,6 +137,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     return (
 
         <View style={{ flex: 1 }}>
+            <Neighbordhood.Modal title={"Barrios"} options={neighborhoods}/>
             <Province.Modal title={"Caracteristicas y servicios*"} options={["Buenos Aires", "Córdoba", "San Luis"]} />
             <Type.Modal title={"Tipo de Espacio*"} options={["Casa", "Depósito", "Habitación", "Oficina", "Quinta", "Salón", "Terreno"]} />
             <Form

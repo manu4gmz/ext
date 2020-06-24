@@ -8,14 +8,16 @@ import Button from "../ui/Button";
 import { Animated, Easing } from "react-native";
 import styled from 'styled-components/native';
 import { fetchSpace } from "../../redux/actions/spaces";
-        
+import * as Location from 'expo-location';
 
 
 const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
     const [callout, setCallout] = useState(false);
     const [calloutSpace, setCalloutSpace] = useState({});
     const [markerRefs, setMarkerRefs] = useState([]);
-    const [fadeAnim] = useState(new Animated.Value(0))
+    const [fadeAnim] = useState(new Animated.Value(0));
+    const [enabledLocation, setEnabledLocation ] = useState(null);
+    const [location, setLocation ] = useState(null);
     
 	useEffect(()=>{
 		Animated.timing(fadeAnim,{
@@ -24,7 +26,26 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
         }).start();
         //window.toggle = ()=> setCallout(p=>!p);
         //window.set = (i)=>  setCalloutSpace( allSpaces.properties[i] || allSpaces.properties[0] );
-	},[callout])
+    },[callout])
+    
+    useEffect(()=>{
+        Location.hasServicesEnabledAsync()
+        .then((enabled)=>{
+
+            if (enabled) return Location.requestPermissionsAsync();
+            else return { status: "unabled" };
+        })
+        .then(({status}) => {
+            if (status !== 'granted') setEnabledLocation(false);
+            else {
+                setEnabledLocation(true);
+                Location.getCurrentPositionAsync({})
+                .then(location => {
+                    setLocation(location.coords);
+                })
+            }
+        });
+    }, []);
 
     function sendId(id) {
         //fetchId(id)
@@ -44,19 +65,20 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
         })
     }
 
-
     function sendId(id) {
         return navigation.navigate(`SingleView`, { propertyId: id })
     }
     //const [vw, vh] = [100, 120];
     const { width: vw, height: vh } = Dimensions.get("window");
+
+    if (enabledLocation == null || (enabledLocation && !location)) return <Text>...</Text>;
     return (
         <View
         style={{ overflow:"hidden", height: vh - 102 }}>
             <MapView style={styles.mapAll}
                 initialRegion={{
-                    latitude: Number(centroide.lat) || -34.579304,
-                    longitude: Number(centroide.lng || centroide.lon) || -58.471115,
+                    latitude: centroide ? Number(centroide.lat) : (location.latitude || -34.579304),
+                    longitude: centroide ? Number(centroide.lng || centroide.lon) : (location.longitude || -58.471115),
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}

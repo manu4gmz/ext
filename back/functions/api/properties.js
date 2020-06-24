@@ -529,6 +529,35 @@ function fromQuery(num) {
   return valid;
 }
 
+// Props to Chuck for this awesome equation found in Stack Overflow
+
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ; 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
+}
+
+router.get("/from-distance", (req, res) => {
+  const maxDistance = req.body.maxDistance;
+  const location = req.body.location;
+
+  console.log(maxDistance, location);
+
+  return res.send({ msg: "Yay!" });
+})
+
 router.get("/:page", (req, res) => {
   const pagesCount = 10;
 
@@ -605,10 +634,14 @@ router.get("/:page", (req, res) => {
             })
           }
 
-          return { ...ad, scoring};
+          return { ...ad, scoring };
         })
-        .sort((a,b) => a.scoring - b.scoring);
-
+        
+      })
+      .then(ads => {
+        console.log(ads);
+        return ads;
+        //return ads.sort((a,b) => a.scoring - b.scoring);
       })
       .then(ads => [...results, ads])
 
