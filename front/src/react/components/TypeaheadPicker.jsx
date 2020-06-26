@@ -82,7 +82,7 @@ export default ([modal, setModal],[value, setValue]) => {
       Input: ({title, placeholder, onChange, name})=>{
 
         useEffect(()=>{
-          onChange(form => ({...form, [name || title]:{value, error:null, edited:true}}))
+          onChange(value);
         },[value])
 
         return <View>
@@ -93,7 +93,7 @@ export default ([modal, setModal],[value, setValue]) => {
             style={{color: value.length ? "black" : "#777777"}} 
             onPress={()=>setModal(m=> !m)}>
             {value.length ? 
-              (typeof value == "string" ? value : value.join(", ")) 
+              (typeof value == "string" ? value : value.join(", ").replace(/ y /g, ", ").replace(/(\b, \b)(?!.*\1)/g, " y ")) 
               : (placeholder || "Selecciona aquí")}
           </StyledInput>
         </View>

@@ -8,23 +8,15 @@ import TypeaheadPicker from "../components/TypeaheadPicker";
 import TextPrompt from "../components/TextPrompt";
 import styled from "styled-components/native";
 import Typeahead from "../components/GenericTypeahead";
-import { fetchProvincias, fetchLocalidades, setCentroide } from "../../redux/actions/locations";
+import { fetchCentroide } from "../../redux/actions/locations";
 import { connect } from 'react-redux'
-import Form from '../components/Form';
+import Form from '../components/GenericForm';
 
-import neighborhoods from "../../public/lib/neighborhoods";
+import neighborhoods from "../../public/lib/comunas";
+import types from "../../public/lib/types";
 
-const fields = [
-    "Casa",
-    "Quinta",
-    "Depósito",
-    "Habitación",
-    "Oficina",
-    "Salón",
-    "Terreno" 
-  ]
 
-function getQuery(options) {
+function getQuery(options, fields) {
     let queryCode = 0;
     fields.map((key,i) => {
         queryCode += Number(options.includes(key))*(2**i)
@@ -32,7 +24,7 @@ function getQuery(options) {
     return queryCode;
 }
 
-const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias, setCentroide }) => {
+const SerchSpace = ({ navigation, fetchSpaces, fetchCentroide }) => {
 
     const Province = Picker(useState(false), useState(""));
     const Type = Picker(useState(false), useState([]));
@@ -49,19 +41,24 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     const [localidad, setLocalidad] = useState({});
 
     const onSubmit = function (form) {
-        let filter = {};
-        if (form["Provincia*"] && province.id && form["Provincia*"].value) filter.p = form["Provincia*"].value;
-        if (form["Barrio"] && province.id && form["Barrio"].value) filter.n = form["Barrio"].value;
-        if (form["Tipo de Espacio"] && form["Tipo de Espacio"].value) filter.t = getQuery(form["Tipo de Espacio"].value);
-        if (form["Valor min ($)"] && form["Valor min ($)"].value) filter.min = form["Valor min ($)"].value;
-        if (form["Valor max ($)"] && form["Valor max ($)"].value) filter.max = form["Valor max ($)"].value;
+        let filter = { ...form };
+        //if (form["Provincia*"] && province.id && form["Provincia*"].value) filter.p = form["Provincia*"].value;
+        if (form.neighborhoods && form.neighborhoods.length) filter.n = getQuery(form.neighborhoods, neighborhoods);
+        if (form.types && form.types.length) filter.t = getQuery(form.types, types);
         if (Verificado) filter.v = Verificado;
         if (ConFotos) filter.photos = ConFotos;
 
-        console.log(province, localidad)
-        if (localidad && localidad.coordenadas) setCentroide(localidad.coordenadas);
-        else if (province && province.coordenadas) setCentroide(province.coordenadas);
-        else setCentroide();
+        
+        fetchCentroide(filter.neighborhoods);
+        
+        // if (localidad && localidad.coordenadas) setCentroide(localidad.coordenadas);
+        // else if (province && province.coordenadas) setCentroide(province.coordenadas);
+        // else setCentroide();
+        delete filter.types;
+        delete filter.neighborhoods;
+
+
+        console.log(filter);
 
         navigation.navigate("AllSpaces", { query: filter, index: 1 })
     }
@@ -95,40 +92,55 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
     }
 
     const fields = [
-        [({ onChange }) => <Typeahead
-            title="Provincia*"
-            placeholder="Buenos Aires, Cordoba, San Luis.."
-            getOptions={getProvincias}
-            handleSelect={handleSelectProvince}
-            onChange={onChange}
-        />, 12],
-        //[({ onChange }) => <Province.Input onChange={onChange} title={"Provincia*"} placeholder="Buenos Aires, Cordoba, San Luis.." />],
-        [({ onChange }) => province.id ? <Typeahead
-            title="Barrio"
-            placeholder="Flores, Saavedra.."
-            getOptions={getLocalidades}
-            handleSelect={handleSelectLocalidad}
-            onChange={onChange}
-        /> : null, 11],
+        // [({ onChange }) => <Typeahead
+        //     title="Provincia*"
+        //     placeholder="Buenos Aires, Cordoba, San Luis.."
+        //     getOptions={getProvincias}
+        //     handleSelect={handleSelectProvince}
+        //     onChange={onChange}
+        // />, 12],
+        // //[({ onChange }) => <Province.Input onChange={onChange} title={"Provincia*"} placeholder="Buenos Aires, Cordoba, San Luis.." />],
+        // [({ onChange }) => province.id ? <Typeahead
+        //     title="Barrio"
+        //     placeholder="Flores, Saavedra.."
+        //     getOptions={getLocalidades}
+        //     handleSelect={handleSelectLocalidad}
+        //     onChange={onChange}
+        // /> : null, 11],
 
         //["Tipo de Espacio*", "Selecciona el espacio que ofrece."],
-        [({ onChange }) => <Neighbordhood.Input onChange={onChange} title={"Barrios"} placeholder="Selecciona el barrio." />],
-        [({ onChange }) => <Type.Input onChange={onChange} title={"Tipo de Espacio"} placeholder="Selecciona el espacio que ofrece." />],
+        {
+            element: ({ onChange }) => <Neighbordhood.Input onChange={onChange} title={"Barrios"} placeholder="Selecciona el barrio." />,
+            name: "neighborhoods"
+        },
+        {
+            element: ({ onChange }) => <Type.Input name="types" onChange={onChange} title={"Tipo de Espacio"} placeholder="Selecciona el espacio que ofrece." />,
+            name: "types"
+        },
         [
-            ["Valor min ($)", "$180"],
-            ["Valor max ($)", "$300"],
+            {
+                title: "Valor min ($)", 
+                placeholder: "$180",
+                name: "min",
+            },
+            {
+                title: "Valor max ($)", 
+                placeholder: "$520",
+                name: "max",
+            }
         ],
-        [({ onChange }) => <CheckBoxWrapper>
-            <CheckBox onPress={() => (setVerificado(!Verificado))}>
-                <Check><Dot active={Verificado + ""} /></Check>
-                <CheckLabel>Verificados</CheckLabel>
-            </CheckBox>
-            <CheckBox onPress={() => (setConFotos(!ConFotos))}>
-                <Check><Dot active={ConFotos + ""} /></Check>
-                <CheckLabel>Con fotos</CheckLabel>
-            </CheckBox>
-        </CheckBoxWrapper>
-        ],
+        {
+            element: ({ onChange }) => <CheckBoxWrapper>
+                <CheckBox onPress={() => (setVerificado(!Verificado))}>
+                    <Check><Dot active={Verificado + ""} /></Check>
+                    <CheckLabel>Verificados</CheckLabel>
+                </CheckBox>
+                <CheckBox onPress={() => (setConFotos(!ConFotos))}>
+                    <Check><Dot active={ConFotos + ""} /></Check>
+                    <CheckLabel>Con fotos</CheckLabel>
+                </CheckBox>
+            </CheckBoxWrapper>,
+        },
     ]
     // <Rules.Input onChange={onChange} title="Verificado" placeholder="Aclaraciones, límites, reglas del lugar..." />
 
@@ -139,7 +151,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
         <View style={{ flex: 1 }}>
             <Neighbordhood.Modal title={"Barrios"} options={neighborhoods}/>
             <Province.Modal title={"Caracteristicas y servicios*"} options={["Buenos Aires", "Córdoba", "San Luis"]} />
-            <Type.Modal title={"Tipo de Espacio*"} options={["Casa", "Depósito", "Habitación", "Oficina", "Quinta", "Salón", "Terreno"]} />
+            <Type.Modal title={"Tipo de Espacio*"} options={types} />
             <Form
                 name="search"
                 onSubmit={onSubmit}
@@ -153,9 +165,7 @@ const SerchSpace = ({ navigation, fetchSpaces, fetchLocalidades, fetchProvincias
 
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    fetchProvincias: (val) => dispatch(fetchProvincias(val)),
-    fetchLocalidades: (val, id) => dispatch(fetchLocalidades(val, id)),
-    setCentroide: (cen) => dispatch(setCentroide(cen))
+    fetchCentroide: (n) => dispatch(fetchCentroide(n))
 })
 export default connect(null, mapDispatchToProps)(SerchSpace)
 

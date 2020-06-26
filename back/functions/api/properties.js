@@ -573,7 +573,10 @@ router.get("/:page", (req, res) => {
 
   if (isNaN(req.params.page)) res.status(401).json({ msg: "Page must be a number" })
 
-  db.collection("properties").get()
+  db.collection("properties")
+    .where("enabled","==", !condicion.rejected)
+    .where("visible","==",true)
+    .get()
     .then((data) => {
       const arr = data.docs.map(lugar => {
         const propiedad = lugar.data()
@@ -591,14 +594,13 @@ router.get("/:page", (req, res) => {
       const suggested = [];
 
       const filtrado = arr.filter(propiedad => {
-        if (((!condicion.n      || propiedad.neighborhood == condicion.n)
-          && (!condicion.p      || propiedad.province == condicion.p)
+        //if (((!condicion.n      || propiedad.neighborhood == condicion.n))
+        if (true
           && (!condicion.type   || (typeof condicion.type == "object" && condicion.type.includes(propiedad.type)))
           && (!condicion.max    || Number(propiedad.price) <= Number(condicion.max))
           && (!condicion.min    || Number(propiedad.price) >= Number(condicion.min))
           && (!condicion.v      || propiedad.verified == true)
-          && (!condicion.photos || (propiedad.photos || []).length > 0))
-          && (propiedad.visible != false)
+          && (propiedad.visible == true || propiedad.visible == "true")
           && ((propiedad.enabled == true && !condicion.enabled) || (!propiedad.enabled && (condicion.enabled || condicion.rejected )))
           && ((!propiedad.rejected && !condicion.rejected) || (propiedad.rejected && condicion.rejected)))
             return true;

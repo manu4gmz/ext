@@ -1,0 +1,17 @@
+module.exports = [
+    "Retiro, San Nicolás, Puerto Madero, San Telmo, Montserrat y Constitución",
+    "Recoleta",
+    "Balvanera y San Cristóbal",
+    "La Boca, Barracas, Parque Patricios y Nueva Pompeya",
+    "Almagro y Boedo",
+    "Caballito",
+    "Flores y Parque Chacabuco",
+    "Villa Soldati, Villa Riachuelo y Villa Lugano",
+    "Liniers, Mataderos y Parque Avellaneda",
+    "Villa Real, Monte Castro, Versalles, Floresta, Vélez Sarfield y Villa Luro",
+    "Villa General Mitre, Villa Devoto, Villa del Parque y Villa Santa Rita",
+    "Coghlan, Saavedra, Villa Urquiza y Villa Pueyrredón",
+    "Núñez, Belgrano y Colegiales",
+    "Palermo",
+    "Chacarita, Villa Crespo, La Paternal, Villa Ortúzar, Agronomía y Parque Chas",
+]

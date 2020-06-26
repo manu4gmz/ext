@@ -79,8 +79,8 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
                 initialRegion={{
                     latitude: centroide ? Number(centroide.lat) : (location.latitude || -34.579304),
                     longitude: centroide ? Number(centroide.lng || centroide.lon) : (location.longitude || -58.471115),
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
+                    latitudeDelta: centroide ? centroide.latitudeDelta : 0.0922,
+                    longitudeDelta: centroide ? centroide.longitudeDelta : 0.0421,
                 }}
                 onPress={handleMapPress}>
                 {(allSpaces.markers || []).map((property, index) => {
@@ -102,6 +102,11 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
                         </MapView.Marker>
                     )
                 })
+                }
+                {
+                    (centroide ? centroide.otherCentroids || [] : []).map(({lat, lon},index) => (
+                        <MapView.Marker identifier={Math.random()*100} coordinate={{latitude: lat, longitude: lon}}/>
+                    ))
                 }
 
             </MapView>

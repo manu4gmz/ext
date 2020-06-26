@@ -63,6 +63,7 @@ function useInput({ title, name, placeholder, validation, index, element }, form
     </View>
   )
 
+  if (!title) throw new Error(`Every non dynamic element must have a title\n  at field "${name}" (number ${index})`);
 
   return (
     <View key={index} style={{ width: (100 / inline - (inline == 1 ? 0 : 2)) + "%" }}>
@@ -75,7 +76,7 @@ function useInput({ title, name, placeholder, validation, index, element }, form
         secureTextEntry={name === "password"}
       />
       {
-        field.error ? <Error>{field.error}</Error> : null
+        field.error ? <ErrorText>{field.error}</ErrorText> : null
       }
     </View>
   )
@@ -253,7 +254,7 @@ const DisabledButton = styled(Button)`
   border: solid 1px #b2b2b2;
 `
 
-const Error = styled.Text`
+const ErrorText = styled.Text`
   color: red;  
 `
 
