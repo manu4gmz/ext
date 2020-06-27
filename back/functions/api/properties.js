@@ -513,17 +513,10 @@ router.post('/comments/:id', validateUser(false), (req, res, next) => {
     })
 })
 
-const fields = [
-  "Casa",
-  "Quinta",
-  "Depósito",
-  "Habitación",
-  "Oficina",
-  "Salón",
-  "Terreno" 
-]
+const types = require("../public/lib/types");
+const comunas = require("../public/lib/comunas");
 
-function fromQuery(num) {
+function fromQuery(num, fields) {
   const valid = [];        
   for (let n = num, i = 0; n > 0; i++, n = Math.floor(n/2)) if (n%2 == 1) valid.push(fields[i]);
   return valid;
@@ -586,16 +579,14 @@ router.get("/:page", (req, res) => {
         }
       })
 
-      if (condicion.t) {
-        condicion.type = fromQuery(condicion.t);
-        console.log(condicion.type);
-      }
+      if (condicion.t) condicion.type = fromQuery(condicion.t, types);
+      if (condicion.n) condicion.n = fromQuery(condicion.n, comunas);
+      console.log(condicion.type, condicion.n);
 
       const suggested = [];
 
       const filtrado = arr.filter(propiedad => {
-        //if (((!condicion.n      || propiedad.neighborhood == condicion.n))
-        if (true
+        if (((!condicion.n      || condicion.n.some(c => c.includes(propiedad.neighborhood))))
           && (!condicion.type   || (typeof condicion.type == "object" && condicion.type.includes(propiedad.type)))
           && (!condicion.max    || Number(propiedad.price) <= Number(condicion.max))
           && (!condicion.min    || Number(propiedad.price) >= Number(condicion.min))

@@ -51,19 +51,15 @@ export const fetchCentroide = (neighborhoods) => dispatch => {
 		const avgLat = centroids.reduce((acc, {lat}) => acc + lat, 0)/centroids.length;
 		const avgLon = centroids.reduce((acc, {lon}) => acc + lon, 0)/centroids.length;
 
-		const maxLonDelta = Math.max(...centroids.map(c => Math.abs(avgLon - c.lon)));
-		const maxLatDelta = Math.max(...centroids.map(c => Math.abs(avgLat - c.lat)));
-
-		console.log(...centroids.map(c => Math.abs(avgLon - c.lon)))
-		console.log(...centroids.map(c => Math.abs(avgLat - c.lat)))
+		// const maxLonDelta = Math.max(...centroids.map(c => Math.abs(avgLon - c.lon)));
+		// const maxLatDelta = Math.max(...centroids.map(c => Math.abs(avgLat - c.lat)));
 
 		dispatch(setCentroide({ 
 			lat: avgLat, 
 			lon: avgLon, 
 			lng: avgLon,
-			latitudeDelta: maxLatDelta*10,
-			longitudeDelta: maxLonDelta*10,
-			otherCentroids: centroids
+			// latitudeDelta: maxLatDelta*10,
+			// longitudeDelta: maxLonDelta*10,
 		}));
 	})
 }

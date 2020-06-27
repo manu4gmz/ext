@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ScrollView } from 'react-native';
 import MapView from 'react-native-maps';
 import { connect } from 'react-redux';
 
@@ -9,12 +9,15 @@ import { Animated, Easing } from "react-native";
 import styled from 'styled-components/native';
 import { fetchSpace } from "../../redux/actions/spaces";
 import * as Location from 'expo-location';
+import Loading from "../components/Loading";
 
+import {ColumnsWrapper, Column, SuggestedTitle} from "./SpacesMosaic/column";
+import cardList from "./SpacesMosaic/cardList";
 
-const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
+const Mapa = ({ allSpaces, navigation, centroide, fetchSpace, setMode }) => {
     const [callout, setCallout] = useState(false);
     const [calloutSpace, setCalloutSpace] = useState({});
-    const [markerRefs, setMarkerRefs] = useState([]);
+    const mapRef = useRef(null);
     const [fadeAnim] = useState(new Animated.Value(0));
     const [enabledLocation, setEnabledLocation ] = useState(null);
     const [location, setLocation ] = useState(null);
@@ -52,14 +55,26 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
         return navigation.navigate(`SingleView`, { propertyId: id })
     }
 
+    function moveTo(latitude, longitude) {
+            mapRef.current.animateToRegion({
+            latitude,
+            longitude,
+        });
+    }
+
     function handleMapPress() {
         setCallout(false);
     }
     
-    function handleMarkerPress(e,id) {
-        setCallout(false);
-        fetchSpace(id)
-        .then(space=> {
+    function handleMarkerPress(space) {
+
+        if (space.lat) moveTo(space.lat, space.lng || space.lon);
+        
+        setCalloutSpace({});
+        
+        fetchSpace(space.id)
+        .then(space => {
+            moveTo(space.location.lat, space.location.lng || space.location.lon);
             setCalloutSpace(space);
             setCallout(true);
         })
@@ -71,11 +86,13 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
     //const [vw, vh] = [100, 120];
     const { width: vw, height: vh } = Dimensions.get("window");
 
-    if (enabledLocation == null || (enabledLocation && !location)) return <Text>...</Text>;
+    if (enabledLocation == null || (enabledLocation && !location)) return <Loading />;
     return (
         <View
-        style={{ overflow:"hidden", height: vh - 102 }}>
-            <MapView style={styles.mapAll}
+        style={{ overflow:"hidden", height: vh - 102, zIndex: -1 }}>
+            <MapView 
+                style={styles.mapAll}
+                ref={mapRef}
                 initialRegion={{
                     latitude: centroide ? Number(centroide.lat) : (location.latitude || -34.579304),
                     longitude: centroide ? Number(centroide.lng || centroide.lon) : (location.longitude || -58.471115),
@@ -88,8 +105,8 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
                         <MapView.Marker
                             key={index}
                             identifier={property.id}
-                            onClick={(e)=>handleMarkerPress(e, property.id)}
-                            onPress={(e)=>handleMarkerPress(e, property.id)}
+                            onClick={()=>handleMarkerPress(property)}
+                            onPress={()=>handleMarkerPress(property)}
                             coordinate={{
                                 latitude: Number(property.lat),
                                 longitude: Number(property.lng),
@@ -103,11 +120,6 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
                     )
                 })
                 }
-                {
-                    (centroide ? centroide.otherCentroids || [] : []).map(({lat, lon},index) => (
-                        <MapView.Marker identifier={Math.random()*100} coordinate={{latitude: lat, longitude: lon}}/>
-                    ))
-                }
 
             </MapView>
             <Animated.View style={{
@@ -115,44 +127,37 @@ const Mapa = ({ allSpaces, navigation, centroide, fetchSpace }) => {
                 transform: [{
                     translateY: fadeAnim.interpolate({
                         inputRange: [0, 1],
-                        outputRange: [0, -250]  // 0 : 150, 0.5 : 75, 1 : 0
+                        outputRange: [270, 0]  // 0 : 150, 0.5 : 75, 1 : 0
                     }),
                 }],
-                height: 300,
+                position: 'absolute',
+                bottom: 28,
                 width:"100%"
 		    }}>
-                <Callout width={vw}>
-                    <View style={{
-                        width: '100%',
-                        height: (calloutSpace.photos || []).length ? 100 : 60,
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
-                        overflow: "hidden"
-                    }} >
-                        <Carousel images={calloutSpace.photos || []} height={100} />
-                    </View>
-                    <CalloutWrapper>
-
-                    <CalloutTitle>{calloutSpace.title}</CalloutTitle>
-                    <Text>{calloutSpace.size}mtr2 - {calloutSpace.type}</Text>
-                    <DoubleWraper>
-                          <Button
-                            onPress={() => sendId(calloutSpace.id) }
-                            bg="#4A94EA"
-                            color="#F7F7F7"
-                            mr="5px"
-                            >Mas Info.
-                          </Button>
-
-                            <Button
-                                bg="#F77171"
-                                color="#F7F7F7"
-                                ml="5px"
-                            >Contacto.
-                            </Button>
-
-                        </DoubleWraper>
-                    </CalloutWrapper>
+                <Callout>
+                    <ScrollView horizontal style={{width: vw - 24}}>
+                        <CardRow>
+                            {
+                                calloutSpace.id ? 
+                                    cardList([calloutSpace], () => null)
+                                    : <Card>
+                                        <Loading />    
+                                    </Card>
+                            }
+                            {
+                                cardList(
+                                    allSpaces.properties
+                                        .filter(s => !callout || !calloutSpace || s.id != calloutSpace.id), 
+                                    handleMarkerPress
+                                )
+                            }
+                            <Card>
+                                <TouchableOpacity onPress={() => setMode(false)}>
+                                    <LoadMore>Ver más</LoadMore>
+                                </TouchableOpacity>
+                            </Card>
+                        </CardRow>
+                    </ScrollView>
                 </Callout>
             </Animated.View>
         </View>
@@ -181,17 +186,31 @@ const CalloutTitle = styled.Text`
     margin-bottom: 10px;
     font-weight: 700;
 `
+
+const Card = styled.View`
+    height: 240px;
+    width: 160px;
+    flex-direction: row;
+    align-items: center;
+`;
+
 const CalloutWrapper = styled.View`
     padding: 10px 20px;
 `
 
 const Callout = styled.View`
-    border-radius: 5px;
-    position: absolute;
-    height: 250px;
-    background-color: white;
-    width: ${p=>p.width- 20}px;
-    margin: 0 10px;
+    width: 100%;
+`
+
+const LoadMore = styled.Text`
+    width: 250px;
+    font-size: 16px;
+    line-height: 240px;
+    text-align: center;
+`
+
+const CardRow = styled(ColumnsWrapper)`
+    width: 100%;
 `
 
 const styles = StyleSheet.create({
@@ -210,8 +229,13 @@ const styles = StyleSheet.create({
         marginTop: 2,
         width: "100%",
         margin: "auto",
+        flex: 1,
         overflow: "hidden",
         height: "100%",
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: -1,
     },
     callOutContainer: {
         height: 150,
