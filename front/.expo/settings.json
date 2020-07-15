@@ -1,9 +1,8 @@
 {
-  "urlRandomness": "ic-r2u",
-  "hostType": "lan",
+  "urlRandomness": "ms-h4y",
+  "hostType": "tunnel",
   "lanType": "ip",
   "dev": true,
   "minify": false,
-  "urlRandomness": "vv-8f7",
   "https": false
 }

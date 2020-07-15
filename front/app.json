@@ -1,3 +1,4 @@
+
 {
   "name": "Espacio por tiempo",
   "displayName": "Espacio por tiempo",
@@ -5,7 +6,6 @@
     "name": "Espacio por tiempo",
     "slug": "espacio-por-tiempo",
     "privacy": "unlisted",
-    "sdkVersion": "36.0.0",
     "version": "1.0.0",
     "entryPoint": "node_modules/expo/AppEntry.js",
     "platforms": [
@@ -13,9 +13,27 @@
       "android",
       "web"
     ],
-    "web": { "barStyle": "black-translucent" },
+    "ios": {
+      "bundleIdentifier": "espacioportiempo.com",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "espacioportiempo.com",
+      "versionCode": 1,
+      "useNextNotificationsApi": true,
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "barStyle": "black-translucent"
+    },
     "orientation": "portrait",
-    "icon": "./src/public/icons/icono_marker_az.png"
+    "icon": "./src/public/icons/icono_marker_az.png",
+    "description": "Buscador de espacios para usos múltiples ajustado al tiempo que necesites.",
+    "notification": {
+      "icon": "./src/public/icons/icono_marker_az.png",
+      "color": "#4a94ea",
+      "androidMode": "collapse",
+      "androidCollapsedTitle": "Notificaciones de Espacio por Tiempo"
+    }
   }
 }
-

@@ -15,18 +15,8 @@ const initialCartState = {
     centroide: null,
 }
 
-export default (state, action) => {
-    console.log("PREV STATE:", state)
-    console.log("ACTION: ", action);
-    const newState = reducer(state, action);
-    console.log("NEW STATE:", newState)
-    
-    return newState;
-} 
+export default function (state = initialCartState, action) {
 
-function reducer (state = initialCartState, action) {
-
-    console.log(action.spaces);
     switch (action.type) {
         case SET_CENTROIDE:
             return { ...state, centroide: action.centroide }

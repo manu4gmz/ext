@@ -1,10 +1,10 @@
 {
-  "devToolsPort": 19002,
-  "expoServerPort": null,
+  "webpackServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
-  "webpackServerPort": null
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://ms-h4y.manu4gmz.front.exp.direct",
+  "packagerNgrokUrl": "https://packager.ms-h4y.manu4gmz.front.exp.direct",
+  "ngrokPid": 7136,
+  "devToolsPort": 19002
 }

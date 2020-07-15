@@ -65,7 +65,9 @@ export default ([modal, setModal],[value, setValue]) => {
       Input: ({title, placeholder, onChange, name})=>{
 
         useEffect(()=>{
-          onChange(form => ({...form, [name || title]:{value, error:null, edited:true}}))
+          if (!value || !value?.length ) return;
+          onChange(value);
+          //onChange(form => ({...form, [name || title]:{value, error:null, edited:true}}))
         },[value])
 
 
@@ -102,16 +104,17 @@ const Wrapper = styled.View`
 `
 const Modal = styled.View`
   
+  
   background-color: white;
-  width: 65%;
+  width: 70%;
   margin-top: 10px;
   max-width: 400px;
   align-self: center;
   margin-top: 20px;
   padding: 25px 20px 28px;
   border-radius: 2px;
-  height: 100%;
-  max-height: 65%;
+  min-height: 420px;
+  height: 75%;
 
 `
 

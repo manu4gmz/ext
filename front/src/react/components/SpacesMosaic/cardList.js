@@ -14,7 +14,7 @@ export default function (spaces, onClick) {
     const starFilled = require("../../../public/icons/star-filled.png");
 
     const handleClick = (space) => {
-        onClick ? onClick(space) : navigation.push("SingleView", {propertyId: space.id})
+        onClick ? onClick(space) : () => {};  //: navigation.push("SingleView", {propertyId: space.id})
     }
 
     const {width: vw} = Dimensions.get("window");
@@ -23,8 +23,8 @@ export default function (spaces, onClick) {
     return spaces.map(space => 
       space.type != "ad" ?
     <TouchableWithoutFeedback key={space.id} onPress={() => handleClick(space)}>
-      <Card style={{shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6}}>
-        <CardBackground source={{uri:(space.photos || [])[0]}}>
+      <Card vw={vw}>
+        <CardBackground vw={vw} source={{uri:(space.photos || [])[0]}}>
           {
             space.verified ? 
             <View style={{ position: "absolute", top: 2, right: 2, zIndex: 9 }}>
@@ -57,8 +57,8 @@ export default function (spaces, onClick) {
     </TouchableWithoutFeedback>
     :
     <TouchableWithoutFeedback>
-      <Ad>
-        <AdBackground source={{uri:space.photo }}>
+      <Ad vw={vw}>
+        <AdBackground source={{uri:space.photo }} vw={vw}>
           <AdContent>
             <Title>{space.title}</Title>
             <AdSubtitle>
@@ -77,13 +77,12 @@ const Card = styled.View`
   margin: 6px;
   border-radius: 12px;
   overflow: hidden;
-  width: 100%;
-  max-width: 160px;
+  width: ${props => (props.vw / 2) - 24}px;
 `
 
 const CardBackground = styled.ImageBackground`
   width: 100%;
-  height: 240px;
+  height: ${props => props.vw*0.65}px;
   flex-direction: column;
   justify-content: flex-end;
 
@@ -124,13 +123,12 @@ const Ad = styled.View`
   border-radius: 12px;
   overflow: hidden;
   border: solid 4px #4a94ea;
-  max-width: 160px;
-  width: 100%;
+  width: ${props => (props.vw / 2) - 24}px;
 `
 
 const AdBackground = styled.ImageBackground`
   width: 100%;
-  height: 120px;
+  height: ${props => props.vw*0.32}px;
   flex-direction: column;
   justify-content: flex-end;
   flex-direction: row;
@@ -140,7 +138,6 @@ const AdBackground = styled.ImageBackground`
 const AdContent = styled.View`
   background-color: #1116289e;
   padding: 8px;
-  flex-wrap: wrap;
   flex: 1;
 `
 

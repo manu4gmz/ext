@@ -63,7 +63,8 @@ export default ({ images, height }) => {
               flexDirection: "row",
               width: vw,
               position: "relative",
-              left: offsetAnim
+              left: offsetAnim,
+              useNativeDriver: true,
             }}
           >
             {images.map((uri, i) => (

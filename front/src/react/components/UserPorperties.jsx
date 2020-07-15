@@ -44,8 +44,8 @@ const UserProperties = ({ propiedades, fetchProperties, user, navigation }) => {
       {
         nonVerifiedSpaces.length ?
         <VerifiedSuggestion height={vh-150} style={{ shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.27, shadowRadius: 4.65, elevation: 6 }}>
-          <Text>Verificá un espacio </Text>
           <Icon source={require("../../public/icons/verificado-ve.png")}></Icon>
+          <Text>Verificá un espacio </Text>
         </VerifiedSuggestion>
         : null
       }
@@ -108,9 +108,10 @@ const VerifiedSuggestion = styled.View`
   top: ${props => props.height}px;
   flex-direction: row;
   border-radius: 36px;
-  z-index: 10;
+  z-index: 1;
   padding: 6px 12px;
   right: 13px;
+  height: 45px;
   align-self: flex-end;
   align-items: center;
   background-color: #ffffff;

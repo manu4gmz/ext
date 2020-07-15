@@ -50,6 +50,11 @@ export default function SpaceReducedCard ({espacio, index, navigation, user, fav
                         )
                     }
                     {
+                        espacio.updateData ?
+                            <Text style={{color: "#c1c1c1"}}>Este espacio tiene actualizaciones pendientes.</Text>
+                        : null
+                    }
+                    {
                         Object.keys(tableFields).map((key,i) => (
                             espacio[key] ? <TableRow style={{ borderBottomColor: "#DDD", borderBottomWidth: 1}} key={i}>
                                 <TableLeft>{tableFields[key]}</TableLeft>

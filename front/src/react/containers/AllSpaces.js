@@ -83,6 +83,7 @@ function AllSpaces({
 		Animated.timing(leftAnim,{
 			toValue: +mode,
 			duration: 300,
+      useNativeDriver: true,
 		}).start();
   },[mode]);
 
@@ -190,27 +191,25 @@ export default connect(mapStateToProps, mapDispatchToProps)(AllSpaces);
 
 const Header = styled.View`
   background-color: #4a94ea;
-  box-shadow: 0px 1px 20px grey;
   height: 33px;
+
 `
 
 const HeaderRow = styled.View`
   flex-direction: row;
   flex: 1;
-  overflow: hidden;
-  height: 30px,
+  height: 33px;
 `
 
 const Lista = styled.Text`
   color: ${props => (props.active == "true" ? "white" : "#000144")};
   align-self: center;
   font-size: 18px;
-  height: 30px;
-  line-height: 30px;
   justify-content: center;
   text-align: center;
   padding-bottom: 5px;
   width: 50%;
+  height: 33px;
 `
 
 const SelectedLine = styled.View`

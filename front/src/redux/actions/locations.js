@@ -22,15 +22,15 @@ import Promise from "bluebird";
 
 
 
-// export const fetchCoords = (dir) => dispatch => {
-// 	return api.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${dir.n},${dir.s} ${dir.sn},${dir.p}&key=${DATA}`, {withCredentials:false})
-// 		.then((res) => {
-// 			const coordenadas = res.data.results[0].geometry.location
-// 			const arreglo = [coordenadas];
-// 			return arreglo;
-// 			//return api.put(`/properties/coordenadas/${idSpace}`, arreglo)
-// 		})
-// }
+export const fetchCoords = (dir) => dispatch => {
+	return api.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${dir.n},${dir.s} ${dir.sn},${dir.p}&key=${DATA}`, {withCredentials:false})
+		.then((res) => {
+			const coordenadas = res.data.results[0].geometry.location
+			const arreglo = [coordenadas];
+			return arreglo;
+			//return api.put(`/properties/coordenadas/${idSpace}`, arreglo)
+		})
+}
 
 import neighborhoodsList from "../../public/lib/comunas";
 

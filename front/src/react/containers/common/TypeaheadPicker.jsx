@@ -30,7 +30,7 @@ export default ([modal, setModal],[value, setValue]) => {
 
         const accept = () => {
           if (typeof value == "object") setValue(Object.keys(state).filter(key => state[key]));
-          else if (typeof value == "string") setValue(Object.keys(state).filter(key => state[key])[0] || "");
+          else if (typeof value == "string") setValue(Object.keys(state).filter(key => state[key])[0]);
           setModal(m => !m);
         }
 
@@ -119,15 +119,15 @@ const Wrapper = styled.View`
 const Modal = styled.View`
   
   background-color: white;
-  width: 70%;
+  width: 65%;
   margin-top: 10px;
   max-width: 400px;
   align-self: center;
   margin-top: 20px;
   padding: 25px 20px 28px;
   border-radius: 2px;
-  min-height: 420px;
-  height: 75%;
+  height: 100%;
+  max-height: 75%;
 
 `
 

@@ -37,13 +37,16 @@ const AddPhotos = ({ title, text, navigation, onChange, removePicture, addPictur
 			addPicture({
 				uri: data.uri,
 				height: data.height,
-				width: data.width
+				width: data.width,
+				new: true,
 			})
 		})
 	}
 
 	useEffect(() => {
-		name ? onChange(pictures) : onChange((form) => ({ ...form, [text]: { value: pictures, error: null } }))
+		//pictures?.length && onChange(pictures.map(pic => pic.url));
+		onChange(pictures);
+		//name ? onChange(pictures) : onChange((form) => ({ ...form, [text]: { value: pictures, error: null } }))
 	}, [pictures]);
 
 	useEffect(() => {
@@ -52,7 +55,6 @@ const AddPhotos = ({ title, text, navigation, onChange, removePicture, addPictur
 	}, [images]);
 
 	return <View>
-		{title(text)}
 		<PicsRoll horizontal={true}>
 			{
 				pictures.map((pic, i) => {

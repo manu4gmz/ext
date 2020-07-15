@@ -42,7 +42,7 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
               spaces.push(allSpaces[i]);
             }
             return spaces;
-          })())
+          })(), (space) => navigation.push("SingleView", {propertyId: space.id}))
           
         }
       </Column>
@@ -58,7 +58,7 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
               spaces.push(allSpaces[i]);
             }
             return spaces;
-          })())
+          })(), (space) => navigation.push("SingleView", {propertyId: space.id}))
         }
       </Column>
     </ColumnsWrapper>
@@ -81,7 +81,7 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
                 spaces.push(suggestions[i]);
               }
               return spaces;
-            })())
+            })(), (space) => navigation.push("SingleView", {propertyId: space.id}))
           }
           </Column>
 
@@ -97,7 +97,7 @@ export default ({ allSpaces, navigation, total, pages, setIndex, scrollView, ind
                 spaces.push(suggestions[i]);
               }
               return spaces;
-            })())
+            })(), (space) => navigation.push("SingleView", {propertyId: space.id}))
           }
           </Column>
         </ColumnsWrapper>

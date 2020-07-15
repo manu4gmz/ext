@@ -5,6 +5,8 @@ const db = fb.firestore();
 const path = require("path");
 const fs = require("fs");
 const Bluebird = require("bluebird");
+const sendNotification = require("../api/notification");
+
 
 function getHtml(view) {
     return new Bluebird((res,rej)=>{
@@ -70,7 +72,7 @@ router.get("/confirm-stay/:spaceid/:uid/:hash",(req,res,next) => {
         .then(rta => rta.data())
         .then((space)=>{
 
-            if ((space.rents || []).includes(req.params.uid)) return res.send(`
+            if (space && (space.rents || []).includes(req.params.uid)) return res.send(`
             <center>
                 <div style="max-width:500px; margin-top:60px; font-family: Sans-Serif;">
                     <p>Ya confirmaste tu estadia</p>
@@ -160,6 +162,17 @@ router.get("/confirm-stay/:spaceid/:uid/:hash",(req,res,next) => {
 })
 
 //router.get("/admin",(req,res) => res.redirect("/admin"))
+
+
+router.get("/notificate", (req, res) => {
+    sendNotification({ token: "ExponentPushToken[O_sFe7LO_HwqvT2ycG7ZDm]" })
+    .then(() => {
+        res.send("Noice!");
+    })
+    .catch(() => {
+        res.send("Not so nice :(");
+    });
+})
 
 
 router.get("/admin/*", (req, res) => {

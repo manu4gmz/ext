@@ -30,7 +30,7 @@ const PreviewSpace = ({route, navigation, addSpace}) => {
 
     return (
         <SingleView
-            space={{...space, photos: space.photos.map(pic => pic.uri)}}
+            space={{...space, photos: (space.photos || []).map(pic => pic.uri)}}
             loading={false}
             preview={true}
         >

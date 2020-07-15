@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "910305767737",
+    "firebase_url": "https://ext-api.firebaseio.com",
+    "project_id": "ext-api",
+    "storage_bucket": "ext-api.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910305767737:android:7c392d5d363e57c5ef38e8",
+        "android_client_info": {
+          "package_name": "espacioportiempo.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "910305767737-rite3bed0vr44pqqou8kh41ssb84nurj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8MNHPXjRulyJtyCQMdNYPq7jbeT_Wa6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "910305767737-rite3bed0vr44pqqou8kh41ssb84nurj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

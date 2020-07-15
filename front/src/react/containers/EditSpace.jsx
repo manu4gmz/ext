@@ -11,6 +11,8 @@ import { fetchProvincias, fetchLocalidades } from "../../redux/actions/locations
 import { editSpace,fetchSpace } from '../../redux/actions/spaces'
 import { connect } from 'react-redux'
 
+import TypeaheadPicker from '../components/TypeaheadPicker';
+import neighborhoods from '../../public/lib/neighborhoods';
 
 const EditSpace = ({ navigation, editSpace, fetchLocalidades, fetchProvincias, route, fetchSpace }) => {
   const Type = Picker(useState(false), useState(""));
@@ -18,37 +20,18 @@ const EditSpace = ({ navigation, editSpace, fetchLocalidades, fetchProvincias, r
   const Observation = TextPrompt(useState(false), useState(""));
   const Rules = TextPrompt(useState(false), useState(""));
   const Descripcion = TextPrompt(useState(false), useState(""));
+  const Neighborhood = TypeaheadPicker(useState(false), useState(""));
 
   const [ values, setValues ] = useState({});
 
   const [ spacePhotos, setSpacePhotos ] = useState([]);
 
-  /****************  Geo normalization **************/
-
-  const [ provincias, setProvincias ] = useState([])
-  const [ localidades, setLocalidades ] = useState([])
-  const [ province, setProvince ] = useState({})
-
-  function getProvincias (val) {
-    fetchProvincias(val)
-      .then(data => setProvincias(data))
-  }
-
-
-  function getLocalidades (val) {
-    fetchLocalidades(val, province.id)
-      .then(data => setLocalidades(data))
-  }
-
-  const handleSelectProvince = (val) => {
-    if (!val)  return setProvince({});
-    setProvince(val);
-  }
 
   /**************************************************/
 
   useEffect(()=>{
     fetchSpace(route.params.propertyId)
+    .then((space) => ({...space, ...space.updateData }))
     .then((space) => {
       console.log(space)
       if (space.comments) delete space.comments;
@@ -57,11 +40,12 @@ const EditSpace = ({ navigation, editSpace, fetchLocalidades, fetchProvincias, r
       delete space.verified;
       setValues(space);
 
-      Type.setValue(space.type)
-      Services.setValue(space.services)
-      Observation.setValue(space.observations)
-      Rules.setValue(space.rules)
-      Descripcion.setValue(space.description)
+      space.type         && Type.setValue(space.type)
+      space.services     && Services.setValue(space.services)
+      space.observations && Observation.setValue(space.observations)
+      space.rules        && Rules.setValue(space.rules)
+      space.description  && Descripcion.setValue(space.description)
+      space.neighborhood && Neighborhood.setValue(space.neighborhood)
 
       setSpacePhotos(space.photos);
     })
@@ -69,42 +53,39 @@ const EditSpace = ({ navigation, editSpace, fetchLocalidades, fetchProvincias, r
 
   const onSubmit = function (form) {
     console.log(route.params.propertyId);
-    const photos = [...form.photos.map(obj => ({...obj}))];
-    delete form.photos;
-    editSpace(route.params.propertyId,form)
-      .then(propertyId => {
-        if (!propertyId) return;
-        const newImages = photos.filter(a => !spacePhotos.includes(a.uri))
-        //navigation.push("SingleView", { propertyId })
-        console.log("ESTOY A PUNTO DE UPLOADEAR, ESTAS SON LAS IMAGENES",photos)
-        navigation.navigate("UploadingFiles", { images: newImages, propertyId, otherImages: spacePhotos })
-      })
+    //const photos = form.photos ? [...form.photos.map(obj => ({...obj}))] : null;
+    console.log(form.photos);
+
+    let data = { ...form };
+
+    console.log(data);
+    
+    if (values.neighborhood !== form.neighborhood || form.streetNumber || form.street ) {
+      data.streetNumber = form.streetNumber || values.streetNumber;
+      data.street = form.street || values.street;
+    }
+    console.log(data);
+    
+    navigation.navigate("UploadingFiles", { propertyId: route.params.propertyId, space: data, editing: true });
+    //editSpace(route.params.propertyId, form)
+    //  .then(propertyId => {
+    //    if (!propertyId) return;
+        //const newImages = photos ? photos.filter(a => !spacePhotos.includes(a.uri)) : null;
+        //console.log("ESTOY A PUNTO DE UPLOADEAR, ESTAS SON LAS IMAGENES",photos)
+      //})
   }
   const fields = [
     { title:"Titulo", placeholder:"Excelente lugar para...",name:"title" },
     {
-      element:({ onChange, value })=> <Typeahead 
-        title="Provincia*" 
-        value={value}
-        placeholder="Buenos Aires, Cordoba, San Luis.." 
-        getOptions={getProvincias} 
-        handleSelect={handleSelectProvince}
-        onChange={onChange}
-        options={provincias}
-      />, 
-      index:3
-    },
-    //[({ onChange }) => <Province.Input onChange={onChange} title={"Provincia*"} placeholder="Buenos Aires, Cordoba, San Luis.." />],
-    {
-      element: ({ onChange, value })=> province.id ? <Typeahead 
-        title="Barrio" 
-        placeholder="Flores, Saavedra.." 
-        getOptions={getLocalidades} 
-        handleSelect={()=>null}
-        onChange={onChange}
-        value={value}
-        options={localidades}
-      /> : null 
+      element: ({ onChange, value }) => <Neighborhood.Input 
+        onChange={onChange} 
+        title={"Localidad"} 
+        placeholder="Palermo..." 
+        value={value} 
+        name="neighborhood"
+      />,
+      name: "neighborhood",
+      index: 2,
     },
     {title:"Calle", name: "street", placeholder: "Av. Congreso, Castillo"},
     [
@@ -155,6 +136,7 @@ const EditSpace = ({ navigation, editSpace, fetchLocalidades, fetchProvincias, r
     <View style={{ flex: 1 }}>
       <Type.Modal title={"Tipo de Espacio"} options={["Casa", "Depósito", "Habitación", "Oficina", "Quinta", "Salón", "Terreno"]} />
       <Services.Modal title={"Caracteristicas y servicios"} options={["Aire Acondicionado", "Wifi", "LCD", "Cafe/Infusiones", "Snacks", "Música", "Vajilla"]} />
+      <Neighborhood.Modal title={"Barrio"} options={neighborhoods} />
 
       <Descripcion.Modal
         title={"Descripcion*"}

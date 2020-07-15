@@ -4,35 +4,7 @@ import store from './src/redux/store'
 import { NavigationContainer } from '@react-navigation/native';
 import DrawerContainer from './src/react/containers/DrawerContainer';
 
-//Importando views and components
-import HomePage from './src/react/containers/HomePage'
-
-import LoginPage from './src/react/containers/LoginPage'
-import RegisterPage from './src/react/containers/RegisterPage';
-import PaymentPage from './src/react/containers/PaymentPage';
-import SingleViewPage from './src/react/containers/SingleViewPage';
-import SpaceForm from './src/react/containers/SpaceForm';
-import OwnerForm from './src/react/containers/OwnerForm';
-import UploadingFiles from './src/react/containers/UploadingFiles';
-import Camera from './src/react/components/Camera';
-import Navbar from "./src/react/components/Navbar";
-
-
-
-
-const noNavbar = {
-  header: () => null,
-  headerStyle: {
-    backgroundColor: "transparent"
-  }
-}
-
-const withNavbar = (title) => ({
-  header: (props) => <Navbar {...props} title={title} />,
-  headerStyle: {
-    backgroundColor: "transparent"
-  }
-})
+import { Text } from 'react-native';
 
 export default class App extends Component {
   render() {

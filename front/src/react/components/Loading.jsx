@@ -11,6 +11,7 @@ export default ({children, order})=>{
 		Animated.loop(Animated.timing(rotateAnim,{
 			toValue: 1,
 			duration: 700,
+			useNativeDriver: true,
 		})).start();
 	},[])	
 

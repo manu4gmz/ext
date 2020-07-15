@@ -37,7 +37,8 @@ const dataTypes = {
   floor: "string",
   apt: "string",
   services: "object",
-  photos: "object"
+  photos: "object",
+  location: "object",
 };
 
 //* buscar todos los espacios por filtros
@@ -163,7 +164,15 @@ router.get("/singleSpace/:id", (req, res, next) => {
 //* crear un espacio
 router.post("/createSpace", validateUser(true), (req, res, next) => {
   const body = req.body;
-  const obj = { enabled: false, comments: [], userId: req.userId, createdAt: new Date().getTime(), updatedAt: new Date().getTime() };
+  const obj = {
+    enabled: false,
+    comments: [],
+    visible: false,
+    verified: false,
+    userId: req.userId,
+    createdAt: new Date().getTime(),
+    updatedAt: new Date().getTime() 
+  };
   let error = "";
 
 
@@ -315,20 +324,18 @@ Equipo de Espacio por Tiempo\
 router.put('/update/:id', validateUser(false), (req, res, next) => {
   const id = req.params.id;
   const body = req.body;
-  const update = { enabled: false, updatedAt: new Date().getTime(), rejected: false };
-  const updateData = {};
+  const update = { enabled: false, rejected: false };
+  const updateData = { updatedAt: new Date().getTime() };
   //res.header('Access-Control-Allow-Origin', req.header('origin') );
 
   if (body.visible != undefined) update.visible = body.visible;
 
   let error = "";
-  console.log(body);
   
   db.collection('properties').doc(id).get()
   .then(space => space.data())
   .then((space) => {
     
-    console.log(req.userId)
     if (space.userId != req.userId) return res.status(401).send({msg: "This's not your property!"});
     
     
@@ -339,13 +346,13 @@ router.put('/update/:id', validateUser(false), (req, res, next) => {
     })
     
     if (error) return res.status(400).send({ msg: error });
-    if (!Object.values(update).length || !Object.values(updateData).length) return res.status(400).send({ msg: "Mal el formato del body" });
+    if (!Object.values(updateData).length) return res.status(400).send({ msg: "Mal el formato del body" });
     //if (!body.uid) return res.status(401).send({ msg: "Error: tenes que pasar el uid del usuario" });
 
-    console.log(update, updateData);
+    console.log(update, '\n update: ', updateData);
 
       console.log({ ...update, updateData});
-    db.collection('properties').doc(id).update({ ...update, updateData})
+    db.collection('properties').doc(id).set({ ...update, updateData}, {merge: true})
       .then(() => {
         res.status(200).send({ msg: "Editado correctamente" })
       })
@@ -665,6 +672,7 @@ router.get("/:page", (req, res) => {
           verified: space.verified,
           size: space.size,
           neighborhood: space.neighborhood,
+          location: space.location,
           province: space.province,
           createdAt: space.createdAt,
           updatedAt: space.updatedAt,

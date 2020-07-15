@@ -9,6 +9,11 @@ import styled from "styled-components/native";
 import { View } from "react-native";
 import Picker from "../components/Picker";
 
+
+import * as Permissions from 'expo-permissions';
+import * as Notifications from 'expo-notifications';
+//import { Notifications } from 'expo';
+
 const OwnerForm = ({ navigation, user, offerUser }) => {
   const Age = Picker(useState(false), useState(""));
 
@@ -73,9 +78,34 @@ const OwnerForm = ({ navigation, user, offerUser }) => {
   const [email,setEmail] = useState(user.contact ? user.contact.email : true);
 
 
-  const onSubmit = function (form, setForm) {
+  const onSubmit = async function (form, setForm) {
     
     const data = {...form};
+
+    try {
+      //console.log('Tried')
+      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+      }
+
+      if (existingStatus == 'granted') {
+
+        const token = (await Notifications.getExpoPushTokenAsync()).data;
+
+        console.log('Conseguí el token!!');
+
+        data.pushToken = token;
+      }
+      else {
+        console.log(status)
+      }
+
+    } catch (error) {
+      console.error('Couldnt ask for push notification permissions', error);
+    }
 
     if (data.phoneNumber) data.phoneNumber = data.phoneNumber.replace(/( |\+)/g,""),
 

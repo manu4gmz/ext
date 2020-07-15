@@ -185,7 +185,7 @@ function Root() {
       <Stack.Screen
         name="AllSpaces"
         component={AllSpaces}
-        options={({ header: () => null }, titulo("Espacios", "SerchSpace"))}
+        options={({ drawerLockMode: 'locked-closed', header: () => null }, titulo("Espacios", "SerchSpace"))}
       />
       <Stack.Screen
         name="Camera"
@@ -210,7 +210,7 @@ function Root() {
       <Stack.Screen
         name="UserProperties"
         component={UserProperties}
-        options={{ header: () => null }, titulo("Mis Propiedades")}
+        options={{ header: () => null }, titulo("Mis espacios")}
       />
       <Stack.Screen
         name="EditSpace"
